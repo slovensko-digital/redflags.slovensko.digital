@@ -3,12 +3,22 @@
   <head>
     <title>Redflags</title>
     <%= csrf_meta_tags %>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
   </head>
 
   <body>
-    <%= yield %>
+    <nav class="navbar navbar-expand-sm mb-3" role="navigation">
+      <div class="container">
+        <a class="navbar-brand" href="<%= root_path %>">
+          <%= image_tag 'temp_logo.svg', width: '240' %>
+        </a>
+      </div>
+    </nav>
+    <div class="container">
+      <%= yield %>
+    </div>
   </body>
 </html>
