@@ -5,11 +5,16 @@ $gray-lighter:  #c4c3ca;
 $gray-lightest: #f4f4f4;
 $color-highlight: lightgoldenrodyellow;
 
-$brand-primary: #3a67e8;
-$brand-success: #2ecc71;
-$brand-info:    #3498db;
-$brand-warning: #f1c40f;
-$brand-danger:  #e74c3c;
+$theme-colors: (
+  primary: #3a67e8,
+  secondary: $gray-light,
+  success: #2ecc71,
+  info: #3498db,
+  warning: #f1c40f,
+  danger: #cc3333,
+  light: $gray-lightest,
+  dark: $gray-dark
+) !default;
 
 $headings-font-family: 'Merriweather', 'Georgia', 'Times New Roman', serif;
 $font-family-sans-serif: 'Roboto', sans-serif;
