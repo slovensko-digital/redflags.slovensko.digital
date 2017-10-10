@@ -1,0 +1,42 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,700|Merriweather:100,200,300,500&subset=latin,latin-ext');
+@import 'variables';
+@import 'bootstrap';
+
+em {
+  background-color: $color-highlight;
+  font-style: normal;
+}
+
+.btn-outline-primary:hover {
+  border-color: $link-hover-color;
+  color: $link-hover-color;
+  background-color: transparent;
+}
+
+.navbar {
+  height: 50px;
+  border-bottom: 1px solid $gray-lighter;
+}
+
+
+//footer {
+//  margin-top: 4em;
+//  padding-bottom: 3em;
+//  font-size: $font-size-lg;
+//  background-color: #f9f9f9;
+//}
+//
+//footer, footer a {
+//  color: $text-muted;
+//}
+//
+//.newsletter {
+//  padding-top: 1.5em;
+//  padding-bottom: 1em;
+//  margin-bottom: 2em;
+//  background-color: #efefef;
+//}
+//
+//footer {
+//  border-top: 1px solid #eee;
+//}
