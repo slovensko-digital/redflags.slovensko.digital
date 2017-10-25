@@ -40,6 +40,9 @@ gem 'jbuilder', '~> 2.5'
 
 gem 'discourse_api'
 gem 'que'
+gem 'que-web'
+
+gem 'clockwork'
 
 group :development, :test do
   gem 'dotenv-rails'
@@ -48,7 +51,9 @@ group :development, :test do
   gem 'simplecov'
   gem 'vcr'
   gem 'webmock'
+  gem 'capybara'
 
+  gem 'foreman'
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
 end
