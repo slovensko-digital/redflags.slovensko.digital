@@ -1,5 +1,6 @@
 class Admin::PagesController < AdminController
   def index
+    @pages = Page.order(id: :desc).page(params[:page]).per(100)
   end
 
   def sync
