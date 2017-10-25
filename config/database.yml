@@ -80,8 +80,10 @@ test:
 #   production:
 #     url: <%= ENV['DATABASE_URL'] %>
 #
+staging:
+  <<: *default
+  url: <%= ENV['DATABASE_URL'] %>
+
 production:
   <<: *default
-  database: redflags_production
-  username: redflags
-  password: <%= ENV['REDFLAGS_DATABASE_PASSWORD'] %>
+  url: <%= ENV['DATABASE_URL'] %>
