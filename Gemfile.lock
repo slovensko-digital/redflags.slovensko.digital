@@ -126,7 +126,7 @@ GEM
     minitest (5.10.3)
     multi_json (1.12.1)
     multipart-post (2.0.0)
-    mustermann (1.0.0)
+    mustermann (1.0.1)
     nio4r (2.1.0)
     nokogiri (1.8.0)
       mini_portile2 (~> 2.2.0)
@@ -134,8 +134,8 @@ GEM
     popper_js (1.11.1)
     public_suffix (3.0.0)
     puma (3.9.1)
-    que (0.13.0)
-    que-web (0.4.0)
+    que (0.14.0)
+    que-web (0.6.0)
       erubis
       que (~> 0.8)
       sinatra
