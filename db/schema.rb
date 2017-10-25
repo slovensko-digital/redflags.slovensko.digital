@@ -19,9 +19,9 @@ ActiveRecord::Schema.define(version: 20171025151045) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "published_revision_id"
-    t.bigint "latest_revision_id", null: false
-    t.index ["latest_revision_id"], name: "index_pages_on_latest_revision_id", unique: true
-    t.index ["published_revision_id"], name: "index_pages_on_published_revision_id", unique: true
+    t.bigint "latest_revision_id"
+    t.index ["latest_revision_id"], name: "index_pages_on_latest_revision_id"
+    t.index ["published_revision_id"], name: "index_pages_on_published_revision_id"
   end
 
   create_table "que_jobs", primary_key: ["queue", "priority", "run_at", "job_id"], force: :cascade, comment: "3" do |t|
