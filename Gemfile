@@ -38,6 +38,7 @@ gem 'jbuilder', '~> 2.5'
 
 gem 'discourse_api'
 gem 'que'
+gem 'que-web'
 
 gem 'clockwork'
 
