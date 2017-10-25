@@ -37,6 +37,7 @@ ActiveRecord::Schema.define(version: 20171024155327) do
     t.jsonb "raw"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["page_id", "version"], name: "index_revisions_on_page_id_and_version", unique: true
     t.index ["page_id"], name: "index_revisions_on_page_id"
   end
 
