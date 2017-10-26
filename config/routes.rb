@@ -5,6 +5,8 @@ Que::Web.use(Rack::Auth::Basic) do |username, password|
 end
 
 Rails.application.routes.draw do
+  resources :projects, path: 'projekty'
+
   namespace :admin do
     root to: 'pages#index'
 

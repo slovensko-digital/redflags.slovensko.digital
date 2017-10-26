@@ -20,7 +20,9 @@ em {
   border-bottom: 1px solid $gray-lighter;
 }
 
-
+#main-container {
+  max-width: 900px;
+}
 footer {
   background-color: $gray-lightest;
 }
