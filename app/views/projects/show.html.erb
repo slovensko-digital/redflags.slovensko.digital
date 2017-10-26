@@ -1,79 +1,108 @@
-<h1 class="mt-5"><%= @project.title %></h1>
-<div class="row mt-5">
-  <div class="col-md-8">
-    <h5>Názov</h5>
-    <p><%= @project.full_name %></p>
+<div id="project-show">
+  <h1 class="mt-5"><%= @project.title %></h1>
+  <div class="row mt-5">
+    <div class="col-md-8">
+      <h5>Názov</h5>
+      <p><%= @project.full_name %></p>
 
-    <h5>Garant</h5>
-    <p><%= @project.guarantor %></p>
+      <h5>Garant</h5>
+      <p><%= @project.guarantor %></p>
 
-    <h5>Stručný opis</h5>
-    <p><%= @project.description %></p>
+      <h5>Stručný opis</h5>
+      <p><%= @project.description %></p>
 
-    <h5>Náklady na projekt</h5>
-    <p><%= @project.budget %></p>
+      <h5>Náklady na projekt</h5>
+      <p><%= @project.budget %></p>
 
-    <h5>Aktuálny stav projektu</h5>
-    <p><%= @project.status %></p>
+      <h5>Aktuálny stav projektu</h5>
+      <p><%= @project.status %></p>
+    </div>
+    <div class="col-md-4">
+      <h5>Posledná úprava</h5>
+      <p><%=  l(@project.updated_at, format: '%d.%m.%Y') %></p>
+
+      <h5>Vytvorené</h5>
+      <p><%= l(@project.created_at, format: '%d.%m.%Y') %></p>
+
+      <h5>Editor</h5>
+      <p>
+        <a href="<%= @project.editor_url %>">
+          <img width="48" class="rounded-circle" src="<%= @project.editor_avatar_url %>" />
+          <span class="ml-2"><%= @project.editor_name %></span>
+        </a>
+      </p>
+
+      <a class="btn btn-primary btn-block" href="<%= @project.discourse_url %>" role="button"><i class="fa fa-edit mr-2"></i>Upraviť</a>
+      <a class="btn btn-link btn-block" href="<%= @project.permalink_url %>" role="button"><i class="fa fa-link mr-2"></i>Permalink</a>
+
+    </div>
   </div>
-  <div class="col-md-4">
-    <h5>Posledná úprava</h5>
-    <p><%=  l(@project.updated_at, format: '%d.%m.%Y') %></p>
-
-    <h5>Vytvorené</h5>
-    <p><%= l(@project.created_at, format: '%d.%m.%Y') %></p>
-
-    <h5>Editor</h5>
-    <p>
-      <a href="<%= @project.editor_url %>">
-        <img width="48" class="rounded-circle" src="<%= @project.editor_avatar_url %>" />
-        <span class="ml-2"><%= @project.editor_name %></span>
-      </a>
-    </p>
-
-    <a class="btn btn-primary btn-block" href="<%= @project.discourse_url %>" role="button"><i class="fa fa-edit mr-2"></i>Upraviť</a>
-    <a class="btn btn-link btn-block" href="<%= @project.permalink_url %>" role="button"><i class="fa fa-link mr-2"></i>Permalink</a>
-
-  </div>
-</div>
-<div class="row mt-5">
-  <div class="col">
-    <ul class="nav nav-tabs" id="myTab" role="tablist">
-      <li class="nav-item">
-        <a class="nav-link active" id="hodnotenie-tab" data-toggle="tab" href="#hodnotenie" role="tab" aria-controls="home" aria-selected="true"><h6>Hodnotenie</h6></a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" id="aktivity-tab" data-toggle="tab" href="#aktivity" role="tab" aria-controls="profile" aria-selected="false"><h6>Aktivity</h6></a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" id="dokumenty-tab" data-toggle="tab" href="#dokumenty" role="tab" aria-controls="contact" aria-selected="false"><h6>Dokumenty</h6></a>
-      </li>
-    </ul>
-    <div class="tab-content px-4 border border-top-0 pt-1" id="myTabContent">
-      <div class="tab-pane fade show active" id="hodnotenie" role="tabpanel" aria-labelledby="hodnotenie-tab">
-        <% @ranking_phases.each_with_index do |ranking_phase, index| %>
-          <div class="row mt-5 mb-1">
-            <div class="col">
-              <h3><%= ranking_phase %></h3>
-            </div>
-          </div>
-          <div class="row">
-            <% @project.rankings.each do |ranking| %>
-              <div class="col-md-3">
-                <% if ranking.score %>
-                  <% ranking.score.times do |s| %><%= fa_icon 'star' %><% end %><% (4 - ranking.score).times do |s| %><%= fa_icon 'star-o' %><% end %>
-                  <p><%= ranking.name %></p>
-                <% else %>
-                  <% 4.times do |s| %><%= fa_icon 'star-o', class: 'text-muted' %><% end %>
-                  <p class='text-muted'><%= ranking.name %></p>
-                <% end %>
+  <div class="row mt-5">
+    <div class="col">
+      <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" id="hodnotenie-tab" data-toggle="tab" href="#hodnotenie" role="tab" aria-controls="home" aria-selected="true"><h6>Hodnotenie</h6></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="aktivity-tab" data-toggle="tab" href="#aktivity" role="tab" aria-controls="profile" aria-selected="false"><h6>Aktivity</h6></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="dokumenty-tab" data-toggle="tab" href="#dokumenty" role="tab" aria-controls="contact" aria-selected="false"><h6>Dokumenty</h6></a>
+        </li>
+      </ul>
+      <div class="tab-content px-4 border border-top-0 pt-1" id="myTabContent">
+        <div class="tab-pane fade show active" id="hodnotenie" role="tabpanel" aria-labelledby="hodnotenie-tab">
+          <% @ranking_phases.each_with_index do |ranking_phase, index| %>
+            <div class="row mt-4 mb-1">
+              <div class="col">
+                <h3><%= ranking_phase %></h3>
               </div>
-            <% end %>
-          </div>
-        <% end %>
+            </div>
+            <div class="row">
+              <% @project.rankings.each do |ranking| %>
+                <div class="col-md-3">
+                  <% if ranking.score %>
+                    <% ranking.score.times do |s| %><%= fa_icon 'star' %><% end %><% (4 - ranking.score).times do |s| %><%= fa_icon 'star-o' %><% end %>
+                    <p><%= ranking.name %></p>
+                  <% else %>
+                    <% 4.times do |s| %><%= fa_icon 'star-o', class: 'text-muted' %><% end %>
+                    <p class='text-muted'><%= ranking.name %></p>
+                  <% end %>
+                </div>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+        <div class="tab-pane fade" id="aktivity" role="tabpanel" aria-labelledby="aktivity-tab">...</div>
+        <div class="tab-pane fade" id="dokumenty" role="tabpanel" aria-labelledby="dokumenty-tab">...</div>
       </div>
-      <div class="tab-pane fade" id="aktivity" role="tabpanel" aria-labelledby="aktivity-tab">...</div>
-      <div class="tab-pane fade" id="dokumenty" role="tabpanel" aria-labelledby="dokumenty-tab">...</div>
+    </div>
+  </div>
+  <div class="row mt-5 detailed-ranking">
+    <div class="col">
+      <% @ranking_phases.each_with_index do |ranking_phase, index| %>
+        <h2 class="mt-5"><%= ranking_phase %></h2>
+        <hr>
+        <% @project.rankings.each do |ranking| %>
+          <% if ranking.score %>
+            <h4 class="mt-5">
+              <%= ranking.name %>
+              <% ranking.score.times do |s| %><%= fa_icon 'star' %><% end %><% (4 - ranking.score).times do |s| %><%= fa_icon 'star-o' %><% end %>
+            </h4>
+            <div class="full-description">
+              <%= ranking.html.to_s.html_safe %>
+            </div>
+          <% else %>
+            <h4 class="mt-5 text-muted">
+              <%= ranking.name %>
+              <% 4.times do |s| %><%= fa_icon 'star-o' %><% end %>
+            </h4>
+            <div class="full-description">
+              <p class="text-muted"><i>Zatiaľ bez hodnotenia.</i></p>
+            </div>
+          <% end %>
+        <% end %>
+      <% end %>
     </div>
   </div>
 </div>
