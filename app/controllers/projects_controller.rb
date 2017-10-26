@@ -102,7 +102,65 @@ class ProjectsController < ApplicationController
           html: nil
         ),
 
-      ]
+      ],
+
+      activities_html: '<ul>
+    <li>14.7.2016 Reformný zámer <a href="https://www.minv.sk/?schvalene-rz&amp;subor=245880">schválený</a> HK OP EVS
+    </li>
+    <li>2.6.2017 Štúdia uskutočniteľnosti schválená RV OPII PO 7</li>
+    <li>18.7.2017 v OPII PO 7 <a
+            href="http://www.informatizacia.sk/aktuality-tlacova-sprava-k-vyzvaniu-na-narodny-projekt-informacny-system-obchodneho-registra/25472c">zverejnená
+        výzva</a> na Národný projekt IS Obchodného registra
+    </li>
+</ul>',
+
+      documents_html: '<ul>
+    <li>
+        <p>Reformný zámer: <a class="attachment"
+                              href="//platforma-slovensko-digital-uploads.s3-eu-central-1.amazonaws.com/original/2X/1/15854e70f13904751d2c879945bafaf435440b32.pdf">12.RZ-MSSR-Zlepsenie
+            podnikatelskeho prostredia a odbremenenie sudneho systemu.pdf</a> (986.3 KB)</p>
+    </li>
+    <li>
+        <p>pripomienky k Reformnému zámeru a ich zapracovanie: potrebné získať od MV SR /EVS</p>
+    </li>
+    <li>
+        <p>Štúdia uskutočniteľnosti:</p>
+        <ul>
+            <li>
+                <a href="https://metais.finance.gov.sk/studia/detail/67cab118-1a08-e9dc-a136-a2f3a51811dd?tab=basicForm">online</a>
+            </li>
+            <li>(vybrané z príloh vyzvania) <a class="attachment"
+                                               href="//platforma-slovensko-digital-uploads.s3-eu-central-1.amazonaws.com/original/2X/e/e351d6d3c5cc79222275f78d0774aa96483f1c5f.pdf">SU_IS
+                OR SR_su47.pdf</a> (1.7 MB)
+            </li>
+        </ul>
+    </li>
+    <li>
+        <p>Vyzvanie na národný projekt:</p>
+        <ul>
+            <li>
+                <a href="https://www.opii.gov.sk/opiiapp.php/Vyzvania/show?id=369">online</a>
+            </li>
+            <li>
+                <a class="attachment"
+                   href="//platforma-slovensko-digital-uploads.s3-eu-central-1.amazonaws.com/original/2X/a/a34b54a00960e3af7fa92b736115b9e4620e5e83.PDF">vyzvanie
+                    č. OPII-201773-NP Národného projektu Informačný systém Obchodného registra SR (2).PDF</a> (515.5 KB)
+            </li>
+            <li>
+                <a class="attachment"
+                   href="//platforma-slovensko-digital-uploads.s3-eu-central-1.amazonaws.com/original/2X/5/52f2f45c3668014320214a9926ce30d98978536e.zip">Prilohy_vyzvania_ISOR
+                    (1).zip</a> (3.0 MB)
+            </li>
+        </ul>
+    </li>
+    <li>
+        <p>pripomienky k Štúdii uskutočniteľnosti a ich zapracovanie: potrebné získať od MSSR alebo ÚPVII</p>
+    </li>
+    <li>
+        <p>Procesno organizačný audit rezortu spravodlivosti (zameraná na registráciu obchodných spoločností): potrebné
+            získať od MSSR - podľa RZ bol vypracovaný v prvom kvartáli 2017</p>
+    </li>
+</ul>',
     )
     @ranking_phases = ['I. Prípravná fáza', 'II. Obstarávanie / nákup', 'III. Realizácia', 'IV. Produkt', 'V. Prevádzka']
   end

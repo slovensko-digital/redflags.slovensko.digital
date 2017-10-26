@@ -55,7 +55,7 @@
           <% @ranking_phases.each_with_index do |ranking_phase, index| %>
             <div class="row mt-4 mb-1">
               <div class="col">
-                <h3><%= ranking_phase %></h3>
+                <h5><a href="#<%= Digest::MD5.hexdigest ranking_phase %>"><%= ranking_phase %></a></h5>
               </div>
             </div>
             <div class="row">
@@ -73,31 +73,35 @@
             </div>
           <% end %>
         </div>
-        <div class="tab-pane fade" id="aktivity" role="tabpanel" aria-labelledby="aktivity-tab">...</div>
-        <div class="tab-pane fade" id="dokumenty" role="tabpanel" aria-labelledby="dokumenty-tab">...</div>
+        <div class="tab-pane fade py-4" id="aktivity" role="tabpanel" aria-labelledby="aktivity-tab">
+          <%= @project.activities_html.html_safe %>
+        </div>
+        <div class="tab-pane fade py-4" id="dokumenty" role="tabpanel" aria-labelledby="dokumenty-tab">
+          <%= @project.documents_html.html_safe %>
+        </div>
       </div>
     </div>
   </div>
   <div class="row mt-5 detailed-ranking">
     <div class="col">
       <% @ranking_phases.each_with_index do |ranking_phase, index| %>
-        <h2 class="mt-5"><%= ranking_phase %></h2>
+        <h2 class="mt-5" id="<%= Digest::MD5.hexdigest ranking_phase %>"><%= ranking_phase %></h2>
         <hr>
         <% @project.rankings.each do |ranking| %>
           <% if ranking.score %>
-            <h4 class="mt-5">
+            <h4>
               <%= ranking.name %>
               <% ranking.score.times do |s| %><%= fa_icon 'star' %><% end %><% (4 - ranking.score).times do |s| %><%= fa_icon 'star-o' %><% end %>
             </h4>
-            <div class="full-description">
+            <div class="full-description mb-5">
               <%= ranking.html.to_s.html_safe %>
             </div>
           <% else %>
-            <h4 class="mt-5 text-muted">
+            <h4 class="text-muted">
               <%= ranking.name %>
               <% 4.times do |s| %><%= fa_icon 'star-o' %><% end %>
             </h4>
-            <div class="full-description">
+            <div class="full-description mb-5">
               <p class="text-muted"><i>Zatiaľ bez hodnotenia.</i></p>
             </div>
           <% end %>
