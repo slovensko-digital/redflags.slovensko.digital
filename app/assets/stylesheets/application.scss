@@ -20,6 +20,10 @@ em {
 .navbar {
   height: 50px;
   border-bottom: 1px solid $gray-lighter;
+
+  .container {
+    max-width: 905px;
+  }
 }
 
 #main-container {
