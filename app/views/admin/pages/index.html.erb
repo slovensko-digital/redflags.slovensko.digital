@@ -17,7 +17,7 @@
   <tbody>
     <% @pages.each do |page| %>
       <tr id="<%= dom_id page %>">
-        <td><%= page.id %></td>
+        <td><%= link_to page.id, admin_page_path(page) %></td>
         <td><%= page.title %></td>
         <td>
           <% if page.published? %>
