@@ -1,7 +1,7 @@
 <h1>Admin</h1>
 
 <div class="form-group">
-  <%= button_to 'Synchronize', sync_admin_pages_path, class: 'btn btn-info btn-sm', method: :put %>
+  <%= link_to 'Synchronize', sync_admin_pages_path, class: 'btn btn-info btn-sm', method: :put %>
 </div>
 
 <table class="table table-striped table-sm">
@@ -33,9 +33,9 @@
         <td><%= l page.updated_at, format: '%F %T' %></td>
         <td>
           <% if page.published? %>
-            <%= link_to 'Unpublish', '#', class: 'btn btn-secondary btn-sm' %>
+            <%= link_to 'Unpublish', unpublish_admin_page_path(page), class: 'btn btn-secondary btn-sm', method: :patch %>
           <% else %>
-            <%= link_to 'Publish', '#', class: 'btn btn-info btn-sm' %>
+            <%= link_to 'Publish', publish_admin_page_path(page), class: 'btn btn-info btn-sm', method: :patch %>
           <% end %>
         </td>
       </tr>

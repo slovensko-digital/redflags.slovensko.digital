@@ -9,9 +9,12 @@ Rails.application.routes.draw do
     root to: 'pages#index'
 
     resources :pages do
+      patch :publish, on: :member
+      patch :unpublish, on: :member
+
       put :sync, on: :collection
     end
-    
+
     mount Que::Web, at: 'que'
   end
 
