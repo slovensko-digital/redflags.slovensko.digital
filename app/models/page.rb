@@ -4,15 +4,13 @@ class Page < ApplicationRecord
   belongs_to :published_revision, class_name: :Revision, optional: true
   belongs_to :latest_revision, class_name: :Revision, optional: true
 
-  def title
-    latest_revision.title.sub(/\ARed Flags:\s*/, '')
-  end
+  delegate :title, to: :latest_revision
 
   def published?
-    published_revision_id.present?
+    published_revision.present?
   end
 
   def synced?
-    published_revision_id == latest_revision_id
+    published_revision == latest_revision
   end
 end
