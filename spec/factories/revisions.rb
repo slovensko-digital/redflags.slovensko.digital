@@ -2,6 +2,7 @@ FactoryGirl.define do
   factory :revision do
     page
     sequence(:version) { |n| n }
+    title ''
     raw ''
 
     after :create do |r|
