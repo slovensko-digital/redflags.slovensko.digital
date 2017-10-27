@@ -1,0 +1,5 @@
+<li class="page-item<%= ' active' if page.current? %>">
+  <%= link_to page.current? ? '#' : url, class: 'page-link', remote: remote do %>
+    <%= number_with_delimiter page %>
+  <% end %>
+</li>

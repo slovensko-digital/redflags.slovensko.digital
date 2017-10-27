@@ -19,3 +19,5 @@
 .byebug_history
 
 /.idea
+
+.env.local

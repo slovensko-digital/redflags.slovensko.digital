@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171024155327) do
+ActiveRecord::Schema.define(version: 20171027113301) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -18,6 +18,8 @@ ActiveRecord::Schema.define(version: 20171024155327) do
   create_table "pages", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "published_revision_id"
+    t.bigint "latest_revision_id"
   end
 
   create_table "que_jobs", primary_key: ["queue", "priority", "run_at", "job_id"], force: :cascade, comment: "3" do |t|
@@ -37,9 +39,12 @@ ActiveRecord::Schema.define(version: 20171024155327) do
     t.jsonb "raw"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "title", null: false
     t.index ["page_id", "version"], name: "index_revisions_on_page_id_and_version", unique: true
     t.index ["page_id"], name: "index_revisions_on_page_id"
   end
 
+  add_foreign_key "pages", "revisions", column: "latest_revision_id"
+  add_foreign_key "pages", "revisions", column: "published_revision_id"
   add_foreign_key "revisions", "pages"
 end
