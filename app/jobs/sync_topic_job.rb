@@ -10,10 +10,11 @@ class SyncTopicJob < ApplicationJob
       # TODO latest_revision_id should be not null on DB level
 
       page = Page.find_or_create_by!(id: topic_id)
-      first_post = topic['post_stream']['posts'].first
+      version = topic['post_stream']['posts'].first['version']
 
-      revision = page.revisions.find_or_initialize_by(version: first_post['version'])
-      revision.raw = first_post
+      revision = page.revisions.find_or_initialize_by(version: version)
+      revision.title = topic['title']
+      revision.raw = topic
       revision.save!
 
       page.latest_revision_id = revision.id

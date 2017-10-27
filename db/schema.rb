@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171027113100) do
+ActiveRecord::Schema.define(version: 20171027113301) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -39,6 +39,7 @@ ActiveRecord::Schema.define(version: 20171027113100) do
     t.jsonb "raw"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "title", null: false
     t.index ["page_id", "version"], name: "index_revisions_on_page_id_and_version", unique: true
     t.index ["page_id"], name: "index_revisions_on_page_id"
   end
