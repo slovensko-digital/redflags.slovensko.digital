@@ -9,28 +9,22 @@ class Admin::PagesController < AdminController
     @revisions = @page.revisions.order(version: :desc).page(params[:page])
   end
 
-  def switch
-    @page.update!(latest_revision: @page.revisions.find_by!(version: params['version']))
-
-    redirect_to action: :show
-  end
-
   def publish
-    @page.update!(published_revision: @page.latest_revision)
+    @page.update!(published_revision: @page.revisions.find_by!(version: params['version']))
 
-    redirect_to action: :index
+    redirect_back fallback_location: { action: :index }
   end
 
   def unpublish
     @page.update!(published_revision: nil)
 
-    redirect_to action: :index
+    redirect_back fallback_location: { action: :index }
   end
 
   def sync
     SyncCategoryTopicsJob.perform_later(ENV.fetch('REDFLAGS_CATEGORY_SLUG'))
 
-    redirect_to action: :index
+    redirect_back fallback_location: { action: :index }
   end
 
   private

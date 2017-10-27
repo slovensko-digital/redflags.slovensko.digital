@@ -9,7 +9,6 @@ Rails.application.routes.draw do
     root to: 'pages#index'
 
     resources :pages do
-      patch :switch, on: :member
       patch :publish, on: :member
       patch :unpublish, on: :member
 

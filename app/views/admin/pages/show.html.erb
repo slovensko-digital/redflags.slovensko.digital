@@ -29,8 +29,8 @@
         </td>
         <td><%= l revision.updated_at, format: '%F %T' %></td>
         <td>
-          <% unless revision.latest? %>
-            <%= link_to 'Switch', switch_admin_page_path(@page, version: revision.version), class: 'btn btn-info btn-sm', method: :patch %>
+          <% unless revision.published? %>
+            <%= link_to 'Publish', publish_admin_page_path(@page, version: revision.version), class: 'btn btn-info btn-sm', method: :patch %>
           <% end %>
         </td>
       </tr>
