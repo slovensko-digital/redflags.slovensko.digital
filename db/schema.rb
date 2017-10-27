@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171025151045) do
+ActiveRecord::Schema.define(version: 20171027113100) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -20,8 +20,6 @@ ActiveRecord::Schema.define(version: 20171025151045) do
     t.datetime "updated_at", null: false
     t.bigint "published_revision_id"
     t.bigint "latest_revision_id"
-    t.index ["latest_revision_id"], name: "index_pages_on_latest_revision_id"
-    t.index ["published_revision_id"], name: "index_pages_on_published_revision_id"
   end
 
   create_table "que_jobs", primary_key: ["queue", "priority", "run_at", "job_id"], force: :cascade, comment: "3" do |t|
