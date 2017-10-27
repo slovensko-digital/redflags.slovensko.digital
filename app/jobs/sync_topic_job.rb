@@ -17,7 +17,7 @@ class SyncTopicJob < ApplicationJob
       revision.raw = topic
       revision.save!
 
-      page.latest_revision_id = revision.id
+      page.latest_revision = revision
       page.save!
     end
   end

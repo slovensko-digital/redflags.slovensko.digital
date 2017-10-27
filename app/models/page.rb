@@ -1,8 +1,8 @@
 class Page < ApplicationRecord
   has_many :revisions
 
-  has_one :published_revision, class_name: :Revision
-  has_one :latest_revision, class_name: :Revision
+  belongs_to :published_revision, class_name: :Revision, optional: true
+  belongs_to :latest_revision, class_name: :Revision, optional: true
 
   def title
     latest_revision.title.sub(/\ARed Flags:\s*/, '')
