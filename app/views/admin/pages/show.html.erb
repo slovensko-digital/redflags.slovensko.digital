@@ -1,0 +1,41 @@
+<h1><%= @page.title %></h1>
+
+<div class="form-group">
+  <%= link_to 'Pages', admin_pages_path, class: 'btn btn-secondary btn-sm' %>
+</div>
+
+<table class="table table-striped table-sm">
+  <thead>
+    <tr>
+      <th>Version</th>
+      <th>Title</th>
+      <th>Flags</th>
+      <th>Updated</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @revisions.each do |revision| %>
+      <tr id="<%= dom_id revision %>">
+        <td><%= revision.version %></td>
+        <td><%= revision.title %></td>
+        <td>
+          <% if revision.published? %>
+            <span class="badge badge-success">published</span>
+          <% end %>
+          <% if revision.latest? %>
+            <span class="badge badge-info">latest</span>
+          <% end %>
+        </td>
+        <td><%= l revision.updated_at, format: '%F %T' %></td>
+        <td>
+          <% unless revision.published? %>
+            <%= link_to 'Publish', publish_admin_page_path(@page, version: revision.version), class: 'btn btn-info btn-sm', method: :patch %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= paginate @revisions, views_prefix: 'admin' %>
