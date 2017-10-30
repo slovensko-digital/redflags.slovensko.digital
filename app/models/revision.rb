@@ -21,4 +21,12 @@
 
 class Revision < ApplicationRecord
   belongs_to :page
+
+  after_save :schedule_sync_project_job # TODO: move to domain events and pubsub
+
+  private
+
+  def schedule_sync_project_job
+    SyncProjectJob.perform_later(self)
+  end
 end

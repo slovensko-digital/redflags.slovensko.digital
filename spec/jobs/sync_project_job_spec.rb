@@ -28,4 +28,14 @@ RSpec.describe SyncProjectJob, type: :job do
     expect(ratings['Reforma VS'].score).to eq(2)
     expect(ratings['Participácia na príprave projektu'].score).to eq(4)
   end
+
+  it 'ignores pages from unknown category' do
+    revision = create(:revision)
+    revision.raw['category_id'] = 123
+    revision.save!
+
+    subject.perform(revision)
+
+    expect(ProjectRevision.count).to eq(0)
+  end
 end
