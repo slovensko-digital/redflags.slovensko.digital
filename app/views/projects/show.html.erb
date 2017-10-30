@@ -1,6 +1,26 @@
 <div id="project-show" class="container main">
   <h1 class="mt-5"><%= @project.title %></h1>
   <div class="row mt-5">
+    <div class="col-md-4">
+      <div class="card table-of-contents">
+        <div class="card-body">
+          <ul class="nav flex-column">
+            <li class="nav-item"><a href="#aktivity" class="nav-link">Aktivity</a></li>
+            <li class="nav-item"><a href="#hodnotenie" class="nav-link">Hodnotenie</a></li>
+            <ul class="nav flex-column ml-3">
+              <% @ranking_phases.each do |ranking_phase| %>
+                <li class="nav-item">
+                  <%= link_to ranking_phase, "##{Digest::MD5.hexdigest ranking_phase}", class: 'nav-link' %>
+                </li>
+              <% end %>
+            </ul>
+            <li class="nav-item"><a href="#dokumenty" class="nav-link">Dokumenty</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row mt-5">
     <div class="col-md-7">
       <h5>Názov</h5>
       <p class="mb-4"><%= @project.full_name %></p>
@@ -18,14 +38,14 @@
       <p class="mb-4"><%= @project.status %></p>
     </div>
     <div class="col-md-4 offset-md-1">
-      <h5>Aktivity</h5>
+      <h5 id="aktivity">Aktivity</h5>
       <div>
         <%= @project.activities_html.html_safe %>
       </div>
     </div>
   </div>
   <div class="mt-5">
-    <h2>Hodnotenie</h2>
+    <h2 id="hodnotenie">Hodnotenie</h2>
     <hr>
     <% @ranking_phases.each_with_index do |ranking_phase, index| %>
       <div class="row mt-4 mb-1">
@@ -75,7 +95,7 @@
   </div>
 
   <div class="mt-5">
-    <h2>Dokumenty</h2>
+    <h2 id="dokumenty">Dokumenty</h2>
     <hr>
     <%= @project.documents_html.html_safe %>
   </div>
