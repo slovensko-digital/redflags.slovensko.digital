@@ -5,6 +5,7 @@
 @import 'font-awesome';
 
 @import 'projects';
+@import 'static';
 
 em {
   background-color: $color-highlight;
@@ -20,19 +21,15 @@ em {
 .navbar {
   height: 50px;
   border-bottom: 1px solid $gray-lighter;
-
-  .container {
-    max-width: 905px;
-  }
 }
 
-.main.container {
-  max-width: 900px;
+.container {
+  max-width: 1024px;
 }
 footer {
-  background-color: $gray-lightest;
+  background-color: $gray-lighter;
 }
 
 footer, footer a {
-  color: $text-muted;
+  color: $body-color;
 }

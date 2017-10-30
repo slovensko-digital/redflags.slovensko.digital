@@ -17,5 +17,7 @@ Rails.application.routes.draw do
     mount Que::Web, at: 'que'
   end
 
-  root to: 'static#kitchen_sink'
+  get '/kitchen-sink', to: 'static#kitchen_sink'
+
+  root to: 'static#index'
 end
