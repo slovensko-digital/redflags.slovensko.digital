@@ -10,7 +10,7 @@ class SyncTopicJob < ApplicationJob
       first_post = topic['post_stream']['posts'].first
 
       revision = page.revisions.find_or_initialize_by(version: first_post['version'])
-      revision.raw = first_post
+      revision.raw = topic
       revision.save!
     end
   end

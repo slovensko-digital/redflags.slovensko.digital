@@ -6,4 +6,22 @@
   .table-of-contents li {
     font-weight: 400;
   }
+
+  hr {
+    margin-bottom: 3rem;
+  }
+
+  .lightbox-wrapper .meta {
+    display: none;
+  }
+
+  .rating-known .fa-star, .rating-known .fa-star-o {
+    color: #ffac33;
+  }
+}
+
+img.emoji {
+  width: 20px;
+  height: 20px;
+  vertical-align: middle;
 }
