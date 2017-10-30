@@ -1,47 +1,44 @@
+<% content_for(:title) do %><%= @project.title %> &middot; Red Flags &middot; Slovensko.Digital<% end %>
 <div id="project-show" class="container main">
   <h1 class="mt-5"><%= @project.title %></h1>
-  <div class="row mt-5">
-    <div class="col-md-7">
-      <h5>Názov</h5>
-      <p class="mb-4"><%= @project.full_name %></p>
-
-      <h5>Garant</h5>
-      <p class="mb-4"><%= @project.guarantor %></p>
-
-      <h5>Stručný opis</h5>
-      <p class="mb-4"><%= @project.description %></p>
-
+  <p class="lead text-muted mt-4 mb-5"><%= @project.description %></p>
+  <div class="row mb-4">
+    <div class="col-md-6">
       <h5>Náklady na projekt</h5>
-      <p class="mb-4"><%= @project.budget %></p>
-
-      <h5>Aktuálny stav projektu</h5>
-      <p class="mb-4"><%= @project.status %></p>
+      <p><%= @project.budget %></p>
     </div>
-    <div class="col-md-4 offset-md-1">
-      <h5>Aktivity</h5>
-      <div>
-        <%= @project.activities_html.html_safe %>
-      </div>
+
+    <div class="col-md-6">
+      <h5>Garant <%= help_icon_if_blank(@project.guarantor) %></h5>
+      <p><%= @project.guarantor %></p>
     </div>
   </div>
+
+  <h5>Aktuálny stav projektu</h5>
+  <p class="mb-4"><%= @project.status %></p>
+
+
   <div class="mt-5">
     <h2>Hodnotenie</h2>
     <hr>
-    <% @ranking_phases.each_with_index do |ranking_phase, index| %>
+    <% @rating_types_by_phase.each do |rating_phase, rating_types| %>
       <div class="row mt-4 mb-1">
         <div class="col">
-          <h5><a href="#<%= Digest::MD5.hexdigest ranking_phase %>"><%= ranking_phase %></a></h5>
+          <h5><%= rating_phase.name %></h5>
         </div>
       </div>
       <div class="row">
-        <% @project.rankings.each do |ranking| %>
+        <% rating_types.each do |rating_type| %>
+          <% rating = @ratings_by_type[rating_type] %>
           <div class="col-md-3">
-            <% if ranking.score %>
-              <% ranking.score.times do |s| %><%= fa_icon 'star' %><% end %><% (4 - ranking.score).times do |s| %><%= fa_icon 'star-o' %><% end %>
-              <p><%= ranking.name %></p>
+            <% if rating %>
+                <span class="rating-known">
+                  <% rating.score.times do |s| %><%= fa_icon 'star' %> <% end %><% (4 - rating.score).times do |s| %><%= fa_icon 'star-o' %> <% end %>
+                  <p><%= rating_type.name %></p>
+                </span>
             <% else %>
-              <% 4.times do |s| %><%= fa_icon 'star-o', class: 'text-muted' %><% end %>
-              <p class='text-muted'><%= ranking.name %></p>
+              <% 4.times do |s| %><%= fa_icon 'star-o', class: 'text-muted' %> <% end %>
+              <p class='text-muted'><%= rating_type.name %> <%= help_icon_if_blank(rating) %></p>
             <% end %>
           </div>
         <% end %>
@@ -49,34 +46,8 @@
     <% end %>
   </div>
 
-  <div class="mt-5 detailed-ranking">
-    <% @ranking_phases.each_with_index do |ranking_phase, index| %>
-      <h3 class="mt-5 mb-3" id="<%= Digest::MD5.hexdigest ranking_phase %>"><%= ranking_phase %></h3>
-      <% @project.rankings.each do |ranking| %>
-        <% if ranking.score %>
-          <h5>
-            <%= ranking.name %>
-            <% ranking.score.times do |s| %><%= fa_icon 'star' %><% end %><% (4 - ranking.score).times do |s| %><%= fa_icon 'star-o' %><% end %>
-          </h5>
-          <div class="full-description mb-5">
-            <%= ranking.html.to_s.html_safe %>
-          </div>
-        <% else %>
-          <h5 class="text-muted">
-            <%= ranking.name %>
-            <% 4.times do |s| %><%= fa_icon 'star-o' %><% end %>
-          </h5>
-          <div class="full-description mb-5">
-            <p class="text-muted"><i>Zatiaľ bez hodnotenia.</i></p>
-          </div>
-        <% end %>
-      <% end %>
-    <% end %>
-  </div>
-
-  <div class="mt-5">
-    <h2>Dokumenty</h2>
-    <hr>
-    <%= @project.documents_html.html_safe %>
+  <div class="my-5">
+    <h1 class="mb-5">Detailné hodnotenie projektu</h1>
+    <%== @project.body_html %>
   </div>
 </div>
