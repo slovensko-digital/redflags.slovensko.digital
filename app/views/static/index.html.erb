@@ -2,7 +2,7 @@
   <div class="container">
     <div id="jumbotron" class="row">
       <div class="col-md-7">
-        <h1 class="">
+        <h1>
           Štátne IT projekty<br>
           hodnotené odborníkmi
         </h1>
@@ -25,7 +25,7 @@
                 <tr>
                   <th scope="row" class="pl-3"><%= index + 1 %></th>
                   <td><%= link_to project.title, project_path(project.project) %></td>
-                  <td><%= number_to_percentage(project.total_score_percentage, precision: 0) %></td>
+                  <td class="text-right"><%= number_to_percentage(project.total_score_percentage, precision: 0) %></td>
                 </tr>
               <% end %>
             </tbody>
@@ -40,7 +40,7 @@
               <tr>
                 <th scope="row" class="pl-3"><%= index + 1 %></th>
                 <td><%= link_to project.title, project_path(project.project) %></td>
-                <td><%= number_to_percentage(project.total_score_percentage, precision: 0) %></td>
+                <td class="text-right"><%= number_to_percentage(project.total_score_percentage, precision: 0) %></td>
               </tr>
             <% end %>
             </tbody>
@@ -65,9 +65,9 @@
           Projekty sú hodnotené pomocou sady kritérií (rovnakých pre každný projekt). V každom kritériu je uvedené
           slovné hodnotenie a dobrú prehľadnosť aj pridelené body,
           od
-          <span class="rating-known"><%= fa_icon 'star-o' %><%= fa_icon 'star-o' %><%= fa_icon 'star-o' %><%= fa_icon 'star-o' %></span>
+          <span class="rating-known"><%= rating_stars(OpenStruct.new(score: 0)) %></span>
           po
-          <span class="rating-known"><%= fa_icon 'star' %><%= fa_icon 'star' %><%= fa_icon 'star' %><%= fa_icon 'star' %></span>.
+          <span class="rating-known"><%= rating_stars(OpenStruct.new(score: 4)) %></span>.
         </p>
       </div>
     </div>
