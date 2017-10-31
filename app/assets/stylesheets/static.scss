@@ -7,5 +7,9 @@
   .dark {
     background-color: $primary;
     color: $white;
+
+    .btn-outline-light:hover {
+      color: $primary;
+    }
   }
 }

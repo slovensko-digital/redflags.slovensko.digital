@@ -14,10 +14,10 @@
     </div>
   </div>
 
-  <div class="container-fluid dark py-5">
+  <div class="dark py-5">
     <div class="container">
       <div class="row mt-5">
-        <div class="col-md-5">
+        <div class="col-md-5 mx-auto">
           <h4 class="mb-4"><%= fa_icon 'thumbs-o-down', class: 'mr-2' %> Najhoršie hodnotené</h4>
           <table class="table table-sm">
             <tbody>
@@ -30,7 +30,8 @@
             </tbody>
           </table>
         </div>
-        <div class="col-md-5 offset-md-1">
+        <div class="col-md-1"></div>
+        <div class="col-md-5 mx-auto">
           <h4 class="mb-4"><%= fa_icon 'thumbs-o-up', class: 'mr-2' %> Najlepšie hodnotené</h4>
           <table class="table table-sm">
             <tbody>
@@ -65,7 +66,6 @@
           <span class="rating-known"><%= fa_icon 'star-o' %><%= fa_icon 'star-o' %><%= fa_icon 'star-o' %><%= fa_icon 'star-o' %></span>
           po
           <span class="rating-known"><%= fa_icon 'star' %><%= fa_icon 'star' %><%= fa_icon 'star' %><%= fa_icon 'star' %></span>.
-
         </p>
       </div>
     </div>
