@@ -24,6 +24,14 @@ class Revision < ApplicationRecord
 
   after_save :schedule_sync_project_job # TODO: move to domain events and pubsub
 
+  def published?
+    page.published_revision == self
+  end
+
+  def latest?
+    page.latest_revision == self
+  end
+
   private
 
   def schedule_sync_project_job

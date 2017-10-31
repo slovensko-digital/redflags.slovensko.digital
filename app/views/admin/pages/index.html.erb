@@ -1,3 +1,46 @@
 <h1>Admin</h1>
 
-<%= button_to 'Synchronize', sync_admin_pages_path, class: 'btn btn-info btn-sm', method: :put %>
+<div class="form-group">
+  <%= link_to 'Synchronize', sync_admin_pages_path, class: 'btn btn-info btn-sm', method: :put %>
+</div>
+
+<table class="table table-striped table-sm">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Title</th>
+      <th>Status</th>
+      <th>Updated</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @pages.each do |page| %>
+      <tr id="<%= dom_id page %>">
+        <td><%= link_to page.id, admin_page_path(page) %></td>
+        <td><%= page.title %></td>
+        <td>
+          <% if page.published? %>
+            <% if page.synced? %>
+              <span class="badge badge-success">published</span>
+            <% else %>
+              <span class="badge badge-danger">published</span>
+            <% end %>
+          <% else %>
+            <span class="badge badge-secondary">unpublished</span>
+          <% end %>
+        </td>
+        <td><%= l page.updated_at, format: '%F %T' %></td>
+        <td>
+          <% if page.published? %>
+            <%= link_to 'Unpublish', unpublish_admin_page_path(page), class: 'btn btn-secondary btn-sm', method: :patch %>
+          <% else %>
+            <%= link_to 'Publish', publish_admin_page_path(page, version: page.latest_revision.version), class: 'btn btn-info btn-sm', method: :patch %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= paginate @pages, views_prefix: 'admin' %>
