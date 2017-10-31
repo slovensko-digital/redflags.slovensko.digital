@@ -71,9 +71,9 @@
           Projekty sú hodnotené pomocou sady kritérií (rovnakých pre každný projekt). V každom kritériu je uvedené
           slovné hodnotenie a dobrú prehľadnosť aj pridelené body,
           od
-          <span class="rating-known"><%= fa_icon 'star-o' %><%= fa_icon 'star-o' %><%= fa_icon 'star-o' %><%= fa_icon 'star-o' %></span>
+          <span class="rating-known"><%= rating_stars(OpenStruct.new(score: 0)) %></span>
           po
-          <span class="rating-known"><%= fa_icon 'star' %><%= fa_icon 'star' %><%= fa_icon 'star' %><%= fa_icon 'star' %></span>.
+          <span class="rating-known"><%= rating_stars(OpenStruct.new(score: 4)) %></span>.
         </p>
       </div>
     </div>
