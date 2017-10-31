@@ -4,4 +4,22 @@ module ProjectHelper
       content_tag :i, nil, class: 'fa fa-question-circle text-muted', title: 'Tento údaj ešte nebol vyplnený.'
     end
   end
+
+  def rating_stars(rating)
+    capture do
+      if rating
+        str = content_tag :span, class: 'rating-known' do
+          rating.score.times do
+            concat fa_icon 'star'
+          end
+          (4 - rating.score).times do
+            concat fa_icon 'star-o'
+          end
+        end
+        concat str
+      else
+        concat help_icon_if_blank(rating)
+      end
+    end
+  end
 end

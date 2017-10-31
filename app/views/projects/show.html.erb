@@ -33,13 +33,11 @@
           <% rating = @ratings_by_type[rating_type] %>
           <div class="col-md-3">
             <% if rating %>
-                <span class="rating-known">
-                  <% rating.score.times do |s| %><%= fa_icon 'star' %> <% end %><% (4 - rating.score).times do |s| %><%= fa_icon 'star-o' %> <% end %>
-                  <p><%= rating_type.name %></p>
-                </span>
+              <%= rating_stars(rating) %>
+              <p><%= rating_type.name %></p>
             <% else %>
-              <% 4.times do |s| %><%= fa_icon 'star-o', class: 'text-muted' %> <% end %>
-              <p class='text-muted'><%= rating_type.name %> <%= help_icon_if_blank(rating) %></p>
+              <div class="text-muted"><%= help_icon_if_blank(rating) %></div>
+              <p class='text-muted'><%= rating_type.name %></p>
             <% end %>
           </div>
         <% end %>

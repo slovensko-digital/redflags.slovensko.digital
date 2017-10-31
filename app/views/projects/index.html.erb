@@ -26,7 +26,7 @@
         <% @rating_types_by_phase.each do |phase, rating_types| %>
           <% rating_types.each do |rating_type| %>
             <% rating = ratings_by_type[rating_type] %>
-            <td class="text-center"><small><% if rating %><span class="rating-known"><% rating.score.times do |s| %><%= fa_icon 'star' %><% end %><% (4 - rating.score).times do |s| %><%= fa_icon 'star-o' %><% end %></span><% else %><% 4.times do |s| %><%= fa_icon 'star-o', class: 'text-muted' %><% end %><% end %></td>
+            <td class="text-center"><small><%= rating_stars(rating) %></small></td>
           <% end %>
         <% end %>
         <td></td>
