@@ -1,0 +1,19 @@
+#landing {
+  #jumbotron {
+    margin-top: 10rem;
+    margin-bottom: 10rem;
+
+    h1 {
+      line-height: 1.2em;
+    }
+  }
+
+  .dark {
+    background-color: $primary;
+    color: $white;
+
+    .btn-outline-light:hover {
+      color: $primary;
+    }
+  }
+}

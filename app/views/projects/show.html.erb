@@ -1,0 +1,64 @@
+<% content_for(:title) do %><%= @project.title %> &middot; Red Flags &middot; Slovensko.Digital<% end %>
+<div id="project-show" class="container main">
+
+  <div class="row mt-5 mb-5">
+    <div class="col-md-8">
+      <h1 class=""><%= @project.title %></h1>
+      <p class="lead text-muted mt-4"><%= @project.description %></p>
+    </div>
+    <div class="col-md-4 text-center float-right">
+      <span style="font-size: 8rem; font-weight: bold; color: orange"><%= number_to_percentage(@project.total_score_percentage, precision: 0) %></span>
+    </div>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-md-4">
+      <h5>Aktuálny stav projektu</h5>
+      <p class="mb-4"><%= @project.status %></p>
+    </div>
+
+    <div class="col-md-4">
+      <h5>Náklady na projekt</h5>
+      <p><%= @project.budget %></p>
+    </div>
+
+    <div class="col-md-4">
+      <h5>Garant <%= help_icon_if_blank(@project.guarantor) %></h5>
+      <p><%= @project.guarantor %></p>
+    </div>
+  </div>
+
+
+
+
+  <div class="mt-5">
+    <h2 id="hodnotenie">Hodnotenie</h2>
+    <hr>
+    <% @rating_types_by_phase.each do |rating_phase, rating_types| %>
+      <div class="row mt-4 mb-1">
+        <div class="col">
+          <h5><%= rating_phase.name %></h5>
+        </div>
+      </div>
+      <div class="row">
+        <% rating_types.each do |rating_type| %>
+          <% rating = @ratings_by_type[rating_type] %>
+          <div class="col-md-3">
+            <% if rating %>
+              <%= rating_stars(rating) %>
+              <p><%= rating_type.name %></p>
+            <% else %>
+              <div class="text-muted"><%= help_icon_if_blank(rating) %></div>
+              <p class='text-muted'><%= rating_type.name %></p>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="my-5">
+    <h1 class="mb-5">Detailné hodnotenie projektu</h1>
+    <%== @project.body_html %>
+  </div>
+</div>

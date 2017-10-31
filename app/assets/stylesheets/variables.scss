@@ -4,17 +4,9 @@ $gray-light:    #818a91;
 $gray-lighter:  #c4c3ca;
 $gray-lightest: #f4f4f4;
 $color-highlight: lightgoldenrodyellow;
+$orange: #ffac33;
 
-$theme-colors: (
-  primary: #3a67e8,
-  secondary: $gray-light,
-  success: #2ecc71,
-  info: #3498db,
-  warning: #f1c40f,
-  danger: #cc3333,
-  light: $gray-lightest,
-  dark: $gray-dark
-) !default;
+$primary: #3a67e8;
 
 $headings-font-family: 'Merriweather', 'Georgia', 'Times New Roman', serif;
 $font-family-sans-serif: 'Roboto', sans-serif;

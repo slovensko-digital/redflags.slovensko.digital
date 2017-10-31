@@ -5,6 +5,8 @@ Que::Web.use(Rack::Auth::Basic) do |username, password|
 end
 
 Rails.application.routes.draw do
+  resources :projects, path: 'projekty'
+
   namespace :admin do
     root to: 'pages#index'
 
@@ -23,5 +25,7 @@ Rails.application.routes.draw do
   get 'ako-sa-zapojit', as: 'contribute', to: 'static#contribute'
   get 'casto-kladene-otazky', as: 'faq', to: 'static#faq'
 
-  root to: 'static#kitchen_sink'
+  get '/kitchen-sink', to: 'static#kitchen_sink'
+
+  root to: 'static#index'
 end
