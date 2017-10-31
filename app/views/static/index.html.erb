@@ -2,14 +2,20 @@
   <div class="container">
     <div id="jumbotron" class="row">
       <div class="col-md-7">
-        <h1 class="">
+        <h1>
           Štátne IT projekty<br>
           hodnotené odborníkmi
         </h1>
         <p class="lead">
           Monitorované IT projekty a ich kolaboratívne hodnotenie metodikou Red Flags .
         </p>
-        <%= link_to 'Prejsť na zoznam projektov', projects_path, class: 'btn btn-primary mt-3' %>
+        <div class="mt-4">
+          <%= link_to 'O projekte', projects_path, class: 'btn btn-primary btn-lg mr-3' %>
+          <%= link_to 'Zoznam hodnotených projektov', projects_path, class: 'btn btn-outline-secondary btn-lg' %>
+        </div>
+      </div>
+      <div class="col-md-5 text-center">
+        <span class="rating-known" style="font-size: 5rem;"><%= fa_icon('star') %> <%= fa_icon('star') %> <%= fa_icon('star') %> <%= fa_icon('star-o') %></span>
       </div>
     </div>
   </div>
@@ -25,7 +31,7 @@
                 <tr>
                   <th scope="row" class="pl-3"><%= index + 1 %></th>
                   <td><%= link_to project.title, project_path(project.project) %></td>
-                  <td><%= number_to_percentage(project.total_score_percentage, precision: 0) %></td>
+                  <td class="text-right"><%= number_to_percentage(project.total_score_percentage, precision: 0) %></td>
                 </tr>
               <% end %>
             </tbody>
@@ -40,7 +46,7 @@
               <tr>
                 <th scope="row" class="pl-3"><%= index + 1 %></th>
                 <td><%= link_to project.title, project_path(project.project) %></td>
-                <td><%= number_to_percentage(project.total_score_percentage, precision: 0) %></td>
+                <td class="text-right"><%= number_to_percentage(project.total_score_percentage, precision: 0) %></td>
               </tr>
             <% end %>
             </tbody>
