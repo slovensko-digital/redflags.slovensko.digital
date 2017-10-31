@@ -16,8 +16,12 @@
   }
 }
 
-.rating-known .fa-star, .rating-known .fa-star-o {
+.rating-known .fa-star {
   color: $orange;
+}
+
+.rating-known .fa-star-o {
+  color: $text-muted;
 }
 
 img.emoji {
