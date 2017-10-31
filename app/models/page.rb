@@ -22,11 +22,19 @@ class Page < ApplicationRecord
 
   delegate :title, to: :latest_revision
 
+  after_save :schedule_sync_project_job
+
   def published?
     published_revision.present?
   end
 
   def synced?
     published_revision == latest_revision
+  end
+
+  private
+
+  def schedule_sync_project_job
+    SyncProjectJob.perform_later(self)
   end
 end

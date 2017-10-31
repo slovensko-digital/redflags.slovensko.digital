@@ -36,6 +36,6 @@ class Revision < ApplicationRecord
   private
 
   def schedule_sync_project_job
-    SyncProjectJob.perform_later(self)
+    SyncRevisionJob.perform_later(self)
   end
 end

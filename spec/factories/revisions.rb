@@ -23,6 +23,7 @@
 FactoryBot.define do
   factory :revision do
     page
+    title ''
     sequence(:version) { |n| n }
 
     after :create do |r|

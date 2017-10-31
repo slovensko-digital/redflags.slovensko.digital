@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171030115814) do
+ActiveRecord::Schema.define(version: 20171031125640) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -52,7 +52,9 @@ ActiveRecord::Schema.define(version: 20171030115814) do
     t.bigint "page_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "published_revision_id"
     t.index ["page_id"], name: "index_projects_on_page_id"
+    t.index ["published_revision_id"], name: "index_projects_on_published_revision_id"
   end
 
   create_table "que_jobs", primary_key: ["queue", "priority", "run_at", "job_id"], force: :cascade, comment: "3" do |t|
@@ -98,6 +100,7 @@ ActiveRecord::Schema.define(version: 20171030115814) do
   add_foreign_key "project_revisions", "projects"
   add_foreign_key "project_revisions", "revisions"
   add_foreign_key "projects", "pages"
+  add_foreign_key "projects", "project_revisions", column: "published_revision_id"
   add_foreign_key "rating_types", "rating_phases"
   add_foreign_key "revisions", "pages"
 end
