@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table value: project_revisions
+# Table name: project_revisions
 #
 #  id          :integer          not null, primary key
 #  project_id  :integer          not null

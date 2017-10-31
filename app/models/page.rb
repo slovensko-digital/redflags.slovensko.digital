@@ -8,11 +8,6 @@
 #  published_revision_id :integer
 #  latest_revision_id    :integer
 #
-# Indexes
-#
-#  index_pages_on_latest_revision_id     (latest_revision_id)
-#  index_pages_on_published_revision_id  (published_revision_id)
-#
 # Foreign Keys
 #
 #  fk_rails_...  (latest_revision_id => revisions.id)
