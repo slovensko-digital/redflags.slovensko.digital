@@ -19,12 +19,13 @@
       <div class="row mt-5">
         <div class="col-md-5 mx-auto">
           <h4 class="mb-4"><%= fa_icon 'thumbs-o-down', class: 'mr-2' %> Najhoršie hodnotené</h4>
-          <table class="table table-sm">
+          <table class="table table-sm toplist">
             <tbody>
               <% @worst_ranked_projects.each_with_index do |project, index| %>
                 <tr>
                   <th scope="row" class="pl-3"><%= index + 1 %></th>
-                  <td><%= project.title %></td>
+                  <td><%= link_to project.title, project_path(project.project) %></td>
+                  <td><%= number_to_percentage(project.total_score_percentage, precision: 0) %></td>
                 </tr>
               <% end %>
             </tbody>
@@ -33,12 +34,13 @@
         <div class="col-md-1"></div>
         <div class="col-md-5 mx-auto">
           <h4 class="mb-4"><%= fa_icon 'thumbs-o-up', class: 'mr-2' %> Najlepšie hodnotené</h4>
-          <table class="table table-sm">
+          <table class="table table-sm toplist">
             <tbody>
             <% @best_ranked_projects.each_with_index do |project, index| %>
               <tr>
                 <th scope="row" class="pl-3"><%= index + 1 %></th>
-                <td><%= project.title %></td>
+                <td><%= link_to project.title, project_path(project.project) %></td>
+                <td><%= number_to_percentage(project.total_score_percentage, precision: 0) %></td>
               </tr>
             <% end %>
             </tbody>

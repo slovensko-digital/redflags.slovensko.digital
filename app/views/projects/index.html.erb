@@ -3,23 +3,26 @@
   <table class="table">
     <thead>
     <tr>
-      <th rowspan="2">Projekt</th>
+      <th class="text-right">Fáza</th>
       <% @rating_types_by_phase.each do |phase, rating_types| %>
-      <th class="text-center" colspan="<%= rating_types.count %>"><%= phase.name %></th>
+      <th class="text-center" style="background-color: #efefef;" colspan="<%= rating_types.count %>"><%= phase.name %></th>
       <% end %>
+      <th class="text-center">&sum;</th>
     </tr>
     <tr>
+      <th>Projekt</th>
       <% @rating_types_by_phase.each do |phase, rating_types| %>
         <% rating_types.each do |rating_type| %>
-          <th><div style="writing-mode: vertical-rl; transform: rotate(180deg); height: 10em; text-align: left;"><%= rating_type.name %></div></th>
+          <th><div style="font-weight:normal; writing-mode: vertical-rl; transform: rotate(180deg); height: 10em; text-align: left;"><%= rating_type.name %></div></th>
         <% end %>
       <% end %>
+      <th><div style="writing-mode: vertical-rl; transform: rotate(180deg); height: 10em; text-align: left;">Celkové hodnotenie</div></th>
     </tr>
     </thead>
     <tbody>
-    <% @projects.sort_by {|p| p.ratings.sum(&:score) }.reverse_each do |project| %>
+    <% @projects.each do |project| %>
       <tr>
-        <td style="width: 15rem;">
+        <td style="width: 12rem;">
           <%= link_to truncate(project.title, length: 80), project_path(project.project), title: project.title %>
         </td>
         <% ratings_by_type = project.ratings.index_by(&:rating_type) %>
@@ -29,7 +32,7 @@
             <td class="text-center"><small><%= rating_stars(rating) %></small></td>
           <% end %>
         <% end %>
-        <td></td>
+        <td><small><%= number_to_percentage(project.total_score_percentage, precision: 0) %></small></td>
       </tr>
     <% end %>
     </tbody>

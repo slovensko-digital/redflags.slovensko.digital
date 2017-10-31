@@ -2,18 +2,20 @@
 #
 # Table name: project_revisions
 #
-#  id          :integer          not null, primary key
-#  project_id  :integer          not null
-#  revision_id :integer          not null
-#  title       :string           not null
-#  full_name   :string
-#  guarantor   :string
-#  description :string
-#  budget      :string
-#  status      :string
-#  created_at  :datetime         not null
-#  updated_at  :datetime         not null
-#  body_html   :string
+#  id            :integer          not null, primary key
+#  project_id    :integer          not null
+#  revision_id   :integer          not null
+#  title         :string           not null
+#  full_name     :string
+#  guarantor     :string
+#  description   :string
+#  budget        :string
+#  status        :string
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#  body_html     :string
+#  total_score   :integer
+#  maximum_score :integer
 #
 # Indexes
 #
@@ -30,6 +32,10 @@ class ProjectRevision < ApplicationRecord
   belongs_to :project
   belongs_to :revision
   has_many :ratings, class_name: 'ProjectRevisionRating'
+
+  def total_score_percentage
+    100.0 * total_score / maximum_score
+  end
 
   # TODO move elsewhere?
   def load_from_data(raw)
@@ -67,6 +73,8 @@ class ProjectRevision < ApplicationRecord
   end
 
   def load_ratings(body)
+    total_score = 0
+    maximum_score = 0
     current_phase = nil
     doc = Nokogiri::HTML.parse(body)
     doc.css('h2, h3').each do |heading|
@@ -81,8 +89,13 @@ class ProjectRevision < ApplicationRecord
           score = heading.css('img.emoji[title=":star:"]').count
           rating = self.ratings.find_or_initialize_by(rating_type: rating_type)
           rating.score = score
+          total_score += score
+          maximum_score += 4
         end
       end
     end
+
+    self.total_score = total_score
+    self.maximum_score =  maximum_score
   end
 end

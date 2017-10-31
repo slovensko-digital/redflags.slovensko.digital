@@ -38,4 +38,15 @@ RSpec.describe SyncRevisionJob, type: :job do
 
     expect(ProjectRevision.count).to eq(0)
   end
+
+  it 'adds calculated total and max score to revision' do
+    revision = create(:revision)
+
+    subject.perform(revision)
+
+    snapshot = ProjectRevision.first
+
+    expect(snapshot.total_score).to eq(6)
+    expect(snapshot.maximum_score).to eq(8)
+  end
 end
