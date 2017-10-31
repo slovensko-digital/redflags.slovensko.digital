@@ -1,0 +1,81 @@
+<div id="landing">
+  <div class="container">
+    <div id="jumbotron" class="row">
+      <div class="col-md-7">
+        <h1>
+          Štátne IT projekty<br>
+          hodnotené odborníkmi
+        </h1>
+        <p class="lead">
+          Monitorované IT projekty a ich kolaboratívne hodnotenie metodikou Red Flags .
+        </p>
+        <div class="mt-4">
+          <%= link_to 'O projekte', projects_path, class: 'btn btn-primary btn-lg mr-3' %>
+          <%= link_to 'Zoznam hodnotených projektov', projects_path, class: 'btn btn-outline-secondary btn-lg' %>
+        </div>
+      </div>
+      <div class="col-md-5 text-center">
+        <span class="rating-known" style="font-size: 5rem;"><%= fa_icon('star') %> <%= fa_icon('star') %> <%= fa_icon('star') %> <%= fa_icon('star-o') %></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="dark py-5">
+    <div class="container">
+      <div class="row mt-5">
+        <div class="col-md-5 mx-auto">
+          <h4 class="mb-4"><%= fa_icon 'thumbs-o-down', class: 'mr-2' %> Najhoršie hodnotené</h4>
+          <table class="table table-sm toplist">
+            <tbody>
+              <% @worst_ranked_projects.each_with_index do |project, index| %>
+                <tr>
+                  <th scope="row" class="pl-3"><%= index + 1 %></th>
+                  <td><%= link_to project.title, project_path(project.project) %></td>
+                  <td class="text-right"><%= number_to_percentage(project.total_score_percentage, precision: 0) %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+        <div class="col-md-1"></div>
+        <div class="col-md-5 mx-auto">
+          <h4 class="mb-4"><%= fa_icon 'thumbs-o-up', class: 'mr-2' %> Najlepšie hodnotené</h4>
+          <table class="table table-sm toplist">
+            <tbody>
+            <% @best_ranked_projects.each_with_index do |project, index| %>
+              <tr>
+                <th scope="row" class="pl-3"><%= index + 1 %></th>
+                <td><%= link_to project.title, project_path(project.project) %></td>
+                <td class="text-right"><%= number_to_percentage(project.total_score_percentage, precision: 0) %></td>
+              </tr>
+            <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="text-center my-5">
+        <%= link_to 'Prejsť na zoznam projektov', projects_path, class: 'btn btn-lg btn-outline-light mt-3' %>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="row my-5">
+      <div class="col-md-8 mx-auto py-5">
+        <h2 class="text-center mb-3">Čo je Red Flags?</h2>
+        <p class="lead">
+          Red Flags je rozšírenie systematickej kontroly IT projektov verejnej správy a vytváranie tlaku na ich kvalitu cez verejnú kontrolu projektov, ktoré vykazujú vysokú mieru rizika alebo nedostatkov.
+        </p>
+        <h2 class="text-center mt-5 mb-3">Ako hodnotíme</h2>
+        <p class="lead">
+          Projekty sú hodnotené pomocou sady kritérií (rovnakých pre každný projekt). V každom kritériu je uvedené
+          slovné hodnotenie a dobrú prehľadnosť aj pridelené body,
+          od
+          <span class="rating-known"><%= rating_stars(OpenStruct.new(score: 0)) %></span>
+          po
+          <span class="rating-known"><%= rating_stars(OpenStruct.new(score: 4)) %></span>.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

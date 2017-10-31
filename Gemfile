@@ -44,11 +44,12 @@ gem 'que'
 gem 'que-web'
 
 gem 'clockwork'
+gem 'annotate'
 
 group :development, :test do
   gem 'dotenv-rails'
   gem 'rspec-rails'
-  gem 'factory_girl_rails'
+  gem 'factory_bot_rails'
   gem 'simplecov'
   gem 'vcr'
   gem 'webmock'

@@ -4,6 +4,9 @@
 @import 'bootstrap';
 @import 'font-awesome';
 
+@import 'projects';
+@import 'static';
+
 em {
   background-color: $color-highlight;
   font-style: normal;
@@ -20,11 +23,13 @@ em {
   border-bottom: 1px solid $gray-lighter;
 }
 
-
+.container {
+  max-width: 1024px;
+}
 footer {
-  background-color: $gray-lightest;
+  background-color: $gray-lighter;
 }
 
 footer, footer a {
-  color: $text-muted;
+  color: $body-color;
 }

@@ -1,0 +1,41 @@
+<div class="container">
+  <h1 class="mt-5 mb-3">Zoznam hodnotených projektov</h1>
+  <p><strong>Chýba Vám tu nejaký projekt? Nezdá sa Vám hodnotenie?</strong> Toto hodnotenie je možné dopĺňať, meniť a upravovať na platforme Slovensko.Digital</p>
+  <table class="table mt-5">
+    <thead>
+    <tr>
+      <th class="text-right">Fáza</th>
+      <% @rating_types_by_phase.each do |phase, rating_types| %>
+      <th class="text-center" style="background-color: #efefef;" colspan="<%= rating_types.count %>"><%= phase.name %></th>
+      <% end %>
+      <th class="text-center">&sum;</th>
+    </tr>
+    <tr>
+      <th>Projekt</th>
+      <% @rating_types_by_phase.each do |phase, rating_types| %>
+        <% rating_types.each do |rating_type| %>
+          <th><div style="font-weight:normal; writing-mode: vertical-rl; transform: rotate(180deg); height: 10em; text-align: left;"><%= rating_type.name %></div></th>
+        <% end %>
+      <% end %>
+      <th><div style="writing-mode: vertical-rl; transform: rotate(180deg); height: 10em; text-align: left;">Priebežné hodnotenie</div></th>
+    </tr>
+    </thead>
+    <tbody>
+    <% @projects.each do |project| %>
+      <tr>
+        <td style="width: 12rem;">
+          <%= link_to truncate(project.title, length: 80), project_path(project.project), title: project.title %>
+        </td>
+        <% ratings_by_type = project.ratings.index_by(&:rating_type) %>
+        <% @rating_types_by_phase.each do |phase, rating_types| %>
+          <% rating_types.each do |rating_type| %>
+            <% rating = ratings_by_type[rating_type] %>
+            <td class="text-center"><small><%= rating_stars(rating) %></small></td>
+          <% end %>
+        <% end %>
+        <td><small><%= number_to_percentage(project.total_score_percentage, precision: 0) %></small></td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+</div>

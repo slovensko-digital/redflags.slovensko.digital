@@ -1,4 +1,20 @@
-FactoryGirl.define do
+# == Schema Information
+#
+# Table name: pages
+#
+#  id                    :integer          not null, primary key
+#  created_at            :datetime         not null
+#  updated_at            :datetime         not null
+#  published_revision_id :integer
+#  latest_revision_id    :integer
+#
+# Foreign Keys
+#
+#  fk_rails_...  (latest_revision_id => revisions.id)
+#  fk_rails_...  (published_revision_id => revisions.id)
+#
+
+FactoryBot.define do
   factory :page do
     after :create do |p|
       create :revision, page: p

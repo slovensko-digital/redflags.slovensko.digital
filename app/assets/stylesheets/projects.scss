@@ -1,0 +1,35 @@
+#project-show {
+  .full-description {
+    padding-left: .08rem;
+  }
+
+  .table-of-contents li {
+    font-weight: 400;
+  }
+
+  hr {
+    margin-bottom: 3rem;
+  }
+
+  .lightbox-wrapper .meta {
+    display: none;
+  }
+}
+
+.rating-known .fa-star {
+  color: $orange;
+}
+
+.rating-known .fa-star-o {
+  color: $text-muted;
+}
+
+img.emoji {
+  width: 20px;
+  height: 20px;
+  vertical-align: middle;
+}
+
+#landing .toplist a {
+  color: white;
+}
