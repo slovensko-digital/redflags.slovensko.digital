@@ -25,7 +25,5 @@ Rails.application.routes.draw do
   get 'ako-sa-zapojit', as: 'contribute', to: 'static#contribute'
   get 'casto-kladene-otazky', as: 'faq', to: 'static#faq'
 
-  get '/kitchen-sink', to: 'static#kitchen_sink'
-
   root to: 'static#index'
 end

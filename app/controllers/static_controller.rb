@@ -4,10 +4,6 @@ class StaticController < ApplicationController
     @worst_ranked_projects = Project.published.joins(:published_revision).order('total_score::float / maximum_score ASC').limit(5).map(&:published_revision)
   end
 
-  # TODO rm
-  def kitchen_sink
-  end
-
   def about
     render_page :about
   end
