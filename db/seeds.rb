@@ -9,6 +9,7 @@
 phase1 = RatingPhase.find_or_create_by!(name: 'I. Prípravná fáza')
 phase1.rating_types.find_or_create_by!(name: 'Reforma VS')
 phase1.rating_types.find_or_create_by!(name: 'Merateľné ciele (KPI)')
+phase1.rating_types.find_or_create_by!(name: 'Postup dosiahnutia cieľov')
 phase1.rating_types.find_or_create_by!(name: 'Súlad s KRIS')
 phase1.rating_types.find_or_create_by!(name: 'Biznis prínos')
 phase1.rating_types.find_or_create_by!(name: 'Príspevok v informatizácii')

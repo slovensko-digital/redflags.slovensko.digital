@@ -9,7 +9,7 @@
         <p class="lead">
           Monitorované IT projekty a ich kolaboratívne hodnotenie metodikou Red Flags .
         </p>
-        <%= link_to 'Prejsť na zoznam projektov', kitchen_sink_path, class: 'btn btn-primary mt-3' %>
+        <%= link_to 'Prejsť na zoznam projektov', projects_path, class: 'btn btn-primary mt-3' %>
       </div>
     </div>
   </div>
@@ -45,7 +45,7 @@
         </div>
       </div>
       <div class="text-center my-5">
-        <%= link_to 'Prejsť na zoznam projektov', kitchen_sink_path, class: 'btn btn-lg btn-outline-light mt-3' %>
+        <%= link_to 'Prejsť na zoznam projektov', projects_path, class: 'btn btn-lg btn-outline-light mt-3' %>
       </div>
     </div>
   </div>
@@ -61,11 +61,10 @@
         <p class="lead">
           Projekty sú hodnotené pomocou sady kritérií (rovnakých pre každný projekt). V každom kritériu je uvedené
           slovné hodnotenie a dobrú prehľadnosť aj pridelené body,
-          <br>
           od
-          <%= fa_icon 'star-o' %><%= fa_icon 'star-o' %><%= fa_icon 'star-o' %><%= fa_icon 'star-o' %>
+          <span class="rating-known"><%= fa_icon 'star-o' %><%= fa_icon 'star-o' %><%= fa_icon 'star-o' %><%= fa_icon 'star-o' %></span>
           po
-          <%= fa_icon 'star' %><%= fa_icon 'star' %><%= fa_icon 'star' %><%= fa_icon 'star' %>.
+          <span class="rating-known"><%= fa_icon 'star' %><%= fa_icon 'star' %><%= fa_icon 'star' %><%= fa_icon 'star' %></span>.
 
         </p>
       </div>

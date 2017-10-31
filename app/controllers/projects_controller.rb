@@ -4,4 +4,9 @@ class ProjectsController < ApplicationController
     @rating_types_by_phase = RatingType.all.group_by(&:rating_phase)
     @ratings_by_type = @project.ratings.index_by(&:rating_type)
   end
+
+  def index
+    @rating_types_by_phase = RatingType.all.group_by(&:rating_phase)
+    @projects = Project.all.map { |p| p.revisions.last } # TODO published revision
+  end
 end

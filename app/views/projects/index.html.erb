@@ -1,0 +1,37 @@
+<div class="container">
+  <h1>Projekty</h1>
+  <table class="table">
+    <thead>
+    <tr>
+      <th rowspan="2">Projekt</th>
+      <% @rating_types_by_phase.each do |phase, rating_types| %>
+      <th class="text-center" colspan="<%= rating_types.count %>"><%= phase.name %></th>
+      <% end %>
+    </tr>
+    <tr>
+      <% @rating_types_by_phase.each do |phase, rating_types| %>
+        <% rating_types.each do |rating_type| %>
+          <th><div style="writing-mode: vertical-rl; transform: rotate(180deg); height: 10em; text-align: left;"><%= rating_type.name %></div></th>
+        <% end %>
+      <% end %>
+    </tr>
+    </thead>
+    <tbody>
+    <% @projects.sort_by {|p| p.ratings.sum(&:score) }.reverse_each do |project| %>
+      <tr>
+        <td style="width: 15rem;">
+          <%= link_to truncate(project.title, length: 80), project_path(project.project), title: project.title %>
+        </td>
+        <% ratings_by_type = project.ratings.index_by(&:rating_type) %>
+        <% @rating_types_by_phase.each do |phase, rating_types| %>
+          <% rating_types.each do |rating_type| %>
+            <% rating = ratings_by_type[rating_type] %>
+            <td class="text-center"><small><% if rating %><span class="rating-known"><% rating.score.times do |s| %><%= fa_icon 'star' %><% end %><% (4 - rating.score).times do |s| %><%= fa_icon 'star-o' %><% end %></span><% else %><% 4.times do |s| %><%= fa_icon 'star-o', class: 'text-muted' %><% end %><% end %></td>
+          <% end %>
+        <% end %>
+        <td></td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+</div>
