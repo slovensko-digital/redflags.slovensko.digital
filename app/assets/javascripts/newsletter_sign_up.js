@@ -11,7 +11,7 @@ $(document).ready(function () {
                 data: data,
                 dataType: 'json',
                 success: function (data) {
-                    if (data.result != undefined && data.result.result == 'success') {
+                    if (data.result !== undefined && data.result.result === 'success') {
                         form.remove();
                         $('#newsletter-success').removeClass('hidden');
                         // ga('send', 'event', 'Newsletter', 'subscribe');
