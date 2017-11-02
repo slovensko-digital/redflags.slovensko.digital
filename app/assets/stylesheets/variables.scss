@@ -4,9 +4,20 @@ $gray-light:    #818a91;
 $gray-lighter:  #c4c3ca;
 $gray-lightest: #f4f4f4;
 $color-highlight: lightgoldenrodyellow;
+
+$blue: #3a67e8;
 $orange: #ffac33;
 
-$primary: #3a67e8;
+$theme-colors: (
+  primary: $blue,
+  secondary: $gray-light,
+  success: #28a745, // Bootstrap default
+  info: #17a2b8,    // Bootstrap default
+  warning: $orange,
+  danger: #dc3545,  // Bootstrap default
+  light: $gray-lightest,
+  dark: $gray-dark
+);
 
 $headings-font-family: 'Merriweather', 'Georgia', 'Times New Roman', serif;
 $font-family-sans-serif: 'Roboto', sans-serif;
