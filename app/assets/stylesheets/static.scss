@@ -9,11 +9,11 @@
   }
 
   .dark {
-    background-color: $primary;
+    background-color: theme-color("primary");
     color: $white;
 
     .btn-outline-light:hover {
-      color: $primary;
+      color: theme-color("primary");
     }
   }
 }
