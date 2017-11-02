@@ -26,10 +26,25 @@ em {
 .container {
   max-width: 1024px;
 }
-footer {
-  background-color: $gray-lighter;
-}
 
-footer, footer a {
-  color: $body-color;
+footer {
+  background-color: $gray-dark;
+  color: $white;
+
+  a {
+    color: $white;
+    &:hover {
+      color: $white;
+    }
+  }
+
+  .fa-inverse {
+    color: $gray-dark;
+  }
+
+  .icons {
+    a:hover {
+      text-decoration: none;
+    }
+  }
 }
