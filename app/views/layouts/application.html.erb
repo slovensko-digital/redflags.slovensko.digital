@@ -6,6 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <meta property="og:type" content="website"/>
+    <meta property="og:site_name" content="Red Flags Slovensko.Digital"/>
+    <meta property="og:url" content="<%= @page.url %>"/>
+    <meta property="og:title" content="<%= @page.og.title %>"/>
+    <meta property="og:description" content="<%= @page.og.description %>"/>
+    <meta property="og:image" content="<%= @page.og.image %>"/>
   </head>
 
   <body>
