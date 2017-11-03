@@ -2,27 +2,25 @@
 <div id="project-show" class="container main">
 
   <div class="row mt-5 mb-5">
-    <div class="col-md-8">
-      <h1 class="project-title"><%= @project.title %></h1>
-      <p class="lead text-muted mt-4"><%= @project.description %></p>
-    </div>
-    <div class="col-md-4 text-right">
+    <div class="col-md-4 text-md-right mb-2">
       <div class="d-inline-block">
         <div class="total-score"><%= number_to_percentage(@project.total_score_percentage, precision: 0) %></div>
         <div class="text-muted text-center">Celkové skóre</div>
       </div>
     </div>
+    <div class="col-md-8">
+      <h1 class="project-title"><%= @project.title %></h1>
+      <p class="lead text-muted mt-4"><%= @project.description %></p>
+    </div>
   </div>
 
   <div class="row mb-4">
     <div class="col-md-4">
-      <h5>Aktuálny stav projektu</h5>
-      <p class="mb-4"><%= @project.status %></p>
     </div>
 
     <div class="col-md-4">
-      <h5>Náklady na projekt</h5>
-      <p><%= @project.budget %></p>
+      <h5>Aktuálny stav projektu</h5>
+      <p class="mb-4"><%= @project.status %></p>
     </div>
 
     <div class="col-md-4">
@@ -31,16 +29,23 @@
     </div>
   </div>
 
+  <div class="row mb-4">
+    <div class="col-md-4">
+    </div>
 
-
+    <div class="col-md-4">
+      <h5>Náklady na projekt</h5>
+      <p><%= @project.budget %></p>
+    </div>
+  </div>
 
   <div class="mt-5">
     <div class="row">
       <div class="col-md-10">
         <h2 id="hodnotenie" class="mb-0">Hodnotenie</h2>
       </div>
-      <div class="col-md-2 text-right">
-        <%= link_to "https://platforma.slovensko.digital/t/#{@project.project_id}", class: 'btn btn-lg btn-link' do %>
+      <div class="col-md-2 text-left text-md-right">
+        <%= link_to "https://platforma.slovensko.digital/t/#{@project.project_id}", class: 'btn btn-lg btn-link pl-0 pl-md-3' do %>
           <%= fa_icon 'edit' %> Upraviť
         <% end %>
       </div>
