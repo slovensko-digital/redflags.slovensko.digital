@@ -1,5 +1,7 @@
 #project-show {
-  padding-top: 8rem;
+  @include media-breakpoint-up(md) {
+    padding-top: 6rem;
+  }
 
   .full-description {
     padding-left: .08rem;
@@ -10,8 +12,12 @@
   }
 
   .total-score {
-    line-height: 8rem;
-    font-size: 8rem;
+    @include media-breakpoint-up(md) {
+      line-height: 8rem;
+      font-size: 8rem;
+    }
+    line-height: 4rem;
+    font-size: 4rem;
     font-weight: bold;
     color: $orange;
   }
