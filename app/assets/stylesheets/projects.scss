@@ -1,6 +1,19 @@
 #project-show {
+  padding-top: 8rem;
+
   .full-description {
     padding-left: .08rem;
+  }
+
+  .project-title {
+    padding-top: .4rem;
+  }
+
+  .total-score {
+    line-height: 8rem;
+    font-size: 8rem;
+    font-weight: bold;
+    color: $orange;
   }
 
   .table-of-contents li {

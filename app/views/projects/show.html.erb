@@ -3,11 +3,14 @@
 
   <div class="row mt-5 mb-5">
     <div class="col-md-8">
-      <h1 class=""><%= @project.title %></h1>
+      <h1 class="project-title"><%= @project.title %></h1>
       <p class="lead text-muted mt-4"><%= @project.description %></p>
     </div>
-    <div class="col-md-4 text-center float-right">
-      <span style="font-size: 8rem; font-weight: bold; color: orange"><%= number_to_percentage(@project.total_score_percentage, precision: 0) %></span>
+    <div class="col-md-4 text-right">
+      <div class="d-inline-block">
+        <div class="total-score"><%= number_to_percentage(@project.total_score_percentage, precision: 0) %></div>
+        <div class="text-muted text-center">Celkové skóre</div>
+      </div>
     </div>
   </div>
 
@@ -32,8 +35,18 @@
 
 
   <div class="mt-5">
-    <h2 id="hodnotenie">Hodnotenie</h2>
-    <hr>
+    <div class="row">
+      <div class="col-md-10">
+        <h2 id="hodnotenie" class="mb-0">Hodnotenie</h2>
+      </div>
+      <div class="col-md-2 text-right">
+        <%= link_to "https://platforma.slovensko.digital/t/#{@project.project_id}", class: 'btn btn-lg btn-link' do %>
+          <%= fa_icon 'edit' %> Upraviť
+        <% end %>
+      </div>
+    </div>
+    <hr class="mt-0">
+
     <% @rating_types_by_phase.each do |rating_phase, rating_types| %>
       <div class="row mt-4 mb-1">
         <div class="col">
