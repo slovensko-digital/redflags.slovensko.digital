@@ -19,8 +19,14 @@ em {
 }
 
 .navbar {
-  height: 50px;
-  border-bottom: 1px solid $gray-lighter;
+  @include media-breakpoint-up(md) {
+    .navbar-brand img {
+      width: 240px;
+    }
+  }
+
+  .navbar-nav {
+  }
 }
 
 .container {
