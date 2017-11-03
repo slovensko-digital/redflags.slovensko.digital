@@ -9,13 +9,36 @@
   </head>
 
   <body>
-    <nav class="navbar navbar-expand-sm mb-3" role="navigation">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light" role="navigation">
       <div class="container">
         <a class="navbar-brand" href="<%= root_path %>">
-          <%= image_tag 'temp_logo.svg', width: '240' %>
+          <%= image_tag 'temp_logo.svg', width: '200' %>
         </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ml-auto pt-1">
+            <li class="nav-item <%= "active" if current_page?(projects_path) %>">
+              <%= link_to 'Projekty', projects_path, class: 'nav-link' %>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Čo je Red Flags</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Ako sa zapojiť</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Hodnotiaca komisia</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Často kladené otázky</a>
+            </li>
+          </ul>
+        </div>
       </div>
     </nav>
+    <hr class="mt-0">
     <%= yield %>
     <footer class="footer py-5 mt-5">
       <div class="container">
