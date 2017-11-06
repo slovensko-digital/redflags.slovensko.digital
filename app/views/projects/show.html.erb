@@ -2,7 +2,7 @@
 <div id="project-show" class="container main">
 
   <div class="row mt-5 mb-5">
-    <div class="col-md-4 text-md-right mb-2">
+    <div class="col-md-4 text-md-right mb-2 order-md-12">
       <div class="d-inline-block">
         <div class="total-score"><%= number_to_percentage(@project.total_score_percentage, precision: 0) %></div>
         <div class="text-muted text-center">Celkové skóre</div>
@@ -15,28 +15,23 @@
   </div>
 
   <div class="row mb-4">
-    <div class="col-md-4">
+    <div class="col-md-6">
+      <h5>Náklady na projekt</h5>
+      <p><%= @project.budget %></p>
     </div>
 
-    <div class="col-md-4">
-      <h5>Aktuálny stav projektu</h5>
-      <p class="mb-4"><%= @project.status %></p>
-    </div>
-
-    <div class="col-md-4">
+    <div class="col-md-6">
       <h5>Garant <%= help_icon_if_blank(@project.guarantor) %></h5>
       <p><%= @project.guarantor %></p>
     </div>
   </div>
 
   <div class="row mb-4">
-    <div class="col-md-4">
+    <div class="col">
+      <h5>Aktuálny stav projektu</h5>
+      <p class="mb-4"><%= @project.status %></p>
     </div>
 
-    <div class="col-md-4">
-      <h5>Náklady na projekt</h5>
-      <p><%= @project.budget %></p>
-    </div>
   </div>
 
   <div class="mt-5">
