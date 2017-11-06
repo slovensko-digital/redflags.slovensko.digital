@@ -33,6 +33,10 @@ class Revision < ApplicationRecord
     page.latest_revision == self
   end
 
+  def body_html
+    raw['post_stream']['posts'].first['cooked']
+  end
+
   private
 
   def schedule_sync_project_job
