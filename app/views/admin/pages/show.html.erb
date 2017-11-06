@@ -1,8 +1,10 @@
-<h1><%= @page.title %></h1>
+<h1>Admin</h1>
 
 <div class="form-group">
   <%= link_to 'Pages', admin_pages_path, class: 'btn btn-secondary btn-sm' %>
 </div>
+
+<h4><%= @page.title %></h4>
 
 <table class="table table-striped table-sm">
   <thead>
@@ -18,10 +20,14 @@
     <% @revisions.each do |revision| %>
       <tr id="<%= dom_id revision %>">
         <td><%= revision.version %></td>
-        <td><%= revision.title %></td>
+        <td class="w-50"><%= revision.title %></td>
         <td>
           <% if revision.published? %>
-            <span class="badge badge-success">published</span>
+            <% if @page.synced? %>
+              <span class="badge badge-success">published</span>
+            <% else %>
+              <span class="badge badge-danger">published</span>
+            <% end %>
           <% end %>
           <% if revision.latest? %>
             <span class="badge badge-info">latest</span>
@@ -29,9 +35,12 @@
         </td>
         <td><%= l revision.updated_at, format: '%F %T' %></td>
         <td>
-          <% unless revision.published? %>
+          <% if revision.published? %>
+            <%= link_to 'Unpublish', unpublish_admin_page_path(@page), class: 'btn btn-secondary btn-sm', method: :patch %>
+          <% else %>
             <%= link_to 'Publish', publish_admin_page_path(@page, version: revision.version), class: 'btn btn-info btn-sm', method: :patch %>
           <% end %>
+          <%= link_to 'Preview', preview_admin_page_path(@page, version: revision.version), class: 'btn btn-link btn-sm' if @page.preview? %>
         </td>
       </tr>
     <% end %>

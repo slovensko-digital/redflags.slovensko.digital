@@ -18,7 +18,7 @@
     <% @pages.each do |page| %>
       <tr id="<%= dom_id page %>">
         <td><%= link_to page.id, admin_page_path(page) %></td>
-        <td><%= page.title %></td>
+        <td class="w-50"><%= page.title %></td>
         <td>
           <% if page.published? %>
             <% if page.synced? %>
@@ -34,8 +34,10 @@
         <td>
           <% if page.published? %>
             <%= link_to 'Unpublish', unpublish_admin_page_path(page), class: 'btn btn-secondary btn-sm', method: :patch %>
+            <%= link_to 'Preview', preview_admin_page_path(page, version: page.published_revision.version), class: 'btn btn-link btn-sm' if page.preview? %>
           <% else %>
             <%= link_to 'Publish', publish_admin_page_path(page, version: page.latest_revision.version), class: 'btn btn-info btn-sm', method: :patch %>
+            <%= link_to 'Preview', preview_admin_page_path(page, version: page.latest_revision.version), class: 'btn btn-link btn-sm' if page.preview? %>
           <% end %>
         </td>
       </tr>
