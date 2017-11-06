@@ -8,10 +8,10 @@
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
     <meta property="og:type" content="website"/>
     <meta property="og:site_name" content="Red Flags Slovensko.Digital"/>
-    <meta property="og:url" content="<%= @page.url %>"/>
-    <meta property="og:title" content="<%= @page.og.title %>"/>
-    <meta property="og:description" content="<%= @page.og.description %>"/>
-    <meta property="og:image" content="<%= @page.og.image %>"/>
+    <meta property="og:url" content="<%= @metadata.og.url %>"/>
+    <meta property="og:title" content="<%= @metadata.og.title %>"/>
+    <meta property="og:description" content="<%= @metadata.og.description %>"/>
+    <meta property="og:image" content="<%= @metadata.og.image %>"/>
   </head>
 
   <body>
@@ -28,17 +28,17 @@
             <li class="nav-item <%= "active" if current_page?(projects_path) %>">
               <%= link_to 'Projekty', projects_path, class: 'nav-link' %>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Čo je Red Flags</a>
+            <li class="nav-item <%= "active" if current_page?(about_path) %>">
+              <%= link_to 'Čo je Red Flags', about_path, class: 'nav-link' %>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Ako sa zapojiť</a>
+            <li class="nav-item <%= "active" if current_page?(contribute_path) %>">
+              <%= link_to 'Ako sa zapojiť', contribute_path, class: 'nav-link' %>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Hodnotiaca komisia</a>
+            <li class="nav-item <%= "active" if current_page?(committee_path) %>">
+              <%= link_to 'Hodnotiaca komisia', committee_path, class: 'nav-link' %>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Často kladené otázky</a>
+            <li class="nav-item <%= "active" if current_page?(faq_path) %>">
+              <%= link_to 'Často kladené otázky', faq_path, class: 'nav-link' %>
             </li>
           </ul>
         </div>
