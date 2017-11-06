@@ -13,8 +13,7 @@ $(document).ready(function () {
                 success: function (data) {
                     if (data.result !== undefined && data.result.result === 'success') {
                         form.remove();
-                        $('#newsletter-success').removeClass('hidden');
-                        // ga('send', 'event', 'Newsletter', 'subscribe');
+                        $('#newsletter-success').removeClass('d-none');
                     }
                 },
                 complete: function () {
