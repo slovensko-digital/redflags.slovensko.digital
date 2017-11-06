@@ -1,5 +1,13 @@
 <% content_for(:title) do %><%= @project.title %> &middot; Red Flags &middot; Slovensko.Digital<% end %>
 <div id="project-show" class="container main">
+  <div class="row mt-5 mb-5">
+    <div class="col-md-4 text-md-right mb-2 order-md-12">
+      <div class="d-inline-block">
+        <div class="total-score"><%= number_to_percentage(@project.total_score_percentage, precision: 0) %></div>
+        <div class="text-muted text-center">Celkové skóre</div>
+      </div>
+    </div>
+    <div class="col-md-8">
 
   <div class="row mb-5">
     <div class="col-md-12">
