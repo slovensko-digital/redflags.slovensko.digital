@@ -36,8 +36,8 @@
             <%= link_to 'Unpublish', unpublish_admin_page_path(page), class: 'btn btn-secondary btn-sm', method: :patch %>
             <%= link_to 'Preview', preview_admin_page_path(page, version: page.published_revision.version), class: 'btn btn-link btn-sm' if page.preview? %>
           <% else %>
-            <%= link_to 'Publish', publish_admin_page_path(page, version: page.latest_revision.version), class: 'btn btn-info btn-sm', method: :patch %>
-            <%= link_to 'Preview', preview_admin_page_path(page, version: page.latest_revision.version), class: 'btn btn-link btn-sm' if page.preview? %>
+            <%= link_to 'Publish', publish_admin_page_path(page, version: 'latest'), class: 'btn btn-info btn-sm', method: :patch %>
+            <%= link_to 'Preview', preview_admin_page_path(page, version: 'latest'), class: 'btn btn-link btn-sm' if page.preview? %>
           <% end %>
         </td>
       </tr>
