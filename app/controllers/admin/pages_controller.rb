@@ -1,5 +1,5 @@
 class Admin::PagesController < AdminController
-  before_action :load_page, only: [:show, :switch, :publish, :unpublish]
+  before_action :load_page, only: [:show, :preview, :publish, :unpublish]
 
   def index
     @pages = Page.order(id: :desc).page(params[:page])
@@ -7,6 +7,12 @@ class Admin::PagesController < AdminController
 
   def show
     @revisions = @page.revisions.order(version: :desc).page(params[:page])
+  end
+
+  def preview
+    @project = ProjectRevision.joins(:revision).find_by!(revisions: { version: params['version'] })
+    @rating_types_by_phase = RatingType.all.group_by(&:rating_phase)
+    @ratings_by_type = @project.ratings.index_by(&:rating_type)
   end
 
   def publish

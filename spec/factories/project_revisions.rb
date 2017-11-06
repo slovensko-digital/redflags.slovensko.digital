@@ -30,13 +30,17 @@
 
 FactoryBot.define do
   factory :project_revision do
-    project nil
-    revision nil
-    title "MyString"
-    full_name "MyString"
-    guarantor "MyString"
-    description "MyString"
-    budget "MyString"
-    status "MyString"
+    project
+    revision
+
+    title 'Red Flags: IS Obchodného registra'
+    full_name 'Národný projekt IS Obchodného registra'
+    guarantor ''
+    description ''
+    budget ''
+    status ''
+    body_html { revision.body_html }
+    total_score 75
+    maximum_score 100
   end
 end
