@@ -20,7 +20,10 @@ Rails.application.routes.draw do
     mount Que::Web, at: 'que'
   end
 
-  get '/kitchen-sink', to: 'static#kitchen_sink'
+  get 'o-projekte', as: 'about', to: 'static#about'
+  get 'hodnotiaca-komisia', as: 'committee', to: 'static#committee'
+  get 'ako-sa-zapojit', as: 'contribute', to: 'static#contribute'
+  get 'casto-kladene-otazky', as: 'faq', to: 'static#faq'
 
   root to: 'static#index'
 end
