@@ -14,10 +14,10 @@
         <a class="navbar-brand" href="<%= root_path %>">
           <%= image_tag 'temp_logo.svg', width: '200' %>
         </a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-nav" aria-controls="navbar-nav" aria-expanded="false" aria-label="Ukázať/skryť navigáciu">
           <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
+        <div class="collapse navbar-collapse" id="navbar-nav">
           <ul class="navbar-nav ml-auto pt-1">
             <li class="nav-item <%= "active" if current_page?(projects_path) %>">
               <%= link_to 'Projekty', projects_path, class: 'nav-link' %>
