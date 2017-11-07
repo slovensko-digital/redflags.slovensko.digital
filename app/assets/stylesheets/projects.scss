@@ -35,6 +35,10 @@
   }
 }
 
+.rating-known {
+  white-space: nowrap;
+}
+
 .rating-known .fa-star {
   color: $orange;
 }
