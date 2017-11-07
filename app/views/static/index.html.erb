@@ -7,10 +7,10 @@
           hodnotené odborníkmi
         </h1>
         <p class="lead">
-          Monitorované IT projekty a ich kolaboratívne hodnotenie metodikou Red Flags .
+          Otvorené a transparentné hodnotenie projektov informatizácie komunitou IT odborníkov.
         </p>
         <div class="mt-4">
-          <%= link_to 'O projekte', projects_path, class: 'btn btn-primary btn-lg mr-3' %>
+          <%= link_to 'O projekte', about_path, class: 'btn btn-primary btn-lg mr-3' %>
           <%= link_to 'Zoznam hodnotených projektov', projects_path, class: 'btn btn-outline-secondary btn-lg' %>
         </div>
       </div>
@@ -54,7 +54,7 @@
         </div>
       </div>
       <div class="text-center my-5">
-        <%= link_to 'Prejsť na zoznam projektov', projects_path, class: 'btn btn-lg btn-outline-light mt-3' %>
+        <%= link_to 'Zoznam hodnotených projektov', projects_path, class: 'btn btn-lg btn-outline-light mt-3' %>
       </div>
     </div>
   </div>
@@ -62,7 +62,7 @@
   <div class="container">
     <div class="row my-5">
       <div class="col-md-8 mx-auto py-5">
-        <h2 class="text-center mb-3">Čo je Red Flags?</h2>
+        <h2 class="text-center mb-3">Čo je to Red Flags?</h2>
         <p class="lead">
           Red Flags je rozšírenie systematickej kontroly IT projektov verejnej správy a vytváranie tlaku na ich kvalitu cez verejnú kontrolu projektov, ktoré vykazujú vysokú mieru rizika alebo nedostatkov.
         </p>
@@ -71,7 +71,7 @@
           Projekty sú hodnotené pomocou sady kritérií (rovnakých pre každný projekt). V každom kritériu je uvedené
           slovné hodnotenie a dobrú prehľadnosť aj pridelené body,
           od
-          <span class="rating-known"><%= rating_stars(OpenStruct.new(score: 0)) %></span>
+          <span class="rating-known"><%= rating_stars(OpenStruct.new(score: 1)) %></span>
           po
           <span class="rating-known"><%= rating_stars(OpenStruct.new(score: 4)) %></span>.
         </p>
