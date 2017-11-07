@@ -64,17 +64,23 @@
       <div class="col-md-8 mx-auto py-5">
         <h2 class="text-center mb-3">Čo je to Red Flags?</h2>
         <p class="lead">
-          Red Flags je rozšírenie systematickej kontroly IT projektov verejnej správy a vytváranie tlaku na ich kvalitu cez verejnú kontrolu projektov, ktoré vykazujú vysokú mieru rizika alebo nedostatkov.
+          Red Flags je pokračovaním systematickej kontroly štátnych IT projektov občianskym združením Slovensko.Digital. Pozeráme sa na problematické oblasti projektov a verejným hodnotením vytvárame tlak na zlepšovanie ich kvality a výsledkov.
         </p>
+        <div class="text-center my-2">
+          <%= link_to 'Viac o projekte', about_path, class: 'btn btn btn-outline-primary' %>
+        </div>
         <h2 class="text-center mt-5 mb-3">Ako hodnotíme</h2>
         <p class="lead">
-          Projekty sú hodnotené pomocou sady kritérií (rovnakých pre každný projekt). V každom kritériu je uvedené
-          slovné hodnotenie a dobrú prehľadnosť aj pridelené body,
+          Projekty sú hodnotené pomocou sady kritérií, rovnakých pre každý projekt, pričom v každom kritériu je uvedené
+          slovné a&nbsp;bodové hodnotenie
           od
           <span class="rating-known"><%= rating_stars(OpenStruct.new(score: 1)) %></span>
           po
-          <span class="rating-known"><%= rating_stars(OpenStruct.new(score: 4)) %></span>.
+          <span class="rating-known"><%= rating_stars(OpenStruct.new(score: 4)) %></span>. Hodnotenie môže navrhovať ktokoľvek, avšak pred finálnou publikáciou je schvalované odbornou komisiou.
         </p>
+        <div class="text-center my-2">
+          <%= link_to 'Členovia odbornej komisie', committee_path, class: 'btn btn btn-outline-primary mt-3' %>
+        </div>
       </div>
     </div>
   </div>
