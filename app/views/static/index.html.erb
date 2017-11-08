@@ -1,21 +1,32 @@
 <div id="landing">
   <div class="container">
-    <div id="jumbotron" class="row">
-      <div class="col-md-7">
-        <h1>
-          Štátne IT projekty<br>
-          hodnotené odborníkmi
-        </h1>
-        <p class="lead">
-          Otvorené a transparentné hodnotenie projektov informatizácie komunitou IT odborníkov.
-        </p>
-        <div class="mt-4">
-          <%= link_to 'O projekte', about_path, class: 'btn btn-primary btn-lg mr-3' %>
-          <%= link_to 'Zoznam hodnotených projektov', projects_path, class: 'btn btn-outline-secondary btn-lg' %>
+    <div id="jumbotron">
+      <div class="row">
+        <div class="col-md-7">
+          <span class="rating-known" style="font-size: 5rem;">
+          <%= fa_icon('flag', class: 'text-danger') %>
+            <%= fa_icon('flag-o', class: 'text-danger') %>
+            <%= fa_icon('flag-o', class: 'text-danger') %>
+        </span>
         </div>
       </div>
-      <div class="col-md-5 text-center">
-        <span class="rating-known" style="font-size: 5rem;"><%= fa_icon('star') %> <%= fa_icon('star') %> <%= fa_icon('star') %> <%= fa_icon('star-o') %></span>
+      <div class="row">
+        <div class="col-md-7">
+          <h1>
+            Štátne IT projekty<br>
+            hodnotené odborníkmi
+          </h1>
+          <p class="lead">
+            Otvorené a transparentné hodnotenie projektov informatizácie komunitou IT odborníkov.
+          </p>
+          <div class="mt-4">
+            <%= link_to 'O projekte', about_path, class: 'btn btn-primary btn-lg mr-3' %>
+            <%= link_to 'Zoznam hodnotených projektov', projects_path, class: 'btn btn-outline-secondary btn-lg' %>
+          </div>
+        </div>
+        <div class="col-md-5 text-center">
+          <span class="rating-known" style="font-size: 5rem;"><%= fa_icon('star') %> <%= fa_icon('star') %> <%= fa_icon('star') %> <%= fa_icon('star-o') %></span>
+        </div>
       </div>
     </div>
   </div>
@@ -31,7 +42,6 @@
                 <tr>
                   <th scope="row" class="pl-3"><%= index + 1 %></th>
                   <td><%= link_to project.title, project_path(project.project) %></td>
-                  <td class="text-right"><%= number_to_percentage(project.total_score_percentage, precision: 0) %></td>
                 </tr>
               <% end %>
             </tbody>
@@ -46,7 +56,6 @@
               <tr>
                 <th scope="row" class="pl-3"><%= index + 1 %></th>
                 <td><%= link_to project.title, project_path(project.project) %></td>
-                <td class="text-right"><%= number_to_percentage(project.total_score_percentage, precision: 0) %></td>
               </tr>
             <% end %>
             </tbody>
@@ -76,10 +85,10 @@
           od
           <span class="rating-known"><%= rating_stars(OpenStruct.new(score: 1)) %></span>
           po
-          <span class="rating-known"><%= rating_stars(OpenStruct.new(score: 4)) %></span>. Hodnotenie môže navrhovať ktokoľvek, avšak pred finálnou publikáciou je schvalované odbornou komisiou.
+          <span class="rating-known"><%= rating_stars(OpenStruct.new(score: 4)) %></span>. Zásadné problémy sú označené <span class="rating-known"><%= rating_stars(OpenStruct.new(score: 0)) %></span>. Hodnotenie môže navrhovať ktokoľvek, avšak pred finálnou publikáciou je schvalované tímom Slovensko.Digital pod dohľadom poradnej komisie.
         </p>
         <div class="text-center my-2">
-          <%= link_to 'Členovia odbornej komisie', committee_path, class: 'btn btn btn-outline-primary mt-3' %>
+          <%= link_to 'Viac o hodnotení a poradnej komisii', about_rating_path, class: 'btn btn btn-outline-primary mt-3' %>
         </div>
       </div>
     </div>

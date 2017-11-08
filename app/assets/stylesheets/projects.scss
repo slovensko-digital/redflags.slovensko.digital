@@ -56,3 +56,14 @@ img.emoji {
 #landing .toplist a {
   color: white;
 }
+
+.edit-link-holder {
+  a {
+    color: $text-muted;
+  }
+
+  a:hover {
+    color: $link-hover-color;
+    text-decoration: none;
+  }
+}

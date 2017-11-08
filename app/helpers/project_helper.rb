@@ -8,15 +8,19 @@ module ProjectHelper
   def rating_stars(rating)
     capture do
       if rating
-        str = content_tag :span, class: 'rating-known' do
-          rating.score.times do
-            concat fa_icon 'star'
+        if rating.score > 0
+          str = content_tag :span, class: 'rating-known' do
+            rating.score.times do
+              concat fa_icon 'star'
+            end
+            (4 - rating.score).times do
+              concat fa_icon 'star-o'
+            end
           end
-          (4 - rating.score).times do
-            concat fa_icon 'star-o'
-          end
+          concat str
+        else
+          concat fa_icon('flag', class: 'text-danger')
         end
-        concat str
       else
         concat help_icon_if_blank(rating)
       end

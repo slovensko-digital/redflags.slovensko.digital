@@ -8,8 +8,8 @@ class StaticController < ApplicationController
     render_page :about
   end
 
-  def committee
-    render_page :committee
+  def about_rating
+    render_page :about_rating
   end
 
   def contribute
