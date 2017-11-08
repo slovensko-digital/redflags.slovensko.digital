@@ -70,10 +70,12 @@
               <span class="badge badge-danger">published</span>
             <% end %>
           <% end %>
-          <% if revision.preview? %>
-            <span class="badge badge-info">preview</span>
-          <% else %>
-            <span class="badge badge-danger">preview</span>
+          <% if @page.project.present? %>
+            <% if revision.preview? %>
+              <span class="badge badge-info">preview</span>
+            <% else %>
+              <span class="badge badge-danger">preview</span>
+            <% end %>
           <% end %>
           <% if revision.latest? %>
             <span class="badge badge-info">latest</span>
