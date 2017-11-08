@@ -12,7 +12,10 @@ RSpec.feature 'Administration', type: :feature do
 
   scenario 'As admin I want to see all pages' do
     create(:page, :published)
+    create(:project, page: Page.first)
+
     create(:page, :unpublished)
+    create(:project, page: Page.second)
 
     authorize_as_admin
     visit admin_root_path
@@ -23,7 +26,7 @@ RSpec.feature 'Administration', type: :feature do
     end
   end
 
-  scenario 'As admin I want to preview page' do
+  scenario 'As admin I want to preview project page' do
     project = create(:project)
 
     authorize_as_admin
@@ -34,8 +37,9 @@ RSpec.feature 'Administration', type: :feature do
     expect(page).to have_content("Preview of page Red Flags: IS Obchodného registra at latest version #{project.revisions.first.version}")
   end
 
-  scenario 'As admin I want to publish page' do
+  scenario 'As admin I want to publish project page' do
     create(:page, :unpublished)
+    create(:project, page: Page.first)
 
     authorize_as_admin
     visit admin_root_path
@@ -47,8 +51,9 @@ RSpec.feature 'Administration', type: :feature do
     end
   end
 
-  scenario 'As admin I want to unpublish page' do
+  scenario 'As admin I want to unpublish project page' do
     create(:page, :published)
+    create(:project, page: Page.first)
 
     authorize_as_admin
     visit admin_root_path
@@ -62,6 +67,7 @@ RSpec.feature 'Administration', type: :feature do
 
   scenario 'As admin I want to see all revisions of page' do
     create(:page, :published)
+    create(:project, page: Page.first)
     create(:revision, page: Page.first)
 
     authorize_as_admin
@@ -78,8 +84,9 @@ RSpec.feature 'Administration', type: :feature do
     end
   end
 
-  scenario 'As admin I want to publish non-latest page revision' do
+  scenario 'As admin I want to publish non-latest project page revision' do
     create(:page, :unpublished)
+    create(:project, page: Page.first)
     create(:revision, page: Page.first)
 
     authorize_as_admin
