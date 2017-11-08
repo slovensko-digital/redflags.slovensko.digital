@@ -17,15 +17,19 @@
 class Page < ApplicationRecord
   has_many :revisions
 
-  belongs_to :published_revision, class_name: :Revision, optional: true
-  belongs_to :latest_revision, class_name: :Revision, optional: true
+  belongs_to :published_revision, class_name: 'Revision', optional: true
+  belongs_to :latest_revision, class_name: 'Revision', optional: true
 
   delegate :title, to: :latest_revision
 
   after_save :schedule_sync_project_job
 
+  def project?
+    Project.exists?(page: self)
+  end
+
   def preview?
-    Project.exists?(page_id: self.id)
+    project?
   end
 
   def published?

@@ -25,8 +25,16 @@ class Revision < ApplicationRecord
 
   after_save :schedule_sync_project_job # TODO: move to domain events and pubsub
 
+  def body_html
+    raw['post_stream']['posts'].first['cooked']
+  end
+
+  def project?
+    ProjectRevision.exists?(revision: self)
+  end
+
   def preview?
-    ProjectRevision.exists?(revision_id: self.id)
+    project?
   end
 
   def published?
@@ -35,10 +43,6 @@ class Revision < ApplicationRecord
 
   def latest?
     page.latest_revision == self
-  end
-
-  def body_html
-    raw['post_stream']['posts'].first['cooked']
   end
 
   private

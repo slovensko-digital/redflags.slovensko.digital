@@ -50,7 +50,7 @@
           <% else %>
             <span class="badge badge-secondary">unpublished</span>
           <% end %>
-          <% if Project.exists?(page: page) %>
+          <% if page.project? %>
             <% if page.preview? && (page.published? && page.published_revision.preview?) || (!page.published? && page.latest_revision.preview?) %>
               <span class="badge badge-info">preview</span>
             <% else %>
