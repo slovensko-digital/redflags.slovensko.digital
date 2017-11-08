@@ -99,6 +99,26 @@ RSpec.feature 'Administration', type: :feature do
     end
   end
 
+  scenario 'As admin I want to edit project category' do
+    create(:project)
+
+    authorize_as_admin
+    visit admin_root_path
+
+    click_on Page.first.id
+
+    within 'h4' do
+      expect(page).to have_content('boring')
+    end
+
+    choose 'good'
+    click_on 'Update'
+
+    within 'h4' do
+      expect(page).to have_content('good')
+    end
+  end
+
   private
 
   def authorize_as_admin
