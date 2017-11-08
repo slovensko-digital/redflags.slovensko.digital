@@ -63,14 +63,14 @@
         <td><%= revision.version %></td>
         <td class="w-50"><%= revision.title %></td>
         <td>
-          <% if revision.published? %>
-            <% if @page.synced? %>
-              <span class="badge badge-success">published</span>
-            <% else %>
-              <span class="badge badge-danger">published</span>
+          <% if @page.publishable? %>
+            <% if revision.published? %>
+              <% if @page.synced? %>
+                <span class="badge badge-success">published</span>
+              <% else %>
+                <span class="badge badge-danger">published</span>
+              <% end %>
             <% end %>
-          <% end %>
-          <% if @page.project.present? %>
             <% if revision.preview? %>
               <span class="badge badge-info">preview</span>
             <% else %>
@@ -83,13 +83,15 @@
         </td>
         <td><%= l revision.updated_at, format: '%F %T' %></td>
         <td>
-          <% if revision.published? %>
-            <%= link_to 'Unpublish', unpublish_admin_page_path(@page), class: 'btn btn-secondary btn-sm', method: :patch %>
-          <% else %>
-            <%= link_to 'Publish', publish_admin_page_path(@page, version: revision.version), class: 'btn btn-primary btn-sm', method: :patch %>
-          <% end %>
-          <% if revision.preview? %>
-            <%= link_to 'Preview', preview_admin_page_path(@page, version: revision.version), class: 'btn btn-link btn-sm' if @page.preview? %>
+          <% if @page.publishable? %>
+            <% if revision.published? %>
+              <%= link_to 'Unpublish', unpublish_admin_page_path(@page), class: 'btn btn-secondary btn-sm', method: :patch %>
+            <% else %>
+              <%= link_to 'Publish', publish_admin_page_path(@page, version: revision.version), class: 'btn btn-primary btn-sm', method: :patch %>
+            <% end %>
+            <% if revision.preview? %>
+              <%= link_to 'Preview', preview_admin_page_path(@page, version: revision.version), class: 'btn btn-link btn-sm' if @page.preview? %>
+            <% end %>
           <% end %>
         </td>
       </tr>

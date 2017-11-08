@@ -44,16 +44,16 @@
           <% end %>
         </td>
         <td>
-          <% if page.published? %>
-            <% if page.synced? %>
-              <span class="badge badge-success">published</span>
+          <% if page.publishable? %>
+            <% if page.published? %>
+              <% if page.synced? %>
+                <span class="badge badge-success">published</span>
+              <% else %>
+                <span class="badge badge-danger">published</span>
+              <% end %>
             <% else %>
-              <span class="badge badge-danger">published</span>
+              <span class="badge badge-secondary">unpublished</span>
             <% end %>
-          <% else %>
-            <span class="badge badge-secondary">unpublished</span>
-          <% end %>
-          <% if page.project.present? %>
             <% if page.preview? && (page.published? && page.published_revision.preview?) || (!page.published? && page.latest_revision.preview?) %>
               <span class="badge badge-info">preview</span>
             <% else %>
@@ -64,12 +64,14 @@
         </td>
         <td><%= l page.updated_at, format: '%F %T' %></td>
         <td>
-          <% if page.published? %>
-            <%= link_to 'Unpublish', unpublish_admin_page_path(page), class: 'btn btn-secondary btn-sm', method: :patch %>
-            <%= link_to 'Preview', preview_admin_page_path(page, version: page.published_revision.version), class: 'btn btn-link btn-sm' if page.preview? && page.published_revision.preview? %>
-          <% else %>
-            <%= link_to 'Publish', publish_admin_page_path(page, version: 'latest'), class: 'btn btn-primary btn-sm', method: :patch %>
-            <%= link_to 'Preview', preview_admin_page_path(page, version: 'latest'), class: 'btn btn-link btn-sm' if page.preview? && page.latest_revision.preview? %>
+          <% if page.publishable? %>
+            <% if page.published? %>
+              <%= link_to 'Unpublish', unpublish_admin_page_path(page), class: 'btn btn-secondary btn-sm', method: :patch %>
+              <%= link_to 'Preview', preview_admin_page_path(page, version: page.published_revision.version), class: 'btn btn-link btn-sm' if page.preview? && page.published_revision.preview? %>
+            <% else %>
+              <%= link_to 'Publish', publish_admin_page_path(page, version: 'latest'), class: 'btn btn-primary btn-sm', method: :patch %>
+              <%= link_to 'Preview', preview_admin_page_path(page, version: 'latest'), class: 'btn btn-link btn-sm' if page.preview? && page.latest_revision.preview? %>
+            <% end %>
           <% end %>
         </td>
       </tr>

@@ -30,6 +30,8 @@ class Page < ApplicationRecord
     project.present?
   end
 
+  alias_method :publishable?, :preview?
+
   def published?
     published_revision.present?
   end
