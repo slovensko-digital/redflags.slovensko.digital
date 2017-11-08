@@ -24,14 +24,14 @@ RSpec.feature 'Administration', type: :feature do
   end
 
   scenario 'As admin I want to preview page' do
-    create(:project)
+    project = create(:project)
 
     authorize_as_admin
     visit admin_root_path
 
     click_on 'Preview'
 
-    expect(page).to have_content('Preview of page Red Flags: IS Obchodného registra at latest version 1')
+    expect(page).to have_content("Preview of page Red Flags: IS Obchodného registra at latest version #{project.revisions.first.version}")
   end
 
   scenario 'As admin I want to publish page' do
