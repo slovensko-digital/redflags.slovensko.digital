@@ -1,7 +1,28 @@
 <h1>Admin</h1>
 
-<div class="form-group">
-  <%= link_to 'Synchronize', sync_admin_pages_path, class: 'btn btn-info btn-sm', method: :put %>
+<div class="d-flex flex-row flex-wrap">
+  <div class="mr-3">
+    <h6>Actions</h6>
+
+    <div class="form-group">
+      <%= link_to 'Synchronize', sync_admin_pages_path, class: 'btn btn-primary btn-sm', method: :put %>
+    </div>
+  </div>
+  <div class="mr-3">
+    <h6>Flags</h6>
+
+    <div class="d-flex flex-row flex-wrap mb-3">
+      <ul class="list-unstyled mr-3 mb-0">
+        <li><span class="badge badge-success">published</span> &ndash; page is published with latest revision</li>
+        <li><span class="badge badge-info">preview</span> &ndash; page has a preview</li>
+        <li><span class="badge badge-secondary">unpublished</span> &ndash; page is not published</li>
+      </ul>
+      <ul class="list-unstyled mr-3 mb-0">
+        <li><span class="badge badge-danger">published</span> &ndash; page is published with non-latest revision</li>
+        <li><span class="badge badge-danger">preview</span> &ndash; page has no preview (parser failure)</li>
+      </ul>
+    </div>
+  </div>
 </div>
 
 <table class="table table-striped table-sm">
@@ -9,7 +30,7 @@
     <tr>
       <th>ID</th>
       <th>Title</th>
-      <th>Status</th>
+      <th>Flags + Revisions</th>
       <th>Updated</th>
       <th>Actions</th>
     </tr>
@@ -29,15 +50,23 @@
           <% else %>
             <span class="badge badge-secondary">unpublished</span>
           <% end %>
+          <% if Project.exists?(page: page) %>
+            <% if page.preview? && (page.published? && page.published_revision.preview?) || (!page.published? && page.latest_revision.preview?) %>
+              <span class="badge badge-info">preview</span>
+            <% else %>
+              <span class="badge badge-danger">preview</span>
+            <% end %>
+          <% end %>
+          <span class="badge text-dark"><%= page.revisions.size %></span>
         </td>
         <td><%= l page.updated_at, format: '%F %T' %></td>
         <td>
           <% if page.published? %>
             <%= link_to 'Unpublish', unpublish_admin_page_path(page), class: 'btn btn-secondary btn-sm', method: :patch %>
-            <%= link_to 'Preview', preview_admin_page_path(page, version: page.published_revision.version), class: 'btn btn-link btn-sm' if page.preview? %>
+            <%= link_to 'Preview', preview_admin_page_path(page, version: page.published_revision.version), class: 'btn btn-link btn-sm' if page.preview? && page.published_revision.preview? %>
           <% else %>
-            <%= link_to 'Publish', publish_admin_page_path(page, version: 'latest'), class: 'btn btn-info btn-sm', method: :patch %>
-            <%= link_to 'Preview', preview_admin_page_path(page, version: 'latest'), class: 'btn btn-link btn-sm' if page.preview? %>
+            <%= link_to 'Publish', publish_admin_page_path(page, version: 'latest'), class: 'btn btn-primary btn-sm', method: :patch %>
+            <%= link_to 'Preview', preview_admin_page_path(page, version: 'latest'), class: 'btn btn-link btn-sm' if page.preview? && page.latest_revision.preview? %>
           <% end %>
         </td>
       </tr>

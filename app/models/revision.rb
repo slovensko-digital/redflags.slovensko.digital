@@ -25,6 +25,10 @@ class Revision < ApplicationRecord
 
   after_save :schedule_sync_project_job # TODO: move to domain events and pubsub
 
+  def preview?
+    ProjectRevision.exists?(revision_id: self.id)
+  end
+
   def published?
     page.published_revision == self
   end
