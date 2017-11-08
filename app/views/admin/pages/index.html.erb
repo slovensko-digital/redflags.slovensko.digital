@@ -3,14 +3,12 @@
 <div class="d-flex flex-row flex-wrap">
   <div class="mr-3">
     <h6>Actions</h6>
-
     <div class="form-group">
       <%= link_to 'Synchronize', sync_admin_pages_path, class: 'btn btn-primary btn-sm', method: :put %>
     </div>
   </div>
   <div class="mr-3">
     <h6>Flags</h6>
-
     <div class="d-flex flex-row flex-wrap mb-3">
       <ul class="list-unstyled mr-3 mb-0">
         <li><span class="badge badge-success">published</span> &ndash; page is published with latest revision</li>
@@ -39,7 +37,12 @@
     <% @pages.each do |page| %>
       <tr id="<%= dom_id page %>">
         <td><%= link_to page.id, admin_page_path(page) %></td>
-        <td class="w-50"><%= page.title %></td>
+        <td class="w-50">
+          <%= link_to page.title, admin_page_path(page), class: 'text-dark' %>
+          <% if page.project.present? %>
+            <span class="badge text-dark"><%= page.project.category %></span>
+          <% end %>
+        </td>
         <td>
           <% if page.published? %>
             <% if page.synced? %>
