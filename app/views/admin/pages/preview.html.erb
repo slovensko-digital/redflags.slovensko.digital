@@ -1,0 +1,10 @@
+<h1>Admin</h1>
+
+<div class="alert alert-warning">
+  Preview of page <strong><%= @page.title %></strong>
+  at <%= 'latest' if @page.latest_revision.version == @project.revision.version %>
+  version <strong><%= @project.revision.version %></strong>.
+  <%= link_to 'Go back', :back, class: 'alert-link float-right' %>
+</div>
+
+<%= render file: 'projects/show' %>

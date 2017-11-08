@@ -24,6 +24,10 @@ class Page < ApplicationRecord
 
   after_save :schedule_sync_project_job
 
+  def preview?
+    Project.exists?(page_id: self.id)
+  end
+
   def published?
     published_revision.present?
   end
