@@ -8,7 +8,7 @@ module ProjectHelper
   def rating_stars(rating)
     capture do
       if rating
-        str = content_tag :span, class: 'rating-known' do
+        s = content_tag :span, class: 'rating-known' do
           rating.score.times do
             concat fa_icon 'star'
           end
@@ -16,10 +16,19 @@ module ProjectHelper
             concat fa_icon 'star-o'
           end
         end
-        concat str
+        concat s
       else
         concat help_icon_if_blank(rating)
       end
+    end
+  end
+
+  def category_like(category)
+    case category.to_sym
+    when :good then fa_icon('thumbs-o-up', class: 'text-success')
+    when :bad then fa_icon('thumbs-o-down', class: 'text-danger')
+    else
+      # nothing
     end
   end
 end

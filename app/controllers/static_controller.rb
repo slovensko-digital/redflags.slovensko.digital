@@ -1,7 +1,9 @@
 class StaticController < ApplicationController
   def index
-    @best_ranked_projects = Project.published.joins(:published_revision).order('total_score::float / maximum_score DESC').limit(5).map(&:published_revision)
-    @worst_ranked_projects = Project.published.joins(:published_revision).order('total_score::float / maximum_score ASC').limit(5).map(&:published_revision)
+    top_projects = Project.published.joins(:published_revision).limit(5)
+
+    @good_projects = top_projects.good.order('total_score::float / maximum_score DESC').map(&:published_revision)
+    @bad_projects = top_projects.bad.order('total_score::float / maximum_score ASC').map(&:published_revision)
   end
 
   def about

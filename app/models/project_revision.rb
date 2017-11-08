@@ -34,6 +34,7 @@ class ProjectRevision < ApplicationRecord
 
   has_many :ratings, class_name: 'ProjectRevisionRating'
 
+  delegate :category, to: :project
   delegate :version, to: :revision
 
   def total_score_percentage
