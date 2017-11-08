@@ -21,7 +21,9 @@
 
 class Project < ApplicationRecord
   belongs_to :page
+
   has_many :revisions, class_name: 'ProjectRevision'
+
   belongs_to :published_revision, class_name: 'ProjectRevision', optional: true
 
   scope :published, -> { where('published_revision_id IS NOT NULL') }
