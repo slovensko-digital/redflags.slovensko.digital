@@ -10,8 +10,8 @@ class ApplicationController < ActionController::Base
         og: OpenStruct.new(
             url: request.protocol + request.host_with_port + request.path,
             title: 'Red Flags od Slovensko.Digital',
-            description: 'Monitorované IT projekty a ich kolaboratívne hodnotenie metodikou Red Flags.',
-            image: view_context.image_url('temp_fb_share.png'),
+            description: 'Niektorým projektom treba ukázať červenú.',
+            image: view_context.image_url('fb_share.png'),
         )
     )
   end
