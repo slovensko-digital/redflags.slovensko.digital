@@ -47,11 +47,11 @@
 
   <div class="mt-5">
     <div class="row">
-      <div class="col-md-10">
+      <div class="col">
         <h2 id="hodnotenie" class="mb-0">Hodnotenie<% if @project.redflags_count > 0 %> <strong class="text-danger"><%= @project.redflags_count %> &times; <%= fa_icon('flag', class: 'text-danger') %></strong><% end %></h2>
       </div>
-      <div class="col-md-2 text-left text-md-right edit-link-holder">
-        <%= link_to "https://platforma.slovensko.digital/t/#{@project.project_id}", class: 'btn btn-lg btn-link pl-0 pl-md-3' do %>
+      <div class="col text-right edit-link-holder">
+        <%= link_to "https://platforma.slovensko.digital/t/#{@project.project_id}", class: 'btn btn-lg btn-link' do %>
           <%= fa_icon 'pencil', title: 'Upraviť hodnotenie' %>
         <% end %>
       </div>

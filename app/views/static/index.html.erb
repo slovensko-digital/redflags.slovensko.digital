@@ -14,17 +14,17 @@
         <div class="col-md-7">
           <h1>
             Štátne IT projekty<br>
-            hodnotené odborníkmi
+            hodnotené odborníkmi <span class="badge badge-alpha">ALFA</span>
           </h1>
           <p class="lead">
             Otvorené a transparentné hodnotenie projektov informatizácie komunitou IT odborníkov.
           </p>
           <div class="mt-4">
-            <%= link_to 'O projekte', about_path, class: 'btn btn-primary btn-lg mr-3' %>
-            <%= link_to 'Zoznam hodnotených projektov', projects_path, class: 'btn btn-outline-secondary btn-lg' %>
+            <%= link_to 'O projekte', about_path, class: 'btn btn-primary btn-lg mr-3 my-1' %>
+            <%= link_to 'Zoznam projektov', projects_path, class: 'btn btn-outline-secondary btn-lg my-1' %>
           </div>
         </div>
-        <div class="col-md-5 text-center">
+        <div class="col-md-5 text-center d-none d-lg-block">
           <span class="rating-known" style="font-size: 5rem;"><%= fa_icon('star') %> <%= fa_icon('star') %> <%= fa_icon('star') %> <%= fa_icon('star-o') %></span>
         </div>
       </div>
@@ -33,8 +33,8 @@
 
   <div class="dark py-5">
     <div class="container">
-      <div class="row mt-5">
-        <div class="col-md-5 mx-auto">
+      <div class="row">
+        <div class="col-md-5 mt-4 mx-auto">
           <h4 class="mb-4"><%= fa_icon 'thumbs-o-up', class: 'mr-2' %> Najlepšie hodnotené</h4>
           <table class="table table-sm toplist">
             <tbody>
@@ -48,7 +48,7 @@
           </table>
         </div>
         <div class="col-md-1"></div>
-        <div class="col-md-5 mx-auto">
+        <div class="col-md-5 mt-4 mx-auto">
           <h4 class="mb-4"><%= fa_icon 'thumbs-o-down', class: 'mr-2' %> Najhoršie hodnotené</h4>
           <table class="table table-sm toplist">
             <tbody>
@@ -63,7 +63,7 @@
         </div>
       </div>
       <div class="text-center my-5">
-        <%= link_to 'Zoznam hodnotených projektov', projects_path, class: 'btn btn-lg btn-outline-light mt-3' %>
+        <%= link_to 'Všetky projekty', projects_path, class: 'btn btn-lg btn-outline-light mt-3' %>
       </div>
     </div>
   </div>
@@ -85,10 +85,10 @@
           od
           <span class="rating-known"><%= rating_stars(OpenStruct.new(score: 1)) %></span>
           po
-          <span class="rating-known"><%= rating_stars(OpenStruct.new(score: 4)) %></span>. Zásadné problémy sú označené <span class="rating-known"><%= rating_stars(OpenStruct.new(score: 0)) %></span>. Hodnotenie môže navrhovať ktokoľvek, avšak pred finálnou publikáciou je schvalované tímom Slovensko.Digital pod dohľadom poradnej komisie.
+          <span class="rating-known"><%= rating_stars(OpenStruct.new(score: 4)) %></span>. Zásadné problémy sú označené <span class="rating-known"><%= rating_stars(OpenStruct.new(score: 0)) %></span>. Hodnotenie môže navrhovať ktokoľvek, avšak pred finálnou publikáciou je schvalované tímom Slovensko.Digital pod dohľadom kontrolnej komisie.
         </p>
         <div class="text-center my-2">
-          <%= link_to 'Viac o hodnotení a poradnej komisii', about_rating_path, class: 'btn btn btn-outline-primary mt-3' %>
+          <%= link_to 'Viac o hodnotení a kontrolnej komisii', about_rating_path, class: 'btn btn btn-outline-primary mt-3' %>
         </div>
       </div>
     </div>
