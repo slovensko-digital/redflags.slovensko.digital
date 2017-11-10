@@ -6,9 +6,10 @@
     <tr>
       <th class="text-right">Fáza</th>
       <% @rating_types_by_phase.each do |phase, rating_types| %>
-      <th class="text-center" style="background-color: #efefef;" colspan="<%= rating_types.count %>"><%= phase.name %></th>
+        <th class="text-center" style="background-color: #efefef;" colspan="<%= rating_types.count %>"><%= phase.name %></th>
       <% end %>
       <th class="text-center">&sum;</th>
+      <th class="text-center"></th>
     </tr>
     <tr>
       <th>Projekt</th>
@@ -33,7 +34,7 @@
             <td class="text-center"><small><%= rating_stars(rating) %></small></td>
           <% end %>
         <% end %>
-        <td><small><%= number_to_percentage(project.total_score_percentage, precision: 0) %></small></td>
+        <td class="text-center"><small><%= number_to_percentage(project.total_score_percentage, precision: 0) %></small></td>
       </tr>
     <% end %>
     </tbody>
