@@ -9,8 +9,8 @@ class ApplicationController < ActionController::Base
     @metadata = OpenStruct.new(
         og: OpenStruct.new(
             url: request.protocol + request.host_with_port + request.path,
-            title: 'Red Flags od Slovensko.Digital',
-            description: 'Niektorým projektom treba ukázať červenú.',
+            title: 'Red Flags: Štátne IT projekty hodnotené odborníkmi',
+            description: 'Otvorené a transparentné hodnotenie projektov informatizácie komunitou IT odborníkov.',
             image: view_context.image_url('fb_share.png'),
         )
     )
