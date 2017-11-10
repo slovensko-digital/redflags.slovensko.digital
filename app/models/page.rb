@@ -17,16 +17,20 @@
 class Page < ApplicationRecord
   has_many :revisions
 
-  belongs_to :published_revision, class_name: :Revision, optional: true
-  belongs_to :latest_revision, class_name: :Revision, optional: true
+  belongs_to :published_revision, class_name: 'Revision', optional: true
+  belongs_to :latest_revision, class_name: 'Revision', optional: true
+
+  has_one :project
 
   delegate :title, to: :latest_revision
 
   after_save :schedule_sync_project_job
 
   def preview?
-    Project.exists?(page_id: self.id)
+    project.present?
   end
+
+  alias_method :publishable?, :preview?
 
   def published?
     published_revision.present?

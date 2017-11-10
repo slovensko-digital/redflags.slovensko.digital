@@ -7,6 +7,7 @@
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
 #  published_revision_id :integer
+#  category              :integer          default("boring"), not null
 #
 # Indexes
 #

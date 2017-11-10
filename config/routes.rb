@@ -19,6 +19,8 @@ Rails.application.routes.draw do
       put :sync, on: :collection
     end
 
+    resources :projects
+
     mount Que::Web, at: 'que'
   end
 
