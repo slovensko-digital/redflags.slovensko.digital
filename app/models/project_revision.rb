@@ -45,8 +45,7 @@ class ProjectRevision < ApplicationRecord
   end
 
   def aggregated_rating
-    return redflags_count if redflags_count > 0
-    -total_score_percentage
+    [redflags_count, -total_score_percentage]
   end
 
   # TODO move elsewhere?
