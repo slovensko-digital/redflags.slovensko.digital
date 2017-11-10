@@ -19,7 +19,6 @@
         <% end %>
       <% end %>
       <th><div style="writing-mode: vertical-rl; transform: rotate(180deg); height: 10em; text-align: left;">Priebežné hodnotenie</div></th>
-      <th><div style="writing-mode: vertical-rl; transform: rotate(180deg); height: 10em; text-align: left;">Pridaná hodnota</div></th>
     </tr>
     </thead>
     <tbody>
@@ -36,7 +35,6 @@
           <% end %>
         <% end %>
         <td class="text-center"><small><%= number_to_percentage(project.total_score_percentage, precision: 0) %></small></td>
-        <td class="text-center"><small><%= category_like(project.category) %></small></td>
       </tr>
     <% end %>
     </tbody>
