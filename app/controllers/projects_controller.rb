@@ -9,6 +9,6 @@ class ProjectsController < ApplicationController
 
   def index
     @rating_types_by_phase = RatingType.all.group_by(&:rating_phase)
-    @projects = Project.published.map { |p| p.published_revision }.sort_by(&:total_score_percentage).reverse
+    @projects = Project.published.map { |p| p.published_revision }.sort_by(&:aggregated_rating)
   end
 end

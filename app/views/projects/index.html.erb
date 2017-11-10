@@ -9,7 +9,6 @@
         <th class="text-center" style="background-color: #efefef;" colspan="<%= rating_types.count %>"><%= phase.name %></th>
       <% end %>
       <th class="text-center">&sum;</th>
-      <th class="text-center"></th>
     </tr>
     <tr>
       <th>Projekt</th>
@@ -34,7 +33,15 @@
             <td class="text-center"><small><%= rating_stars(rating) %></small></td>
           <% end %>
         <% end %>
-        <td class="text-center"><small><%= number_to_percentage(project.total_score_percentage, precision: 0) %></small></td>
+        <td class="text-center" style="background-color: #f2f2f2">
+          <% if project.redflags_count > 0 %>
+            <strong class="text-danger"><%= project.redflags_count %> &times; <%= fa_icon('flag', class: 'text-danger') %></strong>
+          <% else %>
+            <strong>
+            <%= number_to_percentage(project.total_score_percentage, precision: 0) %>
+            </strong>
+          <% end %>
+        </td>
       </tr>
     <% end %>
     </tbody>

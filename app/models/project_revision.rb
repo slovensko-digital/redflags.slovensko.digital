@@ -2,20 +2,23 @@
 #
 # Table name: project_revisions
 #
-#  id            :integer          not null, primary key
-#  project_id    :integer          not null
-#  revision_id   :integer          not null
-#  title         :string           not null
-#  full_name     :string
-#  guarantor     :string
-#  description   :string
-#  budget        :string
-#  status        :string
-#  created_at    :datetime         not null
-#  updated_at    :datetime         not null
-#  body_html     :string
-#  total_score   :integer
-#  maximum_score :integer
+#  id             :integer          not null, primary key
+#  project_id     :integer          not null
+#  revision_id    :integer          not null
+#  title          :string           not null
+#  full_name      :string
+#  guarantor      :string
+#  description    :string
+#  budget         :string
+#  status         :string
+#  created_at     :datetime         not null
+#  updated_at     :datetime         not null
+#  body_html      :string
+#  total_score    :integer
+#  maximum_score  :integer
+#  redflags_count :integer          default(0)
+#  summary        :text
+#  recommendation :text
 #
 # Indexes
 #
@@ -41,6 +44,11 @@ class ProjectRevision < ApplicationRecord
     100.0 * total_score / maximum_score
   end
 
+  def aggregated_rating
+    return redflags_count if redflags_count > 0
+    -total_score_percentage
+  end
+
   # TODO move elsewhere?
   def load_from_data(raw)
     self.title = raw['title'].gsub('Red Flags:', '').strip
@@ -60,23 +68,28 @@ class ProjectRevision < ApplicationRecord
     doc = Nokogiri::HTML.parse(summary)
     doc.search('p').each do |p|
       type = p.search('strong').first.try(:text)
-
+      value = p.text.gsub(type, '').strip
       case type
       when 'Názov:'
-        self.full_name = p.text.gsub(type, '').strip
+        self.full_name = value
       when 'Garant:'
-        self.guarantor = p.text.gsub(type, '').strip
+        self.guarantor = value
       when 'Stručný opis:'
-        self.description = p.text.gsub(type, '').strip
+        self.description = value
       when 'Náklady na projekt:'
-        self.budget = p.text.gsub(type, '').strip
+        self.budget = value
       when 'Aktuálny stav projektu:'
-        self.status = p.text.gsub(type, '').strip
+        self.status = value
+      when 'Manažérske zhrnutie Red Flags:'
+        self.summary = value
+      when 'Stanovisko Slovensko.Digital:'
+        self.recommendation = value
       end
     end
   end
 
   def load_ratings(body)
+    redflags_count = 0
     total_score = 0
     maximum_score = 0
     current_phase = nil
@@ -91,14 +104,17 @@ class ProjectRevision < ApplicationRecord
         rating_type = current_phase.rating_types.find_by(name: value)
         if rating_type
           score = heading.css('img.emoji[title=":star:"]').count
+          bad_score = heading.css('img.emoji[title=":grey_star:"]').count
           rating = self.ratings.find_or_initialize_by(rating_type: rating_type)
           rating.score = score
+          redflags_count += 1 if bad_score == 4
           total_score += score
           maximum_score += 4
         end
       end
     end
 
+    self.redflags_count = redflags_count
     self.total_score = total_score
     self.maximum_score =  maximum_score
   end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171108160920) do
+ActiveRecord::Schema.define(version: 20171110114322) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -46,6 +46,9 @@ ActiveRecord::Schema.define(version: 20171108160920) do
     t.string "body_html"
     t.integer "total_score"
     t.integer "maximum_score"
+    t.integer "redflags_count", default: 0
+    t.text "summary"
+    t.text "recommendation"
     t.index ["project_id"], name: "index_project_revisions_on_project_id"
     t.index ["revision_id"], name: "index_project_revisions_on_revision_id"
   end
