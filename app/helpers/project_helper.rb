@@ -8,27 +8,22 @@ module ProjectHelper
   def rating_stars(rating)
     capture do
       if rating
-        s = content_tag :span, class: 'rating-known' do
-          rating.score.times do
-            concat fa_icon 'star'
+        if rating.score > 0
+          str = content_tag :span, class: 'rating-known' do
+            rating.score.times do
+              concat fa_icon 'star'
+            end
+            (4 - rating.score).times do
+              concat fa_icon 'star-o'
+            end
           end
-          (4 - rating.score).times do
-            concat fa_icon 'star-o'
-          end
+          concat str
+        else
+          concat fa_icon('flag', class: 'text-danger')
         end
-        concat s
       else
         concat help_icon_if_blank(rating)
       end
-    end
-  end
-
-  def category_like(category)
-    case category.to_sym
-    when :good then fa_icon('thumbs-o-up', class: 'text-success')
-    when :bad then fa_icon('thumbs-o-down', class: 'text-danger')
-    else
-      # nothing
     end
   end
 end

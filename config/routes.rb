@@ -25,7 +25,7 @@ Rails.application.routes.draw do
   end
 
   get 'o-projekte', as: 'about', to: 'static#about'
-  get 'hodnotiaca-komisia', as: 'committee', to: 'static#committee'
+  get 'ako-hodnotime', as: 'about_rating', to: 'static#about_rating'
   get 'ako-sa-zapojit', as: 'contribute', to: 'static#contribute'
   get 'casto-kladene-otazky', as: 'faq', to: 'static#faq'
 

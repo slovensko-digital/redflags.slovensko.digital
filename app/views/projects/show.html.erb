@@ -1,13 +1,8 @@
 <% content_for(:title) do %><%= @project.title %> &middot; Red Flags &middot; Slovensko.Digital<% end %>
 <div id="project-show" class="container main">
-  <div class="row mt-5 mb-5">
-    <div class="col-md-4 text-md-right mb-2 order-md-12">
-      <div class="d-inline-block">
-        <div class="total-score"><%= number_to_percentage(@project.total_score_percentage, precision: 0) %></div>
-        <div class="text-muted text-center">Celkové skóre</div>
-      </div>
-    </div>
-    <div class="col-md-8">
+
+  <div class="row mb-5">
+    <div class="col-md-12">
       <h1 class="project-title"><%= @project.title %></h1>
       <p class="lead text-muted mt-4"><%= @project.description %></p>
     </div>
@@ -25,7 +20,25 @@
     </div>
   </div>
 
-  <div class="row mb-4">
+  <% if @project.summary.present? %>
+    <div class="row mb-3">
+      <div class="col">
+        <h5>Manažérske zhrnutie Red Flags</h5>
+        <p class="mb-4"><%= @project.summary %></p>
+      </div>
+    </div>
+  <% end %>
+
+  <% if @project.recommendation.present? %>
+    <div class="card mb-4 text-white <%= @project.redflags_count.zero? ? 'bg-secondary' : 'bg-danger' %>">
+      <div class="card-body">
+        <h5 class="card-title">Stanovisko Slovensko.Digital</h5>
+        <p class="card-text"><%= @project.recommendation %></p>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="row mb-4 mt-5">
     <div class="col">
       <h5>Aktuálny stav projektu</h5>
       <p class="mb-4"><%= @project.status %></p>
@@ -35,11 +48,11 @@
   <div class="mt-5">
     <div class="row">
       <div class="col-md-10">
-        <h2 id="hodnotenie" class="mb-0">Hodnotenie</h2>
+        <h2 id="hodnotenie" class="mb-0">Hodnotenie<% if @project.redflags_count > 0 %> <strong class="text-danger"><%= @project.redflags_count %> &times; <%= fa_icon('flag', class: 'text-danger') %></strong><% end %></h2>
       </div>
-      <div class="col-md-2 text-left text-md-right">
+      <div class="col-md-2 text-left text-md-right edit-link-holder">
         <%= link_to "https://platforma.slovensko.digital/t/#{@project.project_id}", class: 'btn btn-lg btn-link pl-0 pl-md-3' do %>
-          <%= fa_icon 'edit' %> Upraviť
+          <%= fa_icon 'pencil', title: 'Upraviť hodnotenie' %>
         <% end %>
       </div>
     </div>
