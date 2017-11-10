@@ -68,7 +68,7 @@ class ProjectRevision < ApplicationRecord
     doc = Nokogiri::HTML.parse(summary)
     doc.search('p').each do |p|
       type = p.search('strong').first.try(:text)
-      value = p.text.gsub(type, '').strip
+      value = p.try(:text).gsub(type, '').strip
       case type
       when 'Názov:'
         self.full_name = value
