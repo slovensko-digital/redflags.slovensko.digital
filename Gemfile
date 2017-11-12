@@ -46,6 +46,10 @@ gem 'que-web'
 gem 'clockwork'
 gem 'annotate'
 
+gem 'newrelic_rpm'
+gem 'rollbar'
+gem 'oj'
+
 group :development, :test do
   gem 'dotenv-rails'
   gem 'rspec-rails'
