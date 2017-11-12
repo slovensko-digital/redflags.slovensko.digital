@@ -46,6 +46,7 @@ gem 'que-web'
 gem 'clockwork'
 gem 'annotate'
 
+gem 'newrelic_rpm'
 gem 'rollbar'
 gem 'oj'
 
