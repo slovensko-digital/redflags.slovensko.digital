@@ -32,7 +32,8 @@ class Revision < ApplicationRecord
   end
 
   def preview?
-    project_revision.present? && !project_revision.total_score_percentage.nan?
+    return true unless page.project
+    project_revision && !project_revision.total_score_percentage.nan?
   end
 
   def published?

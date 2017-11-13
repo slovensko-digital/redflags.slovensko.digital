@@ -1,3 +1,7 @@
 <div class="container container-text">
-  <%== @page.latest_revision.body_html %>
+  <% if @page.published_revision %>
+    <%== @page.published_revision.body_html %>
+  <% else %>
+    Stránka zatiaľ nie je dostupná.
+  <% end %>
 </div>

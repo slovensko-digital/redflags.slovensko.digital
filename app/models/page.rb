@@ -27,7 +27,7 @@ class Page < ApplicationRecord
   after_save :schedule_sync_project_job
 
   def preview?
-    project.present?
+    true
   end
 
   alias_method :publishable?, :preview?
