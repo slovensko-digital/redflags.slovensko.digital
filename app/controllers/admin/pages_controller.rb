@@ -17,7 +17,6 @@ class Admin::PagesController < AdminController
         @revision = ProjectRevision.joins(:project, :revision).find_by!(projects: { page: @page }, revisions: { version: params['version'] })
       end
 
-      @project = @revision
       @rating_types_by_phase = RatingType.all.group_by(&:rating_phase)
       @ratings_by_type = @project.ratings.index_by(&:rating_type)
     else

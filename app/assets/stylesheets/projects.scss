@@ -33,6 +33,33 @@
   .lightbox-wrapper .meta {
     display: none;
   }
+
+  #detailed-rating {
+    hr {
+      display: none;
+    }
+
+    h3 {
+      margin-top: 2.5rem;
+      font-size: $h4-font-size;
+    }
+
+    h2 {
+      margin-top: 4rem;
+      font-size: $h3-font-size;
+    }
+
+    h1 {
+      margin-top: 4rem;
+      font-size: $h2-font-size;
+
+      img.emoji {
+        width: .8em;
+        height: .8em;
+        margin-bottom: .2em;
+      }
+    }
+  }
 }
 
 .rating-known {

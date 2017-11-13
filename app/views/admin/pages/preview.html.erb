@@ -7,10 +7,10 @@
   <%= link_to 'Go back', :back, class: 'alert-link float-right' %>
 </div>
 
-<% if @page.project.present? %>
+<% if @page.project %>
+  <% @project = @revision %>
   <%= render file: 'projects/show' %>
 <% else %>
-  <div class="container container-text">
-    <%== @revision.body_html %>
-  </div>
+  <% @page = @revision %>
+  <%= render file: 'static/page' %>
 <% end %>
