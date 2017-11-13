@@ -79,7 +79,7 @@ class ProjectRevision < ApplicationRecord
         self.budget = value
       when 'Aktuálny stav projektu:'
         self.status = value
-      when 'Manažérske zhrnutie Red Flags:'
+      when 'Zhrnutie hodnotenia Red Flags:'
         self.summary = value
       when 'Stanovisko Slovensko.Digital:'
         self.recommendation = value
