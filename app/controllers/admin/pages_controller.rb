@@ -18,7 +18,7 @@ class Admin::PagesController < AdminController
       end
 
       @rating_types_by_phase = RatingType.all.group_by(&:rating_phase)
-      @ratings_by_type = @project.ratings.index_by(&:rating_type)
+      @ratings_by_type = @revision.ratings.index_by(&:rating_type)
     else
       if params['version'] == 'latest'
         @revision = @page.latest_revision
