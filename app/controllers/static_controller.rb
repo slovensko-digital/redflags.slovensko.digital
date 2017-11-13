@@ -25,7 +25,7 @@ class StaticController < ApplicationController
   private
 
   def render_page(name)
-    @page = Page.find(ENV.fetch("REDFLAGS_#{name.upcase}_PAGE_ID"))
+    @page = Page.find(ENV.fetch("REDFLAGS_#{name.upcase}_PAGE_ID")).latest_revision
     render 'page'
   end
 end
