@@ -1,4 +1,4 @@
-$(document).ready(function () {
+$(document).on('ready turbolinks:load', function () {
     $('#newsletter-form').submit(function (evt) {
         var form = $(evt.target);
         var data = form.serialize();
