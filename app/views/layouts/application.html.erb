@@ -8,6 +8,10 @@
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
+
+        document.addEventListener('turbolinks:load', function(event) {
+            gtag('config', '<%= ENV['GA_TRACKING_ID'] %>', { 'page_path': window.location.pathname });
+        });
     </script>
     <% end %>
     <title><% if content_for?(:title) %><%= yield(:title) %><% else %>Red Flags &middot; Slovensko.Digital<% end %></title>
