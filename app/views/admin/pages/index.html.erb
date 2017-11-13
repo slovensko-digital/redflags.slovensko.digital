@@ -28,6 +28,7 @@
     <tr>
       <th>ID</th>
       <th>Title</th>
+      <th>Category</th>
       <th>Flags + Revisions</th>
       <th>Updated</th>
       <th>Actions</th>
@@ -39,6 +40,8 @@
         <td><%= link_to page.id, admin_page_path(page) %></td>
         <td class="w-50">
           <%= link_to page.title, admin_page_path(page), class: 'text-dark' %>
+        </td>
+        <td>
           <% if page.project.present? %>
             <span class="badge text-dark"><%= page.project.category %></span>
           <% end %>
