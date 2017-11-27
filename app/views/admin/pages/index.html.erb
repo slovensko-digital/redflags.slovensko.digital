@@ -35,15 +35,15 @@
     </tr>
   </thead>
   <tbody>
-    <% @pages.each do |page| %>
+    <% @pages.zip(@projects).each do |page, project| %>
       <tr id="<%= dom_id page %>">
         <td><%= link_to page.id, admin_page_path(page) %></td>
         <td class="w-50">
           <%= link_to page.title, admin_page_path(page), class: 'text-dark' %>
         </td>
         <td>
-          <% if Project.exists?(page: page) %>
-            <span class="badge text-dark"><%= Project.where(page: page).first.category %></span>
+          <% if project.present? %>
+            <span class="badge text-dark"><%= project.category %></span>
           <% end %>
         </td>
         <td>

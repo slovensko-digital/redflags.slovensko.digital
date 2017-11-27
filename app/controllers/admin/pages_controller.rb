@@ -3,6 +3,7 @@ class Admin::PagesController < AdminController
 
   def index
     @pages = Page.order(id: :desc).page(params[:page])
+    @projects = @pages.map { |page| Project.find_by(page: page) }
   end
 
   def show
