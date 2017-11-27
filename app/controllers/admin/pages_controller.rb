@@ -7,10 +7,13 @@ class Admin::PagesController < AdminController
 
   def show
     @revisions = @page.revisions.order(version: :desc).page(params[:page])
+    @project = Project.find_by(page: @page)
   end
 
   def preview
-    if @page.project
+    @project = Project.find_by(page: @page)
+
+    if @project.present?
       if params['version'] == 'latest'
         @revision = ProjectRevision.find_by!(revision: @page.latest_revision)
       else

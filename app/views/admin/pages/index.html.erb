@@ -42,8 +42,8 @@
           <%= link_to page.title, admin_page_path(page), class: 'text-dark' %>
         </td>
         <td>
-          <% if page.project.present? %>
-            <span class="badge text-dark"><%= page.project.category %></span>
+          <% if Project.exists?(page: page) %>
+            <span class="badge text-dark"><%= Project.where(page: page).first.category %></span>
           <% end %>
         </td>
         <td>
@@ -57,7 +57,7 @@
             <% else %>
               <span class="badge badge-secondary">unpublished</span>
             <% end %>
-            <% if page.preview? && (page.published? && page.published_revision.preview?) || (!page.published? && page.latest_revision.preview?) %>
+            <% if page_preview?(page) && (page.published? && revision_preview?(page.published_revision)) || (!page.published? && revision_preview?(page.latest_revision)) %>
               <span class="badge badge-info">preview</span>
             <% else %>
               <span class="badge badge-danger">preview</span>
@@ -70,10 +70,10 @@
           <% if page.publishable? %>
             <% if page.published? %>
               <%= link_to 'Unpublish', unpublish_admin_page_path(page), class: 'btn btn-secondary btn-sm', method: :patch %>
-              <%= link_to 'Preview', preview_admin_page_path(page, version: page.published_revision.version), class: 'btn btn-link btn-sm' if page.preview? && page.published_revision.preview? %>
+              <%= link_to 'Preview', preview_admin_page_path(page, version: page.published_revision.version), class: 'btn btn-link btn-sm' if page_preview?(page) && revision_preview?(page.published_revision) %>
             <% else %>
               <%= link_to 'Publish', publish_admin_page_path(page, version: 'latest'), class: 'btn btn-primary btn-sm', method: :patch %>
-              <%= link_to 'Preview', preview_admin_page_path(page, version: 'latest'), class: 'btn btn-link btn-sm' if page.preview? && page.latest_revision.preview? %>
+              <%= link_to 'Preview', preview_admin_page_path(page, version: 'latest'), class: 'btn btn-link btn-sm' if page_preview?(page) && revision_preview?(page.latest_revision) %>
             <% end %>
           <% end %>
         </td>
