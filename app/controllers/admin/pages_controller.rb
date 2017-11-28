@@ -3,21 +3,33 @@ class Admin::PagesController < AdminController
 
   def index
     @pages = Page.order(id: :desc).page(params[:page])
+    @projects = @pages.map { |page| Project.find_by(page: page) }
   end
 
   def show
     @revisions = @page.revisions.order(version: :desc).page(params[:page])
+    @project = Project.find_by(page: @page)
   end
 
   def preview
-    if params['version'] == 'latest'
-      @project = ProjectRevision.find_by!(revision: @page.latest_revision)
-    else
-      @project = ProjectRevision.joins(:project, :revision).find_by!(projects: { page: @page }, revisions: { version: params['version'] })
-    end
+    @project = Project.find_by(page: @page)
 
-    @rating_types_by_phase = RatingType.all.group_by(&:rating_phase)
-    @ratings_by_type = @project.ratings.index_by(&:rating_type)
+    if @project.present?
+      if params['version'] == 'latest'
+        @revision = ProjectRevision.find_by!(revision: @page.latest_revision)
+      else
+        @revision = ProjectRevision.joins(:project, :revision).find_by!(projects: { page: @page }, revisions: { version: params['version'] })
+      end
+
+      @rating_types_by_phase = RatingType.all.group_by(&:rating_phase)
+      @ratings_by_type = @revision.ratings.index_by(&:rating_type)
+    else
+      if params['version'] == 'latest'
+        @revision = @page.latest_revision
+      else
+        @revision = @page.revisions.find_by!(version: params['version'])
+      end
+    end
   end
 
   def publish

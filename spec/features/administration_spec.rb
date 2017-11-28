@@ -10,13 +10,7 @@ RSpec.feature 'Administration', type: :feature do
     expect { click_on 'Synchronize' }.to have_enqueued_job(SyncCategoryTopicsJob)
   end
 
-  scenario 'As admin I want to see all pages' do
-    create(:page, :published)
-    create(:project, page: Page.first)
-
-    create(:page, :unpublished)
-    create(:project, page: Page.second)
-
+  def see_all_pages
     authorize_as_admin
     visit admin_root_path
 
@@ -26,21 +20,40 @@ RSpec.feature 'Administration', type: :feature do
     end
   end
 
-  scenario 'As admin I want to preview project page' do
-    project = create(:project)
+  scenario 'As admin I want to see all pages' do
+    create(:page, :published)
+    create(:page, :unpublished)
+    see_all_pages
+  end
 
+  scenario 'As admin I want to see all project pages' do
+    create(:page, :published)
+    create(:page, :unpublished)
+    create(:project, page: Page.first)
+    create(:project, page: Page.second)
+    see_all_pages
+  end
+
+  def preview_page
     authorize_as_admin
     visit admin_root_path
 
     click_on 'Preview'
 
-    expect(page).to have_content("Preview of page Red Flags: IS Obchodného registra at latest version #{project.revisions.first.version}")
+    expect(page).to have_content("Preview of page Red Flags: IS Obchodného registra at latest version #{Page.first.revisions.first.version}")
   end
 
-  scenario 'As admin I want to publish project page' do
-    create(:page, :unpublished)
-    create(:project, page: Page.first)
+  scenario 'As admin I want to preview page' do
+    create(:page)
+    preview_page
+  end
 
+  scenario 'As admin I want to preview project page' do
+    create(:page)
+    preview_page
+  end
+
+  def publish_page
     authorize_as_admin
     visit admin_root_path
 
@@ -51,10 +64,18 @@ RSpec.feature 'Administration', type: :feature do
     end
   end
 
-  scenario 'As admin I want to unpublish project page' do
-    create(:page, :published)
-    create(:project, page: Page.first)
+  scenario 'As admin I want to publish page' do
+    create(:page, :unpublished)
+    publish_page
+  end
 
+  scenario 'As admin I want to publish project page' do
+    create(:page, :unpublished)
+    create(:project, page: Page.first)
+    publish_page
+  end
+
+  def unpublish_page
     authorize_as_admin
     visit admin_root_path
 
@@ -65,11 +86,18 @@ RSpec.feature 'Administration', type: :feature do
     end
   end
 
-  scenario 'As admin I want to see all revisions of page' do
+  scenario 'As admin I want to unpublish page' do
+    create(:page, :published)
+    unpublish_page
+  end
+
+  scenario 'As admin I want to unpublish project page' do
     create(:page, :published)
     create(:project, page: Page.first)
-    create(:revision, page: Page.first)
+    unpublish_page
+  end
 
+  def see_all_revisions
     authorize_as_admin
     visit admin_root_path
 
@@ -84,11 +112,47 @@ RSpec.feature 'Administration', type: :feature do
     end
   end
 
-  scenario 'As admin I want to publish non-latest project page revision' do
+  scenario 'As admin I want to see all revisions of page' do
+    create(:page, :published)
+    create(:revision, page: Page.first)
+    see_all_revisions
+  end
+
+  scenario 'As admin I want to see all revisions of project page' do
+    create(:page, :published)
+    create(:project, page: Page.first)
+    create(:revision, page: Page.first)
+    see_all_revisions
+  end
+
+  def preview_non_latest_revision
+    authorize_as_admin
+    visit admin_root_path
+
+    click_on Page.first.id
+
+    within :id, dom_id(Revision.first) do
+      expect(page).not_to have_content('published')
+      expect(page).not_to have_content('latest')
+
+      click_on 'Preview'
+    end
+  end
+
+  scenario 'As admin I want to preview non-latest page revision' do
+    create(:page, :unpublished)
+    create(:revision, page: Page.first)
+    preview_non_latest_revision
+  end
+
+  scenario 'As admin I want to preview non-latest project page revision' do
     create(:page, :unpublished)
     create(:project, page: Page.first)
     create(:revision, page: Page.first)
+    preview_non_latest_revision
+  end
 
+  def publish_non_latest_revision
     authorize_as_admin
     visit admin_root_path
 
@@ -106,23 +170,38 @@ RSpec.feature 'Administration', type: :feature do
     end
   end
 
-  scenario 'As admin I want to edit project category' do
-    create(:project)
+  scenario 'As admin I want to publish non-latest page revision' do
+    create(:page, :unpublished)
+    create(:revision, page: Page.first)
+    publish_non_latest_revision
+  end
 
-    authorize_as_admin
-    visit admin_root_path
+  scenario 'As admin I want to publish non-latest project page revision' do
+    create(:page, :unpublished)
+    create(:project, page: Page.first)
+    create(:revision, page: Page.first)
+    publish_non_latest_revision
+  end
 
-    click_on Page.first.id
+  context 'project page specific features' do
+    scenario 'As admin I want to edit project category' do
+      create(:project)
 
-    within 'h4' do
-      expect(page).to have_content('boring')
-    end
+      authorize_as_admin
+      visit admin_root_path
 
-    choose 'good'
-    click_on 'Update'
+      click_on Page.first.id
 
-    within 'h4' do
-      expect(page).to have_content('good')
+      within 'h4' do
+        expect(page).to have_content('boring')
+      end
+
+      choose 'good'
+      click_on 'Update'
+
+      within 'h4' do
+        expect(page).to have_content('good')
+      end
     end
   end
 

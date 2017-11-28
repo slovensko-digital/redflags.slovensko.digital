@@ -21,15 +21,15 @@
       </ul>
     </div>
   </div>
-  <% if @page.project.present? %>
+  <% if @project.present? %>
     <div class="mr-3">
       <h6>Project</h6>
-      <%= form_for [:admin, @page.project], html: { class: 'form-inline mb-3' } do |f| %>
+      <%= form_for [:admin, @project], html: { class: 'form-inline mb-3' } do |f| %>
         <span class="mr-2">Project category</span>
         <% Project.categories.keys.each do |name| %>
           <div class="form-check mr-2">
             <label class="form-check-label">
-              <%= f.radio_button :category, name, class: 'form-check-input', checked: @page.project.category == name %>
+              <%= f.radio_button :category, name, class: 'form-check-input', checked: @project.category == name %>
               <%= name %>
             </label>
           </div>
@@ -42,8 +42,8 @@
 
 <h4>
   <%= @page.title %>
-  <% if @page.project.present? %>
-    <span class="badge badge-dark"><%= @page.project.category %></span>
+  <% if @project.present? %>
+    <span class="badge badge-dark"><%= @project.category %></span>
   <% end %>
 </h4>
 
@@ -71,7 +71,7 @@
                 <span class="badge badge-danger">published</span>
               <% end %>
             <% end %>
-            <% if revision.preview? %>
+            <% if revision_preview?(revision) %>
               <span class="badge badge-info">preview</span>
             <% else %>
               <span class="badge badge-danger">preview</span>
@@ -89,8 +89,8 @@
             <% else %>
               <%= link_to 'Publish', publish_admin_page_path(@page, version: revision.version), class: 'btn btn-primary btn-sm', method: :patch %>
             <% end %>
-            <% if revision.preview? %>
-              <%= link_to 'Preview', preview_admin_page_path(@page, version: revision.version), class: 'btn btn-link btn-sm' if @page.preview? %>
+            <% if revision_preview?(revision) %>
+              <%= link_to 'Preview', preview_admin_page_path(@page, version: revision.version), class: 'btn btn-link btn-sm' if page_preview?(@page) %>
             <% end %>
           <% end %>
         </td>

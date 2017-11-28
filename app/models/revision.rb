@@ -23,16 +23,10 @@
 class Revision < ApplicationRecord
   belongs_to :page
 
-  has_one :project_revision
-
   after_save :schedule_sync_project_job # TODO: move to domain events and pubsub
 
   def body_html
     raw['post_stream']['posts'].first['cooked']
-  end
-
-  def preview?
-    project_revision.present? && !project_revision.total_score_percentage.nan?
   end
 
   def published?

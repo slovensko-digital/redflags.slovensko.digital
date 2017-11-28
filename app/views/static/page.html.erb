@@ -1,4 +1,8 @@
 <% content_for(:title) do %><%= @page.title %> &middot; Red Flags &middot; Slovensko.Digital<% end %>
 <div class="container container-text">
-  <%== @page.body_html %>
+  <% if @page %>
+    <%== @page.body_html %>
+  <% else %>
+    Stránka zatiaľ nie je dostupná.
+  <% end %>
 </div>
