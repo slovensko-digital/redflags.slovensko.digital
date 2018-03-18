@@ -15,7 +15,7 @@ jobs:
 
     steps:
       - checkout
-      - run: sudo apt-get install postgresql-client-9.6
+      - run: sudo apt-get install postgresql-client
       - restore_cache: { keys: ['{{ checksum "Gemfile.lock" }}'] }
       - run: bundle install --path vendor/bundle
       - save_cache: { key: '{{ checksum "Gemfile.lock" }}', paths: [vendor/bundle] }
