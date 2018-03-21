@@ -4,7 +4,7 @@ jobs:
     working_directory: ~/slovensko-digital/redflags.slovensko.digital
 
     docker:
-      - image: circleci/ruby:2.4.3-node-browsers
+      - image: circleci/ruby:2.5.0-node-browsers
         environment:
           RAILS_ENV: test
 
