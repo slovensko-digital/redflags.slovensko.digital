@@ -27,13 +27,13 @@
       <% @rating_types_by_phase.each do |phase, rating_types| %>
         <% rating_types.each do |rating_type| %>
           <th class="hideable <%= "d-none" if phase.id != 1 %>" data-phase-id="<%= phase.id %>">
-            <div style="font-weight:normal; writing-mode: vertical-rl; transform: rotate(180deg); height: 10em; text-align: left;"><%= rating_type.name %></div>
+          <div class="text-sideways"><%= rating_type.name %></div>
           </th>
         <% end %>
       <% end %>
 
       <th>
-        <div style="writing-mode: vertical-rl; transform: rotate(180deg); height: 10em;">Celkové hodnotenie</div>
+        <div class="text-sideways"><strong>Celkové hodnotenie</strong></div>
       </th>
     </tr>
     </thead>
