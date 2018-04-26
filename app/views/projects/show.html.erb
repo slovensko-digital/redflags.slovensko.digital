@@ -52,12 +52,14 @@
       </div>
       <div class="col text-right edit-link-holder">
         <%= link_to "https://platforma.slovensko.digital/t/#{@project.project_id}", class: 'btn btn-lg btn-link' do %>
-          <%= fa_icon 'pencil', title: 'Upraviť hodnotenie' %>
+          <%= fa_icon 'pencil', title: 'Upraviť hodnotenie' %> Upraviť
         <% end %>
       </div>
     </div>
-    <hr class="mt-0">
-
+    <hr class="mt-0 mb-2">
+    <p class="text-right mb-5 mt-1">
+      Posledná aktualizácia: <strong><%= l(@project.updated_at.to_date, format: :human) %></strong></strong>
+    </p>
     <% @rating_types_by_phase.each do |rating_phase, rating_types| %>
       <div class="row mt-4 mb-1">
         <div class="col">
