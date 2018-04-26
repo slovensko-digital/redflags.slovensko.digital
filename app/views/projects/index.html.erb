@@ -1,12 +1,24 @@
-<div class="container pt-5">
+<div id="projects-index" class="container pt-5">
   <h1 class="mt-5 mb-3">Zoznam hodnotených projektov</h1>
   <p class="lead"><strong>Chýba Vám tu nejaký projekt? Nezdá sa Vám hodnotenie?</strong> Toto hodnotenie je možné <%= link_to 'dopĺňať a upravovať', contribute_path %>.</p>
-  <table class="table mt-5">
+
+  <ul class="nav nav-pills mb-3 mt-5" style="margin-left: 12rem" id="phases-switcher" role="tablist">
+    <% @rating_types_by_phase.each do |phase, rating_types| %>
+      <li class="nav-item">
+        <a class="nav-link <%= "active" if phase.id == 1 %>" href="#" data-toggle="pill" data-target-phase-id="<%= phase.id %>" role="tab" aria-controls="pills-home" aria-selected="true">
+          <%= phase.name %>
+          <% if phase.id !=1 %><sup><span class="badge badge-secondary">Nové</span></sup><% end %>
+        </a>
+      </li>
+    <% end %>
+  </ul>
+
+  <table class="table">
     <thead>
     <tr>
       <th class="text-right">Fáza</th>
       <% @rating_types_by_phase.each do |phase, rating_types| %>
-        <th class="text-center" style="background-color: #efefef;" colspan="<%= rating_types.count %>"><%= phase.name %></th>
+        <th class="text-center hideable <%= "d-none" if phase.id != 1 %>" data-phase-id="<%= phase.id %>" style="background-color: #efefef;" colspan="<%= rating_types.count %>"><%= phase.name %></th>
       <% end %>
       <th class="text-center">&sum;</th>
     </tr>
@@ -14,10 +26,15 @@
       <th>Projekt</th>
       <% @rating_types_by_phase.each do |phase, rating_types| %>
         <% rating_types.each do |rating_type| %>
-          <th><div style="font-weight:normal; writing-mode: vertical-rl; transform: rotate(180deg); height: 10em; text-align: left;"><%= rating_type.name %></div></th>
+          <th class="hideable <%= "d-none" if phase.id != 1 %>" data-phase-id="<%= phase.id %>">
+            <div style="font-weight:normal; writing-mode: vertical-rl; transform: rotate(180deg); height: 10em; text-align: left;"><%= rating_type.name %></div>
+          </th>
         <% end %>
       <% end %>
-      <th><div style="writing-mode: vertical-rl; transform: rotate(180deg); height: 10em; text-align: left;">Priebežné hodnotenie</div></th>
+
+      <th>
+        <div style="writing-mode: vertical-rl; transform: rotate(180deg); height: 10em;">Celkové hodnotenie</div>
+      </th>
     </tr>
     </thead>
     <tbody>
@@ -30,10 +47,10 @@
         <% @rating_types_by_phase.each do |phase, rating_types| %>
           <% rating_types.each do |rating_type| %>
             <% rating = ratings_by_type[rating_type] %>
-            <td class="text-center"><small><%= rating_stars(rating) %></small></td>
+            <td class="text-center hideable <%= "d-none" if phase.id != 1 %>" data-phase-id="<%= phase.id %>"><small><%= rating_stars(rating) %></small></td>
           <% end %>
         <% end %>
-        <td class="text-center" style="background-color: #f2f2f2">
+        <td style="background-color: #f2f2f2; width: 4em">
           <% if project.redflags_count > 0 %>
             <strong class="text-danger"><%= project.redflags_count %> &times; <%= fa_icon('flag', class: 'text-danger') %></strong>
           <% else %>
