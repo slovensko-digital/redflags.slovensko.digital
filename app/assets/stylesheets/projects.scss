@@ -99,4 +99,12 @@ img.emoji {
   table > .hidden {
     display: none;
   }
+
+  th > .text-sideways {
+    font-weight:normal;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    height: 10em;
+  }
+
 }
