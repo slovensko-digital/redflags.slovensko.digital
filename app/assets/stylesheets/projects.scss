@@ -71,7 +71,7 @@
 }
 
 .rating-known .fa-star-o {
-  color: $text-muted;
+  color: #dedede;
 }
 
 img.emoji {
@@ -92,5 +92,11 @@ img.emoji {
   a:hover {
     color: $link-hover-color;
     text-decoration: none;
+  }
+}
+
+#projects-index {
+  table > .hidden {
+    display: none;
   }
 }
