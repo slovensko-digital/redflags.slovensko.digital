@@ -5,9 +5,9 @@
   <ul class="nav nav-pills mb-3 mt-5" style="margin-left: 12rem" id="phases-switcher" role="tablist">
     <% @rating_types_by_phase.each do |phase, rating_types| %>
       <li class="nav-item">
-        <a class="nav-link <%= "active" if phase.id == 1 %>" href="#" data-toggle="pill" data-target-phase-id="<%= phase.id %>" role="tab" aria-controls="pills-home" aria-selected="true">
+        <a class="nav-link <%= "active" if phase.id == 1 %>" href="#" data-toggle="pill" data-target-phase-id="<%= phase.id %>">
           <%= phase.name %>
-          <% if phase.id !=1 %><sup><span class="badge badge-secondary">Nové</span></sup><% end %>
+          <% if phase.id !=1 %><sup><span class="badge badge-success">Nové</span></sup><% end %>
         </a>
       </li>
     <% end %>
