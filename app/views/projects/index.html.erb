@@ -50,7 +50,7 @@
             <td class="text-center hideable <%= "d-none" if phase.id != 1 %>" data-phase-id="<%= phase.id %>"><small><%= rating_stars(rating) %></small></td>
           <% end %>
         <% end %>
-        <td style="background-color: #f2f2f2; width: 4em">
+        <td style="background-color: #f2f2f2; width: 5em">
           <% if project.redflags_count > 0 %>
             <strong class="text-danger"><%= project.redflags_count %> &times; <%= fa_icon('flag', class: 'text-danger') %></strong>
           <% else %>
