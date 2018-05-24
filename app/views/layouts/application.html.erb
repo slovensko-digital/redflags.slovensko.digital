@@ -10,7 +10,7 @@
         gtag('js', new Date());
 
         document.addEventListener('turbolinks:load', function(event) {
-            gtag('config', '<%= ENV['GA_TRACKING_ID'] %>', { 'page_path': window.location.pathname });
+            gtag('config', '<%= ENV['GA_TRACKING_ID'] %>', { 'page_path': window.location.pathname, 'anonymize_ip': true });
         });
     </script>
     <% end %>
