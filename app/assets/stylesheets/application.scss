@@ -46,6 +46,16 @@ footer {
       text-decoration: none;
     }
   }
+
+  .newsletter {
+    .legal {
+      font-size: $small-font-size;
+      
+      a {
+        text-decoration: underline;
+      }
+    }
+  }
 }
 
 h1 .badge-alpha {
