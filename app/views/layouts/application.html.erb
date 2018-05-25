@@ -19,6 +19,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css"/>
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -31,6 +32,28 @@
     <meta property="og:title" content="<%= yield(:title).presence || @metadata.og.title %>"/>
     <meta property="og:description" content="<%= @metadata.og.description %>"/>
     <meta property="og:image" content="<%= @metadata.og.image %>"/>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
+    <script>
+        window.addEventListener("load", function () {
+            window.cookieconsent.initialise({
+                "palette": {
+                    "popup": {
+                        "background": "#000000"
+                    },
+                    "button": {
+                        "background": "#3a67e8"
+                    }
+                },
+                "theme": "classic",
+                "content": {
+                    "message": "Tento web používa súbory cookie na poskytovanie služieb a analýzu webu. Používaním tohto webu vyjadrujete svoj súhlas s používaním súborov cookie.",
+                    "dismiss": "OK"
+                },
+                "showLink": false
+            })
+        });
+    </script>
   </head>
 
   <body>
