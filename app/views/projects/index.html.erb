@@ -42,6 +42,24 @@
       <tr>
         <td style="width: 12rem;">
           <%= link_to truncate(project.title, length: 80), project_path(project.project), title: project.title %>
+          <% if project.stage %>
+            <div class="project-stages mt-1 mb-2 d-none d-md-flex">
+              <% @project_stages.each do |stage| %>
+                <div
+                  class="stage <%= 'current' if stage == project.stage %><%= 'future' if stage > project.stage %>"
+                  data-toggle="tooltip" data-placement="top" title="<%= stage.name %> <%= '(prebiehajúca fáza)' if stage == project.stage %>"
+                >
+                  <i class="fa fa-circle"></i>
+                </div>
+                <% if stage != @project_stages.last %>
+                  <div class="line <%= 'future' if stage >= project.stage %>"></div>
+                <% end %>
+              <% end %>
+            </div>
+            <p class="d-md-none">
+              <span class="badge badge-secondary" title="Prebiehajúca fáza"><%= project.stage %></span>
+            </p>
+          <% end %>
         </td>
         <% ratings_by_type = project.ratings.index_by(&:rating_type) %>
         <% @rating_types_by_phase.each do |phase, rating_types| %>

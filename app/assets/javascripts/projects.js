@@ -5,4 +5,6 @@ $(document).on('ready turbolinks:load', function () {
         $('.hideable[data-phase-id="' + targetPhaseId + '"]').removeClass('d-none');
         $('.hideable').not('[data-phase-id="' + targetPhaseId + '"]').addClass('d-none');
     });
+
+    $('[data-toggle="tooltip"]').tooltip()
 });

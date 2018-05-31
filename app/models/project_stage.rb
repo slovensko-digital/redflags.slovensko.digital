@@ -9,7 +9,13 @@
 #
 
 class ProjectStage < ApplicationRecord
+  include Comparable
+
   def to_s
     name
+  end
+
+  def <=>(another)
+    id <=> another.id
   end
 end

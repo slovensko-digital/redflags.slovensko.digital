@@ -71,7 +71,7 @@
 }
 
 .rating-known .fa-star-o {
-  color: #dedede;
+  color: $gray-lighter;
 }
 
 img.emoji {
@@ -106,5 +106,54 @@ img.emoji {
     transform: rotate(180deg);
     height: 10em;
   }
+}
 
+.project-stages {
+  $circle-size: .5rem;
+  $future-color: $gray-lighter;
+  $past-color: $gray-light;
+
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  margin-left: -$circle-size/2;
+  max-width: 8em;
+
+  .stage {
+    position: relative;
+    height: $circle-size * 2;
+    width: $circle-size * 2;
+    font-size: $circle-size;
+    color: $past-color;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &:hover {
+      font-size: $circle-size * 1.2;
+  }
+
+    &.current {
+      color: $gray;
+      font-size: $circle-size * 1.4
+    }
+
+    &.future {
+      color: $future-color
+    }
+  }
+
+  .line {
+    flex: 1;
+    height: 1px;
+    background-color: $past-color;
+    margin-top: -.5px;
+    margin-left: -$circle-size;
+    margin-right: -$circle-size;
+
+    &.future {
+      background-color: $future-color;
+    }
+  }
 }
