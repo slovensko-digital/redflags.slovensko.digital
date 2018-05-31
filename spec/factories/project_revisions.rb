@@ -10,7 +10,6 @@
 #  guarantor      :string
 #  description    :string
 #  budget         :string
-#  status         :string
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
 #  body_html      :string
@@ -19,16 +18,19 @@
 #  redflags_count :integer          default(0)
 #  summary        :text
 #  recommendation :text
+#  stage_id       :integer
 #
 # Indexes
 #
 #  index_project_revisions_on_project_id   (project_id)
 #  index_project_revisions_on_revision_id  (revision_id)
+#  index_project_revisions_on_stage_id     (stage_id)
 #
 # Foreign Keys
 #
 #  fk_rails_...  (project_id => projects.id)
 #  fk_rails_...  (revision_id => revisions.id)
+#  fk_rails_...  (stage_id => project_stages.id)
 #
 
 FactoryBot.define do

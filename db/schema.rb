@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171110114322) do
+ActiveRecord::Schema.define(version: 20180531162036) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -40,7 +40,6 @@ ActiveRecord::Schema.define(version: 20171110114322) do
     t.string "guarantor"
     t.string "description"
     t.string "budget"
-    t.string "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "body_html"
@@ -49,8 +48,16 @@ ActiveRecord::Schema.define(version: 20171110114322) do
     t.integer "redflags_count", default: 0
     t.text "summary"
     t.text "recommendation"
+    t.bigint "stage_id"
     t.index ["project_id"], name: "index_project_revisions_on_project_id"
     t.index ["revision_id"], name: "index_project_revisions_on_revision_id"
+    t.index ["stage_id"], name: "index_project_revisions_on_stage_id"
+  end
+
+  create_table "project_stages", force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "projects", force: :cascade do |t|
@@ -103,6 +110,7 @@ ActiveRecord::Schema.define(version: 20171110114322) do
   add_foreign_key "pages", "revisions", column: "published_revision_id"
   add_foreign_key "project_revision_ratings", "project_revisions"
   add_foreign_key "project_revision_ratings", "rating_types"
+  add_foreign_key "project_revisions", "project_stages", column: "stage_id"
   add_foreign_key "project_revisions", "projects"
   add_foreign_key "project_revisions", "revisions"
   add_foreign_key "projects", "pages"
