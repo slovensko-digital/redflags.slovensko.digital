@@ -19,6 +19,7 @@
 #  summary        :text
 #  recommendation :text
 #  stage_id       :integer
+#  happening_now  :string
 #
 # Indexes
 #
@@ -82,6 +83,8 @@ class ProjectRevision < ApplicationRecord
         self.budget = value
       when 'Aktuálny stav projektu:'
         self.stage = ProjectStage.find_by!(name: value)
+      when 'Čo sa práve deje:'
+        self.happening_now = value
       when 'Zhrnutie hodnotenia Red Flags:'
         self.summary = value
       when 'Stanovisko Slovensko.Digital:'

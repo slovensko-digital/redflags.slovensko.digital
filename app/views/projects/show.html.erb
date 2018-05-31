@@ -38,10 +38,14 @@
     </div>
   <% end %>
 
-  <div class="row mb-4 mt-5">
+  <div class="row mb-4 mt-5 pt-4">
     <div class="col">
       <h5>Aktuálny stav projektu</h5>
-      <p class="mb-4"><%= @project.stage %></p>
+      <p><%= @project.stage %></p>
+    </div>
+    <div class="col">
+      <h5>Čo sa práve deje</h5>
+      <p><%= @project.happening_now %></p>
     </div>
   </div>
 
