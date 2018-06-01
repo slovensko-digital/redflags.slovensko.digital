@@ -5,6 +5,17 @@ module ProjectsHelper
     end
   end
 
+  def formatted_body_html(body_html)
+    html = Nokogiri::HTML.parse(body_html)
+    red_flag = Nokogiri::HTML.parse('<i class="fa fa-flag text-danger"></i>').root
+
+    html.search('img.emoji[title=":triangular_flag_on_post:"]').each do |discourse_red_flag|
+      discourse_red_flag.replace(red_flag)
+    end
+
+    html.inner_html
+  end
+
   def rating_stars(rating)
     capture do
       if rating
