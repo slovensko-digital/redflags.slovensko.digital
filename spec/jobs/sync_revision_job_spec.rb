@@ -52,6 +52,6 @@ RSpec.describe SyncRevisionJob, type: :job do
     snapshot = ProjectRevision.first
 
     expect(snapshot.total_score).to eq(6)
-    expect(snapshot.maximum_score).to eq(8)
+    expect(snapshot.maximum_score).to eq(12)
   end
 end
