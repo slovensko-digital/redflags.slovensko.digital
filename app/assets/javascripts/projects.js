@@ -7,7 +7,4 @@ $(document).on('ready turbolinks:load', function () {
     });
 
     $('[data-toggle="tooltip"]').tooltip();
-
-    // Consistent display of red flags
-    $('img.emoji[title=":triangular_flag_on_post:"]').replaceWith('<i class="fa fa-flag text-danger"></i>');
 });
