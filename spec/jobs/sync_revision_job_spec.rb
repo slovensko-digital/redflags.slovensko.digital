@@ -5,6 +5,7 @@ RSpec.describe SyncRevisionJob, type: :job do
     p = create(:rating_phase, name: 'I. Prípravná fáza')
     create(:rating_type, name: 'Reforma VS', rating_phase: p)
     create(:rating_type, name: 'Participácia na príprave projektu', rating_phase: p)
+    create(:rating_type, name: 'Biznis prínos', rating_phase: p)
     create(:project_stage, name: 'Výzva na národný projekt v OPII')
   end
 
@@ -30,6 +31,7 @@ RSpec.describe SyncRevisionJob, type: :job do
 
     expect(ratings['Reforma VS'].score).to eq(2)
     expect(ratings['Participácia na príprave projektu'].score).to eq(4)
+    expect(ratings['Biznis prínos'].score).to eq(0)
   end
 
   it 'ignores pages from unknown category' do
