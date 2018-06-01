@@ -6,5 +6,8 @@ $(document).on('ready turbolinks:load', function () {
         $('.hideable').not('[data-phase-id="' + targetPhaseId + '"]').addClass('d-none');
     });
 
-    $('[data-toggle="tooltip"]').tooltip()
+    $('[data-toggle="tooltip"]').tooltip();
+
+    // Consistent display of red flags
+    $('img.emoji[title=":triangular_flag_on_post:"]').replaceWith('<i class="fa fa-flag text-danger"></i>');
 });
