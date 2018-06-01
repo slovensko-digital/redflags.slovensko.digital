@@ -1,5 +1,0 @@
-sk:
-  date:
-    formats:
-      human: '%d.%m.%Y'
-      system: '%Y-%m-%d'
