@@ -44,7 +44,6 @@ FactoryBot.define do
     guarantor ''
     description ''
     budget ''
-    status ''
     body_html { revision.body_html }
     total_score 75
     maximum_score 100

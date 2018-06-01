@@ -37,7 +37,7 @@
 class ProjectRevision < ApplicationRecord
   belongs_to :project
   belongs_to :revision
-  belongs_to :stage, class_name: 'ProjectStage'
+  belongs_to :stage, class_name: 'ProjectStage', optional: true
 
   has_many :ratings, class_name: 'ProjectRevisionRating'
 
