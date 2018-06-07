@@ -46,12 +46,12 @@
             <div class="mt-1">
               <div class="project-stages d-none d-md-flex">
                 <% @project_stages.each do |stage| %>
-                  <div
-                    class="stage <%= 'current' if stage == project.stage %><%= 'future' if stage > project.stage %>"
-                    data-toggle="tooltip" data-placement="top" title="<%= stage.name %> <%= '(prebiehajúca fáza)' if stage == project.stage %>"
-                  >
+                  <% content_tag :div,
+                      title: "#{stage.name}#{' (prebiehajúca fáza)' if stage == project.stage}",
+                      class: "stage #{'current' if stage == project.stage} #{'future' if stage > project.stage }",
+                      data: { toggle: "tooltip", placement: "top" } do %>
                     <i class="fa fa-circle"></i>
-                  </div>
+                  <% end %>
                   <% if stage != @project_stages.last %>
                     <div class="line <%= 'future' if stage >= project.stage %>"></div>
                   <% end %>
