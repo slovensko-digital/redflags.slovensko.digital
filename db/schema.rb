@@ -49,7 +49,7 @@ ActiveRecord::Schema.define(version: 20180531165022) do
     t.text "summary"
     t.text "recommendation"
     t.bigint "stage_id"
-    t.string "happening_now"
+    t.string "current_status"
     t.index ["project_id"], name: "index_project_revisions_on_project_id"
     t.index ["revision_id"], name: "index_project_revisions_on_revision_id"
     t.index ["stage_id"], name: "index_project_revisions_on_stage_id"

@@ -19,7 +19,7 @@
 #  summary        :text
 #  recommendation :text
 #  stage_id       :integer
-#  happening_now  :string
+#  current_status :string
 #
 # Indexes
 #
