@@ -44,22 +44,7 @@
           <%= link_to truncate(project.title, length: 80), project_path(project.project), title: project.title %>
           <% if project.stage %>
             <div class="mt-1">
-              <div class="project-stages d-none d-md-flex">
-                <% @project_stages.each do |stage| %>
-                  <% content_tag :div,
-                      title: "#{stage.name}#{' (prebiehajúca fáza)' if stage == project.stage}",
-                      class: "stage #{'current' if stage == project.stage} #{'future' if stage > project.stage }",
-                      data: { toggle: "tooltip", placement: "top" } do %>
-                    <i class="fa fa-circle"></i>
-                  <% end %>
-                  <% if stage != @project_stages.last %>
-                    <div class="line <%= 'future' if stage >= project.stage %>"></div>
-                  <% end %>
-                <% end %>
-              </div>
-              <div class="d-md-none">
-                <span class="badge badge-secondary" title="Prebiehajúca fáza"><%= project.stage %></span>
-              </div>
+              <span class="badge badge-secondary" title="Prebiehajúca fáza"><%= project.stage %></span>
             </div>
           <% end %>
         </td>
