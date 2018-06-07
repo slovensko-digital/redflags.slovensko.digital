@@ -82,7 +82,7 @@ class ProjectRevision < ApplicationRecord
       when 'Náklady na projekt:'
         self.budget = value
       when 'Aktuálny stav projektu:'
-        self.stage = ProjectStage.find_by!(name: value)
+        self.stage = ProjectStage.find_by(name: value)
       when 'Čo sa práve deje:'
         self.current_status = value
       when 'Zhrnutie hodnotenia Red Flags:'
