@@ -15,6 +15,7 @@ RSpec.describe SyncTopicJob, type: :job do
     expect(page.revisions.count).to eq(1)
     expect(page.revisions.first).to have_attributes(
       title: 'O projekte Red Flags',
+      tags: ['redflags'],
       version: 9
     )
   end

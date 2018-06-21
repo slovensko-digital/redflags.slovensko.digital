@@ -9,11 +9,13 @@
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #  title      :string           not null
+#  tags       :string           is an Array
 #
 # Indexes
 #
 #  index_revisions_on_page_id              (page_id)
 #  index_revisions_on_page_id_and_version  (page_id,version) UNIQUE
+#  index_revisions_on_tags                 (tags)
 #
 # Foreign Keys
 #
