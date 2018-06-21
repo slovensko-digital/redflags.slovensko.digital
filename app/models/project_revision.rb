@@ -42,7 +42,7 @@ class ProjectRevision < ApplicationRecord
   has_many :ratings, class_name: 'ProjectRevisionRating'
 
   delegate :category, to: :project
-  delegate :version, to: :revision
+  delegate :version, :tags, to: :revision
 
   def total_score_percentage
     100.0 * total_score / maximum_score
@@ -63,6 +63,10 @@ class ProjectRevision < ApplicationRecord
 
     load_metadata(summary)
     load_ratings(rest)
+  end
+
+  def outdated?
+    tags&.include?('rf-outdated')
   end
 
   private

@@ -64,6 +64,15 @@
     <p class="text-right mb-5 mt-1">
       Posledná aktualizácia: <strong><%= l(@project.updated_at.to_date, format: :human) %></strong></strong>
     </p>
+    <% if @project.outdated? %>
+      <div class="alert alert-warning my-2" role="alert">
+        <h5 class="alert-heading">Hodnotenie nie je aktuálne</h5>
+        <p>
+          V tomto projekte nastali zmeny, ktoré nie sú zahrnuté v súčasnom hodnotení. Na aktualizácii pracujeme, môžete sa do nej
+          <%= link_to 'zapojiť aj Vy', "https://platforma.slovensko.digital/t/#{@project.project_id}", title: 'Upraviť hodnotenie', class: 'alert-link' %>.
+        </p>
+      </div>
+    <% end %>
     <% @rating_types_by_phase.each do |rating_phase, rating_types| %>
       <div class="row mt-4 mb-1">
         <div class="col">

@@ -14,6 +14,7 @@ class SyncTopicJob < ApplicationJob
 
       revision = page.revisions.find_or_initialize_by(version: version)
       revision.title = topic['title']
+      revision.tags = topic['tags']
       revision.raw = topic
       revision.save!
 
