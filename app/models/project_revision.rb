@@ -66,7 +66,7 @@ class ProjectRevision < ApplicationRecord
   end
 
   def outdated?
-    tags&.include?('rf-outdated')
+    tags.include?('rf-outdated')
   end
 
   private

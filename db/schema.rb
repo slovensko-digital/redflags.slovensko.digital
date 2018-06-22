@@ -104,7 +104,7 @@ ActiveRecord::Schema.define(version: 20180620144613) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "title", null: false
-    t.string "tags", array: true
+    t.string "tags", default: [], array: true
     t.index ["page_id", "version"], name: "index_revisions_on_page_id_and_version", unique: true
     t.index ["page_id"], name: "index_revisions_on_page_id"
     t.index ["tags"], name: "index_revisions_on_tags", using: :gin

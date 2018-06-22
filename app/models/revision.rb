@@ -9,7 +9,7 @@
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #  title      :string           not null
-#  tags       :string           is an Array
+#  tags       :string           default([]), is an Array
 #
 # Indexes
 #
