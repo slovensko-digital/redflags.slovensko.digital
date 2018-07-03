@@ -23,6 +23,7 @@ RSpec.describe SyncRevisionJob, type: :job do
       description: 'Implementovanť nový IS pre správu Obchodného registra a súvisiace opatrenia na zafektívnenie jeho procesov.',
       budget: '13 250 000 EUR (s DPH, podľa vyzvania na národný projekt)',
       stage: ProjectStage.find_by!(name: 'Výzva na národný projekt v OPII'),
+      current_status: "<ul>\n<li>Nie sú známe žiadne plánované aktivity</li>\n<li>Ani v ďalšej odrážke nie sú aktivity</li>\n</ul>\n",
       summary: 'Najvýraznejším nedostatkom projektu EDUNET je nedostatočná príprava projektu, chýbajúce zhodnotenie alternatív a ekonomické zhodnotenie rôznych modelov nákupu a budovania školskej siete. Projekt je nastavený tak, že na trhu s viac ako 300 dodávateľmi sa obstarávania zúčastnili len štyria. Ministerstvo taktiež odmieta odbornú diskusiu k projektu, čo výrazne zvyšuje obavu o jeho kvalitu.',
       recommendation: 'Odporúčame projekt pozastaviť a dôkladne zanalyzovať rôzne alternatívy budovania siete aj s ohľadom na podmienky na telekomunikačnom trhu.'
     )

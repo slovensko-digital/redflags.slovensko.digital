@@ -88,7 +88,7 @@ class ProjectRevision < ApplicationRecord
       when 'Aktuálny stav projektu:'
         self.stage = ProjectStage.find_by(name: value)
       when 'Čo sa práve deje:'
-        self.current_status = value
+        self.current_status = p.next_element
       when 'Zhrnutie hodnotenia Red Flags:'
         self.summary = value
       when 'Stanovisko Slovensko.Digital:'
