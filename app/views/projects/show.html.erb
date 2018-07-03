@@ -45,7 +45,7 @@
     </div>
     <div class="col">
       <h5>Čo sa práve deje</h5>
-      <p><%= @project.current_status %></p>
+      <p><%= @project.current_status&.html_safe %></p>
     </div>
   </div>
 
