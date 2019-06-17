@@ -13,6 +13,10 @@ module ProjectsHelper
       discourse_red_flag.replace(red_flag)
     end
 
+    html.search('*[href^="/uploads/short-url/"]').each do |link|
+      link.attributes["href"].value = link[:href].gsub('/uploads/short-url/', 'https://platforma.slovensko.digital/uploads/short-url/')
+    end
+
     html.inner_html
   end
 
