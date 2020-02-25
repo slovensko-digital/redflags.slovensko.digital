@@ -25,7 +25,7 @@
 FactoryBot.define do
   factory :revision do
     page
-    title 'Red Flags: IS Obchodného registra'
+    title { 'Red Flags: IS Obchodného registra' }
     sequence(:version) { |n| 1_000_000 * page.id + n }
 
     after :create do |r|

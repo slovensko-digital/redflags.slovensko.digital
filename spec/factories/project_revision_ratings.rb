@@ -1,5 +1,5 @@
 # == Schema Information
-#
+  #
 # Table name: project_revision_ratings
 #
 #  id                  :integer          not null, primary key
@@ -24,6 +24,6 @@ FactoryBot.define do
   factory :project_revision_rating do
     project_revision nil
     rating_type nil
-    rating 1
+    score { 1 }
   end
 end

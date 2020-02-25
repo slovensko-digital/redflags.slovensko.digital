@@ -22,17 +22,17 @@ FactoryBot.define do
 
     trait :published do
       after :create do |p|
-        p.update! published_revision_id: p.revisions.first.id
+        p.update! published_revision: p.revisions.first
       end
     end
 
     trait :unpublished do
-      published_revision_id nil
+      published_revision { nil }
     end
 
     trait :synced do
       after :create do |p|
-        p.update! published_revision_id: p.latest_revision.id
+        p.update! published_revision: p.latest_revision
       end
     end
 

@@ -39,13 +39,13 @@ FactoryBot.define do
     project
     revision
 
-    title 'Red Flags: IS Obchodného registra'
-    full_name 'Národný projekt IS Obchodného registra'
-    guarantor ''
-    description ''
-    budget ''
+    title { 'Red Flags: IS Obchodného registra' }
+    full_name { 'Národný projekt IS Obchodného registra' }
+    guarantor { '' }
+    description { '' }
+    budget { '' }
     body_html { revision.body_html }
-    total_score 75
-    maximum_score 100
+    total_score { 75 }
+    maximum_score { 100 }
   end
 end

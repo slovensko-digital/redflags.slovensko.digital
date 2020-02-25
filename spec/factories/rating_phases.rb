@@ -10,6 +10,6 @@
 
 FactoryBot.define do
   factory :rating_phase do
-    name "MyString"
+    name { "MyString" }
   end
 end

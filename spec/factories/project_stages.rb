@@ -11,6 +11,6 @@
 
 FactoryBot.define do
   factory :project_stage do
-    name 'Reformný zámer'
+    name { 'Reformný zámer' }
   end
 end
