@@ -53,7 +53,7 @@ group :development, :test do
   gem 'dotenv-rails'
   gem 'rspec-rails'
   gem 'factory_bot_rails'
-  gem 'simplecov'
+  gem 'simplecov', '0.17.1'
   gem 'vcr'
   gem 'webmock'
   gem 'capybara'
