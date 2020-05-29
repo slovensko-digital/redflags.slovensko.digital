@@ -7,7 +7,7 @@ jobs:
     working_directory: ~/slovensko-digital/redflags.slovensko.digital
 
     docker:
-      - image: circleci/ruby:2.5.0-node-browsers
+      - image: circleci/ruby:2.6.4-node-browsers
         environment:
           RAILS_ENV: test
 
@@ -25,7 +25,10 @@ jobs:
       - run: sudo apt-get update
       - run: sudo apt-get install postgresql-client-10
       - restore_cache: { keys: ['{{ checksum "Gemfile.lock" }}'] }
-      - run: bundle install --path vendor/bundle
+      - run: gem update --system
+      - run: gem install bundler
+      - run: bundle config set deployment true
+      - run: bundle install
       - save_cache: { key: '{{ checksum "Gemfile.lock" }}', paths: [vendor/bundle] }
       - run: dockerize -wait tcp://localhost:5432 -timeout 60s
       - run: mv .circleci/database.yml config/database.yml
