@@ -25,6 +25,8 @@ jobs:
       - run: sudo apt-get update
       - run: sudo apt-get install postgresql-client-10
       - restore_cache: { keys: ['{{ checksum "Gemfile.lock" }}'] }
+      - run: gem install bundler
+      - run: gem update --system
       - run: bundle install --path vendor/bundle
       - save_cache: { key: '{{ checksum "Gemfile.lock" }}', paths: [vendor/bundle] }
       - run: dockerize -wait tcp://localhost:5432 -timeout 60s
