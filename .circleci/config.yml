@@ -1,19 +1,19 @@
-version: 2
+version: 2.1
+
 jobs:
   build:
-    environment:
-      CC_TEST_REPORTER_ID: 6030c082dd061c9db240bf8843482feda35322decaad846163cbb4818c1685c3
-
     working_directory: ~/slovensko-digital/redflags.slovensko.digital
 
     docker:
       - image: circleci/ruby:2.6.6-node-browsers
         environment:
+          CC_TEST_REPORTER_ID: 6030c082dd061c9db240bf8843482feda35322decaad846163cbb4818c1685c3
+          PGHOST: localhost
           RAILS_ENV: test
 
       - image: circleci/postgres:12-alpine-ram
         environment:
-          POSTGRES_USER: ubuntu
+          POSTGRES_USER: circleci
           POSTGRES_HOST_AUTH_METHOD: trust
 
     steps:
@@ -27,7 +27,6 @@ jobs:
       - run: bundle install
       - save_cache: { key: '{{ checksum "Gemfile.lock" }}', paths: [vendor/bundle] }
       - run: dockerize -wait tcp://localhost:5432 -timeout 60s
-      - run: mv .circleci/database.yml config/database.yml
       - run: bundle exec rake db:create db:schema:load --trace
       - run: ./test-reporter before-build
       - run: bundle exec rspec
