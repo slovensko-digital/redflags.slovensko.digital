@@ -155,7 +155,7 @@ GEM
       erubis
       que (~> 0.8)
       sinatra
-    rack (2.2.2)
+    rack (2.2.3)
     rack-protection (2.0.8.1)
       rack
     rack-test (1.1.0)
