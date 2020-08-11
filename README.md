@@ -1,6 +1,5 @@
-# RedFlags Public Facing Website
+# Red Flags Public Facing Website
 
-[![CircleCI](https://img.shields.io/circleci/project/github/slovensko-digital/redflags.slovensko.digital.svg)](https://circleci.com/gh/slovensko-digital/redflags.slovensko.digital)
-[![Gemnasium](https://img.shields.io/gemnasium/slovensko-digital/redflags.slovensko.digital.svg)](https://gemnasium.com/slovensko-digital/redflags.slovensko.digital)
-[![Code Climate](https://img.shields.io/codeclimate/github/slovensko-digital/redflags.slovensko.digital.svg)](https://codeclimate.com/github/slovensko-digital/redflags.slovensko.digital)
-[![Test Coverage](https://img.shields.io/codeclimate/coverage/github/slovensko-digital/redflags.slovensko.digital.svg)](https://codeclimate.com/github/slovensko-digital/redflags.slovensko.digital/coverage)
+[![Build](https://img.shields.io/circleci/build/github/slovensko-digital/redflags.slovensko.digital)](https://circleci.com/gh/slovensko-digital/redflags.slovensko.digital)
+[![Coverage](https://img.shields.io/codeclimate/coverage/slovensko-digital/redflags.slovensko.digital)](https://codeclimate.com/github/slovensko-digital/redflags.slovensko.digital)
+[![Maintainability](https://img.shields.io/codeclimate/maintainability/slovensko-digital/redflags.slovensko.digital)](https://codeclimate.com/github/slovensko-digital/redflags.slovensko.digital)
