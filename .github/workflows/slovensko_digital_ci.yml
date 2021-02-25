@@ -44,11 +44,9 @@ jobs:
           - env: staging
             host: STAGING_HOST
             key: STAGING_KEY
-            app: redflags.slovensko.digital
           - env: production
             host: SSD_PRODUCTION_HOST
             key: SSD_PRODUCTION_KEY
-            app: redflags.slovensko.digital
 
     steps:
       - uses: actions/checkout@v2
@@ -56,5 +54,5 @@ jobs:
           fetch-depth: 0
       - uses: dokku/github-action@master
         with:
-          git_remote_url: ssh://dokku@${{secrets[matrix.host]}}/${{matrix.app}}
+          git_remote_url: ssh://dokku@${{secrets[matrix.host]}}/${{github.event.repository.name}}
           ssh_private_key: ${{secrets[matrix.key]}}
