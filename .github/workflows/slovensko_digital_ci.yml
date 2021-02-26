@@ -56,6 +56,6 @@ jobs:
           fetch-depth: 0
       - uses: dokku/github-action@master
         with:
-          git_push_flags: ${{matrix.flag]}}
+          git_push_flags: ${{matrix.flag}}
           git_remote_url: ssh://dokku@${{secrets[matrix.host]}}/${{github.event.repository.name}}
           ssh_private_key: ${{secrets[matrix.key]}}
