@@ -1,1 +1,4 @@
+TIMEOUT=60
+WAIT=30
+
 /
