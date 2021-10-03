@@ -49,6 +49,7 @@ jobs:
             host: SSD_PRODUCTION_HOST
             key: SSD_PRODUCTION_KEY
             flags: ''
+      fail-fast: false
 
     steps:
       - uses: actions/checkout@v2
