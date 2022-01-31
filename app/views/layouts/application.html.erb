@@ -1,30 +1,17 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <% if ENV['GA_TRACKING_ID'] %>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=<%= ENV['GA_TRACKING_ID'] %>"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-
-        document.addEventListener('turbolinks:load', function(event) {
-            gtag('config', '<%= ENV['GA_TRACKING_ID'] %>', { 'page_path': window.location.pathname, 'anonymize_ip': true });
-        });
-    </script>
-    <% end %>
     <title><% if content_for?(:title) %><%= yield(:title) %><% else %>Red Flags &middot; Slovensko.Digital<% end %></title>
     <%= csrf_meta_tags %>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
-    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css"/>
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="manifest" href="/manifest.json">
     <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css"/>
     <meta name="theme-color" content="#ffffff">
     <meta property="og:type" content="website"/>
     <meta property="og:site_name" content="Red Flags Slovensko.Digital"/>
@@ -47,8 +34,8 @@
                 },
                 "theme": "classic",
                 "content": {
-                    "message": "Tento web používa súbory cookie na poskytovanie služieb a analýzu webu. Používaním tohto webu vyjadrujete svoj súhlas s používaním súborov cookie.",
-                    "dismiss": "OK"
+                    "message": "Tento web používa len nevyhnutné súbory cookies.",
+                    "dismiss": "Súhlasím"
                 },
                 "showLink": false
             })
