@@ -20,6 +20,9 @@
     <meta property="og:description" content="<%= @metadata.og.description %>"/>
     <meta property="og:image" content="<%= @metadata.og.image %>"/>
 
+    <script defer data-domain="<yourdomain.com>" src="https://plausible.io/js/plausible.js"></script>
+    <script>window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }</script>
+
     <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
     <script>
         window.addEventListener("load", function () {
@@ -146,6 +149,7 @@
           </div>
         </div>
       </div>
+      <script> plausible('Page viewed'); </script>
     </footer>
   </body>
 </html>
