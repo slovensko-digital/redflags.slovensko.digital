@@ -4,6 +4,17 @@
   <div class="row mb-5">
     <div class="col-md-12">
       <h1 class="project-title"><%= @project.title %></h1>
+      <% if translate_tags(@project.tags).present? %>
+        <div class="row mb-5">
+          <div class="col-md-12">
+            <h2>
+              <% translate_tags(@project.tags).each do |tag| %>
+                <span class="badge badge-info"><%= tag %></span>
+              <% end %>
+            </h2>
+          </div>
+        </div>
+      <% end %>
       <p class="lead text-muted mt-4"><%= @project.description %></p>
     </div>
   </div>
