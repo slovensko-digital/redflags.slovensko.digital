@@ -4,16 +4,14 @@
   <div class="row mb-5">
     <div class="col-md-12">
       <h1 class="project-title"><%= @project.title %></h1>
-      <% if translate_tags(@project.tags).present? %>
-        <div class="row mb-5">
-          <div class="col-md-12">
-            <h2>
-              <% translate_tags(@project.tags).each do |tag| %>
-                <span class="badge badge-info"><%= tag %></span>
-              <% end %>
-            </h2>
-          </div>
-        </div>
+      <% if @project.tags.map { |tag| ProjectsHelper::ALLOWED_TAGS[tag] }.present? %>
+        <% @project.tags.map { |tag| [ProjectsHelper::ALLOWED_TAGS[tag], tag] if ProjectsHelper::ALLOWED_TAGS[tag]}.each do |translated, tag| %>
+          <p class="lead">
+            <%= link_to projects_path(tag: tag) do%>
+            <span class="badge badge-danger"><%= translated %></span>
+            <% end %>
+          </p>
+        <% end %>
       <% end %>
       <p class="lead text-muted mt-4"><%= @project.description %></p>
     </div>

@@ -42,15 +42,9 @@ module ProjectsHelper
     end
   end
 
-  def self.available_tags
-    {
-      "hodnotene-sd" => "Hodnotené tímom Slovensko.Digital",
-      "hodnotene-rfza" => "Hodnotené tímom Žilina",
-      "hodnotene-komunitou" => "Hodnotené Komunitou",
-    }
-  end
-
-  def translate_tags(tags)
-    tags.map { |tag| ProjectsHelper::available_tags[tag] }
-  end
+  ALLOWED_TAGS = {
+    "hodnotene-sd" => "Hodnotené tímom Slovensko.Digital",
+    "hodnotene-rfza" => "Hodnotené tímom Žilina",
+    "hodnotene-komunitou" => "Hodnotené Komunitou",
+  }
 end
