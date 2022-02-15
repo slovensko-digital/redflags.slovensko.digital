@@ -4,7 +4,6 @@
   <div class="row mb-5">
     <div class="col-md-12">
       <h1 class="project-title"><%= @project.title %></h1>
-      <% if @project.tags.map { |tag| ProjectsHelper::ALLOWED_TAGS[tag] }.present? %>
         <% @project.tags.map { |tag| [ProjectsHelper::ALLOWED_TAGS[tag], tag] if ProjectsHelper::ALLOWED_TAGS[tag]}.each do |translated, tag| %>
           <p class="lead">
             <%= link_to projects_path(tag: tag) do%>
@@ -12,7 +11,6 @@
             <% end %>
           </p>
         <% end %>
-      <% end %>
       <p class="lead text-muted mt-4"><%= @project.description %></p>
     </div>
   </div>
