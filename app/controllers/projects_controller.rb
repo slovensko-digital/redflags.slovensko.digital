@@ -11,10 +11,8 @@ class ProjectsController < ApplicationController
     @rating_types_by_phase = RatingType.all.group_by(&:rating_phase)
     @selected_tag = params[:tag]
 
-    if ProjectsHelper::ALLOWED_TAGS.map { |tag, translated| tag }.include? params[:tag]
-      @projects = Project.published.joins(published_revision: :revision)
-        .where(":tags = ANY(revisions.tags)", tags: params[:tag])
-        .map { |p| p.published_revision }.sort_by(&:aggregated_rating)
+    if ProjectsHelper::ALLOWED_TAGS.keys.include? params[:tag]
+      @projects = Project.published.with_tag(params[:tag]).map { |p| p.published_revision }.sort_by(&:aggregated_rating)
     
     else
       @projects = Project.published.map { |p| p.published_revision }.sort_by(&:aggregated_rating)
