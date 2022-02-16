@@ -28,7 +28,7 @@ class Project < ApplicationRecord
   belongs_to :published_revision, class_name: 'ProjectRevision', optional: true
 
   scope :published, -> { where('published_revision_id IS NOT NULL') }
-  scope :with_tag, -> (tag) { joins(published_revision: :revision).where(":tags = ANY(revisions.tags)", tags: tag) }
+  scope :with_tag, -> (tag) { joins(published_revision: :revision).where("? = ANY(revisions.tags)", tag) }
 
   enum category: { good: 0, bad: 1, boring: 2 }
 end
