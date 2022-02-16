@@ -9,6 +9,10 @@ class ProjectsController < ApplicationController
 
   def index
     @rating_types_by_phase = RatingType.all.group_by(&:rating_phase)
-    @projects = Project.published.map { |p| p.published_revision }.sort_by(&:aggregated_rating)
+    @selected_tag = params[:tag]
+
+    @projects = Project.published
+    @projects = @projects.with_tag(params[:tag]) if ProjectsHelper::ALLOWED_TAGS.keys.include?(params[:tag])
+    @projects = @projects.map { |p| p.published_revision }.sort_by(&:aggregated_rating)
   end
 end

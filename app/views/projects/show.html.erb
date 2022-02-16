@@ -4,6 +4,13 @@
   <div class="row mb-5">
     <div class="col-md-12">
       <h1 class="project-title"><%= @project.title %></h1>
+        <% @project.tags.select { |tag| ProjectsHelper::ALLOWED_TAGS[tag] }.each do |tag| %>
+          <p class="lead">
+            <%= link_to projects_path(tag: tag) do%>
+            <span class="badge badge-danger"><%= ProjectsHelper::ALLOWED_TAGS[tag] %></span>
+            <% end %>
+          </p>
+        <% end %>
       <p class="lead text-muted mt-4"><%= @project.description %></p>
     </div>
   </div>

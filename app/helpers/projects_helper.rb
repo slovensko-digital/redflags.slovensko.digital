@@ -41,4 +41,10 @@ module ProjectsHelper
       end
     end
   end
+
+  ALLOWED_TAGS = {
+    "hodnotene-sd" => "Hodnotené tímom Slovensko.Digital",
+    "hodnotene-rfza" => "Hodnotené tímom Žilina",
+    "hodnotene-komunitou" => "Hodnotené Komunitou",
+  }
 end
