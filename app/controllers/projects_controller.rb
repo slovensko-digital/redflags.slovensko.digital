@@ -12,7 +12,8 @@ class ProjectsController < ApplicationController
     @selected_tag = params[:tag]
 
     if ProjectsHelper::ALLOWED_TAGS.map { |tag, translated| tag }.include? params[:tag]
-      @projects = Project.published.select {|p| p.published_revision.tags.include? params[:tag]}
+      @projects = Project.published.joins(published_revision: :revision)
+        .where(":tags = ANY(revisions.tags)", tags: params[:tag])
         .map { |p| p.published_revision }.sort_by(&:aggregated_rating)
     
     else
