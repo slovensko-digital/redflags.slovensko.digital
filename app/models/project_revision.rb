@@ -59,6 +59,7 @@ class ProjectRevision < ApplicationRecord
     body = raw['post_stream']['posts'].first['cooked']
     summary, rest = body.split(/<h1>.+?<\/h1>/m, 2)
 
+    rest = rest.gsub(/<h2>.+?<\/h2>/m, '')
     self.body_html = rest
 
     load_metadata(summary)
@@ -101,19 +102,14 @@ class ProjectRevision < ApplicationRecord
     redflags_count = 0
     total_score = 0
     maximum_score = 0
-    current_phase = nil
     doc = Nokogiri::HTML.parse(body)
-    doc.css('h2, h3').each do |heading|
+    doc.css('h3').each do |heading|
       value = heading.text.strip
-      case heading.name
-      when 'h2'
-        current_phase = RatingPhase.find_by(name: value)
-      when 'h3'
-        next unless current_phase
-        rating_type = current_phase.rating_types.find_by(name: value)
-        if rating_type
-          score = heading.css('img.emoji[title=":star:"]').count
-          bad_score = heading.css('img.emoji[title=":grey_star:"]').count
+      rating_type = RatingType.find_by(name: value)
+      if rating_type
+        score = heading.css('img.emoji[title=":star:"]').count
+        bad_score = heading.css('img.emoji[title=":grey_star:"]').count
+        if score + bad_score > 0
           rating = self.ratings.find_or_initialize_by(rating_type: rating_type)
           rating.score = score
           redflags_count += 1 if bad_score == 4

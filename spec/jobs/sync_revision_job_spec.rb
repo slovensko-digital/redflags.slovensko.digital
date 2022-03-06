@@ -2,10 +2,9 @@ require 'rails_helper'
 
 RSpec.describe SyncRevisionJob, type: :job do
   before(:example) do
-    p = create(:rating_phase, name: 'I. Prípravná fáza')
-    create(:rating_type, name: 'Reforma VS', rating_phase: p)
-    create(:rating_type, name: 'Participácia na príprave projektu', rating_phase: p)
-    create(:rating_type, name: 'Biznis prínos', rating_phase: p)
+    create(:rating_type, name: 'Reforma VS')
+    create(:rating_type, name: 'Participácia na príprave projektu')
+    create(:rating_type, name: 'Biznis prínos')
     create(:project_stage, name: 'Výzva na národný projekt v OPII')
   end
 
