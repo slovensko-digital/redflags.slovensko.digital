@@ -109,6 +109,10 @@ class ProjectRevision < ApplicationRecord
       if rating_type
         score = heading.css('img.emoji[title=":star:"]').count
         bad_score = heading.css('img.emoji[title=":grey_star:"]').count
+        red_score = heading.css('img.emoji[title=":triangular_flag_on_post:"]').count
+        if red_score > 0
+          bad_score = 4
+        end
         if score + bad_score > 0
           rating = self.ratings.find_or_initialize_by(rating_type: rating_type)
           rating.score = score
