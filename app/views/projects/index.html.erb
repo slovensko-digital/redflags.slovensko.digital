@@ -15,7 +15,7 @@
     <thead>
     <tr style="background-color: #f4f4f4">
       <th>Projekt</th>
-      <th class="text-center">Hodnotenia podľa kritérií</th>
+      <th colspan="5" class="text-center">Hodnotenia podľa kritérií</th>
       <th class="text-center tag-tooltip" title="Celkové hodnotenie">&sum;</th>
     </tr>
     </thead>
@@ -30,15 +30,16 @@
             </div>
           <% end %>
         </td>
-        <td>
-          <div class="row">
-            <% project.ratings.index_by(&:rating_type).each do |rating_type, rating| %>
-              <div class="text-center col-md-2" style="padding: 10px">
-                <small class="tag-tooltip" title="<%= rating_type.name %>"><%= rating_stars(rating) %></small>
-              </div>
+        <% ratings = project.ratings.group_by(&:score) %>
+        <% 4.downto(0).each do |index| rt = ratings[index] %>
+          <td class="text-center">
+            <% if rt %>
+              <strong class = "tag-tooltip" title="<%= rt.map{|r| r.rating_type.name}.join(", ") %>">
+                <%= rt.count %> &times; <%= rating_stars(rt.first) %>
+              </strong>
             <% end %>
-          </div>
-        </td>
+          </td>
+        <% end %>
         <td style="background-color: #f4f4f4; width: 5em" class="text-center">
           <% if project.redflags_count > 0 %>
             <strong class="text-danger"><%= project.redflags_count %> &times; <%= fa_icon('flag', class: 'text-danger') %></strong>
