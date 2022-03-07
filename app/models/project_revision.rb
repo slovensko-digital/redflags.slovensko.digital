@@ -59,7 +59,6 @@ class ProjectRevision < ApplicationRecord
     body = raw['post_stream']['posts'].first['cooked']
     summary, rest = body.split(/<h1>.+?<\/h1>/m, 2)
 
-    rest = rest.gsub(/<h2>.+?<\/h2>/m, '')
     self.body_html = rest
 
     load_metadata(summary)
