@@ -11,40 +11,12 @@
       <%= submit_tag "Filtrovať", class: "btn mb-2" %>
     </div>
   <% end %>
-
-  <ul class="nav nav-pills mb-3 mt-5" style="margin-left: 12rem" id="phases-switcher" role="tablist">
-    <% @rating_types_by_phase.each do |phase, rating_types| %>
-      <li class="nav-item">
-        <a class="nav-link <%= "active" if phase.id == 1 %>" href="#" data-toggle="pill" data-target-phase-id="<%= phase.id %>">
-          <%= phase.name %>
-          <% if phase.id !=1 %><span class="badge badge-success">Nové</span><% end %>
-        </a>
-      </li>
-    <% end %>
-  </ul>
-
   <table class="table">
     <thead>
-    <tr>
-      <th class="text-right">Fáza</th>
-      <% @rating_types_by_phase.each do |phase, rating_types| %>
-        <th class="text-center hideable <%= "d-none" if phase.id != 1 %>" data-phase-id="<%= phase.id %>" style="background-color: #efefef;" colspan="<%= rating_types.count %>"><%= phase.name %></th>
-      <% end %>
-      <th class="text-center">&sum;</th>
-    </tr>
-    <tr>
+    <tr style="background-color: #f4f4f4">
       <th>Projekt</th>
-      <% @rating_types_by_phase.each do |phase, rating_types| %>
-        <% rating_types.each do |rating_type| %>
-          <th class="hideable <%= "d-none" if phase.id != 1 %>" data-phase-id="<%= phase.id %>">
-          <div class="text-sideways"><%= rating_type.name %></div>
-          </th>
-        <% end %>
-      <% end %>
-
-      <th>
-        <div class="text-sideways"><strong>Celkové hodnotenie</strong></div>
-      </th>
+      <th colspan="5" class="text-center">Hodnotenia podľa kritérií</th>
+      <th class="text-center tag-tooltip" title="Celkové hodnotenie">&sum;</th>
     </tr>
     </thead>
     <tbody>
@@ -58,14 +30,17 @@
             </div>
           <% end %>
         </td>
-        <% ratings_by_type = project.ratings.index_by(&:rating_type) %>
-        <% @rating_types_by_phase.each do |phase, rating_types| %>
-          <% rating_types.each do |rating_type| %>
-            <% rating = ratings_by_type[rating_type] %>
-            <td class="text-center hideable <%= "d-none" if phase.id != 1 %>" data-phase-id="<%= phase.id %>"><small><%= rating_stars(rating) %></small></td>
-          <% end %>
+        <% ratings = project.ratings.group_by(&:score) %>
+        <% 4.downto(0).each do |index| rt = ratings[index] %>
+          <td class="text-center">
+            <% if rt %>
+              <strong class = "tag-tooltip" title="<%= rt.map{|r| r.rating_type.name}.join(", ") %>">
+                <%= rt.count %> &times; <%= rating_stars(rt.first) %>
+              </strong>
+            <% end %>
+          </td>
         <% end %>
-        <td style="background-color: #f2f2f2; width: 5em">
+        <td style="background-color: #f4f4f4; width: 5em" class="text-center">
           <% if project.redflags_count > 0 %>
             <strong class="text-danger"><%= project.redflags_count %> &times; <%= fa_icon('flag', class: 'text-danger') %></strong>
           <% else %>

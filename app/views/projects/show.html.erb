@@ -80,28 +80,14 @@
         </p>
       </div>
     <% end %>
-    <% @rating_types_by_phase.each do |rating_phase, rating_types| %>
-      <div class="row mt-4 mb-1">
-        <div class="col">
-          <h5><%= rating_phase.name %></h5>
+    <div class="row">
+      <% @project.ratings.index_by(&:rating_type).each do |rating_type, rating| %>
+        <div class="col-md-3">
+          <%= rating_stars(rating) %>
+          <p><%= rating_type.name %></p>
         </div>
-      </div>
-      <div class="row">
-        <% rating_types.each do |rating_type| %>
-          <% rating = @ratings_by_type[rating_type] %>
-          <div class="col-md-3">
-            <% if rating %>
-              <%= rating_stars(rating) %>
-              <p><%= rating_type.name %></p>
-            <% else %>
-              <div class="text-muted"><%= help_icon_if_blank(rating) %></div>
-              <p class='text-muted'><%= rating_type.name %></p>
-            <% end %>
-          </div>
-        <% end %>
-      </div>
-    <% end %>
-  </div>
+      <% end %>
+    </div>
 
   <div class="my-5">
     <h2 class="mb-5">Detailné hodnotenie projektu</h2>

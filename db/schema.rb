@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180620144613) do
+ActiveRecord::Schema.define(version: 20220306165121) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -83,18 +83,10 @@ ActiveRecord::Schema.define(version: 20180620144613) do
     t.text "queue", default: "", null: false
   end
 
-  create_table "rating_phases", force: :cascade do |t|
-    t.string "name", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "rating_types", force: :cascade do |t|
-    t.bigint "rating_phase_id", null: false
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["rating_phase_id"], name: "index_rating_types_on_rating_phase_id"
   end
 
   create_table "revisions", force: :cascade do |t|
@@ -119,6 +111,5 @@ ActiveRecord::Schema.define(version: 20180620144613) do
   add_foreign_key "project_revisions", "revisions"
   add_foreign_key "projects", "pages"
   add_foreign_key "projects", "project_revisions", column: "published_revision_id"
-  add_foreign_key "rating_types", "rating_phases"
   add_foreign_key "revisions", "pages"
 end
