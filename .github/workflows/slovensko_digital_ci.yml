@@ -39,16 +39,12 @@ jobs:
 
     strategy:
       matrix:
-        env: [staging, production]
+        env: [staging]
         include:
           - env: staging
-            host: STAGING_HOST
-            key: STAGING_KEY
+            host: GITLAB_DEPLOY_HOST
+            key: GITLAB_DEPLOY_KEY
             flags: '--force'
-          - env: production
-            host: SSD_PRODUCTION_HOST
-            key: SSD_PRODUCTION_KEY
-            flags: ''
       fail-fast: false
 
     steps:
@@ -58,5 +54,5 @@ jobs:
       - uses: dokku/github-action@master
         with:
           git_push_flags: ${{matrix.flags}}
-          git_remote_url: ssh://dokku@${{secrets[matrix.host]}}/${{github.event.repository.name}}
+          git_remote_url: ssh://git@${{secrets[matrix.host]}}/${{github.event.repository.name}}
           ssh_private_key: ${{secrets[matrix.key]}}
