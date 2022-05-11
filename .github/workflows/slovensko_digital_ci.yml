@@ -45,5 +45,5 @@ jobs:
       - uses: dokku/github-action@master
         with:
           git_push_flags: '--force'
-          git_remote_url: ssh://git@${{secrets[GITLAB_DEPLOY_HOST]}}/${{github.event.repository.name}}.git
-          ssh_private_key: ${{secrets[GITLAB_DEPLOY_KEY]}}
+          git_remote_url: ssh://git@${{secrets['GITLAB_DEPLOY_HOST']}}/${{github.event.repository.name}}.git
+          ssh_private_key: ${{secrets['GITLAB_DEPLOY_KEY']}}
