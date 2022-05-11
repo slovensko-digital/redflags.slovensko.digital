@@ -51,6 +51,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
+      - run: echo "ssh://git@${{secrets[matrix.host]}}/${{github.event.repository.name}}.git"
       - uses: dokku/github-action@master
         with:
           git_push_flags: ${{matrix.flags}}
