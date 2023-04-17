@@ -22,6 +22,10 @@ class StaticController < ApplicationController
     render_page :faq
   end
 
+  def statne_it_v_cislach
+    render_page :statne_it_v_cislach
+  end
+
   private
 
   def render_page(name)
