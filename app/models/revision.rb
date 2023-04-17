@@ -28,7 +28,7 @@ class Revision < ApplicationRecord
   after_save :schedule_sync_project_job # TODO: move to domain events and pubsub
 
   def body_html
-    substitue_iframes raw['post_stream']['posts'].first['cooked']
+    raw['post_stream']['posts'].first['cooked']
   end
 
   def published?
@@ -43,15 +43,5 @@ class Revision < ApplicationRecord
 
   def schedule_sync_project_job
     SyncRevisionJob.perform_later(self)
-  end
-
-  def substitue_iframes(body)
-    doc = Nokogiri::HTML.parse(body)
-    doc.css('iframe[src*="bi.ekosystem.slovensko.digital"]').each_with_index do |iframe, index|
-      iframe['id'] = "iframe_#{index}"
-      iframe.add_previous_sibling('<script src="https://cdnjs.cloudflare.com/ajax/libs/iframe-resizer/4.3.6/iframeResizer.min.js"></script>')
-      iframe.add_next_sibling("<script>iFrameResize({}, '#iframe_#{index}')</script>")
-    end
-    doc.to_html
   end
 end
