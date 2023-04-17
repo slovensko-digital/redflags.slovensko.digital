@@ -28,7 +28,7 @@ Rails.application.routes.draw do
   get 'ako-hodnotime', as: 'about_rating', to: 'static#about_rating'
   get 'ako-sa-zapojit', as: 'contribute', to: 'static#contribute'
   get 'casto-kladene-otazky', as: 'faq', to: 'static#faq'
-  get 'statne-it-v-cislach', as: 'statne_it_v_cislach', to: 'static#statne_it_v_cislach'
+  get 'statne-it-v-cislach', as: 'stats', to: 'static#stats'
 
   root to: 'static#index'
 end

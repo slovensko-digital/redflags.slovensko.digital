@@ -59,8 +59,8 @@
             <li class="nav-item <%= "active" if current_page?(projects_path) %>">
               <%= link_to 'Projekty', projects_path, class: 'nav-link' %>
             </li>
-            <li class="nav-item <%= "active" if current_page?(statne_it_v_cislach_path) %>">
-              <%= link_to 'Štátne IT v číslach', statne_it_v_cislach_path, class: 'nav-link' %>
+            <li class="nav-item <%= "active" if current_page?(stats_path) %>">
+              <%= link_to 'Štátne IT v číslach', stats_path, class: 'nav-link' %>
             </li>
             <li class="nav-item <%= "active" if current_page?(about_path) %>">
               <%= link_to 'Čo je Red Flags', about_path, class: 'nav-link' %>
@@ -89,7 +89,7 @@
             <p><a href="mailto:kontakt@slovensko.digital">kontakt@slovensko.digital</a></p>
             <br>
             <p><a href="https://slovensko.digital/ochrana-osobnych-udajov">Ochrana osobných údajov</a></p>
-            <p><%= link_to 'Často kladené otázky', faq_path %></p>
+            <p><%= link_to 'Časté otázky', faq_path %></p>
           </div>
 
           <div class="col-md-6">
