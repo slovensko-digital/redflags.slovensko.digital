@@ -1,7 +1,7 @@
 <% content_for(:title) do %><%= @page.title %> &middot; Red Flags &middot; Slovensko.Digital<% end if @page %>
 <div class="container container-text">
   <% if @page %>
-    <%== @page.body_html %>
+    <%== substitue_iframes @page.body_html %>
   <% else %>
     Stránka zatiaľ nie je dostupná.
   <% end %>

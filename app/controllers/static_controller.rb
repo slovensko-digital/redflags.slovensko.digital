@@ -22,6 +22,10 @@ class StaticController < ApplicationController
     render_page :faq
   end
 
+  def stats
+    render_page :stats
+  end
+
   private
 
   def render_page(name)

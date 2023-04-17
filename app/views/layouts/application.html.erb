@@ -59,6 +59,9 @@
             <li class="nav-item <%= "active" if current_page?(projects_path) %>">
               <%= link_to 'Projekty', projects_path, class: 'nav-link' %>
             </li>
+            <li class="nav-item <%= "active" if current_page?(stats_path) %>">
+              <%= link_to 'Štátne IT v číslach', stats_path, class: 'nav-link' %>
+            </li>
             <li class="nav-item <%= "active" if current_page?(about_path) %>">
               <%= link_to 'Čo je Red Flags', about_path, class: 'nav-link' %>
             </li>
@@ -67,9 +70,6 @@
             </li>
             <li class="nav-item <%= "active" if current_page?(about_rating_path) %>">
               <%= link_to 'Ako hodnotíme', about_rating_path, class: 'nav-link' %>
-            </li>
-            <li class="nav-item <%= "active" if current_page?(faq_path) %>">
-              <%= link_to 'Často kladené otázky', faq_path, class: 'nav-link' %>
             </li>
           </ul>
         </div>
@@ -89,6 +89,7 @@
             <p><a href="mailto:kontakt@slovensko.digital">kontakt@slovensko.digital</a></p>
             <br>
             <p><a href="https://slovensko.digital/ochrana-osobnych-udajov">Ochrana osobných údajov</a></p>
+            <p><%= link_to 'Časté otázky', faq_path %></p>
           </div>
 
           <div class="col-md-6">
@@ -98,6 +99,7 @@
               </li>
               <li><a href="http://www.nadaciapontis.sk/">Fond pre transparentné Slovensko v Nadácii Pontis</a></li>
               <li><a href="https://sk.usembassy.gov/sk/">Veľvyslanectvo USA na Slovensku</a></li>
+              <li><a href="https://acfslovakia.sk/">Active Citizens Fund - Slovakia</a></li>
             </ul>
             <div class="mb-5 mt-md-3 newsletter">
               <label for="subscribe-email"><strong>Novinky mailom</strong></label><br>
