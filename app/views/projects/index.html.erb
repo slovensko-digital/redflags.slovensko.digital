@@ -2,15 +2,6 @@
   <h1 class="mt-5 mb-3">Zoznam hodnotených projektov</h1>
   <p class="lead"><strong>Chýba Vám tu nejaký projekt? Nezdá sa Vám hodnotenie?</strong> Toto hodnotenie je možné <%= link_to 'dopĺňať a upravovať', contribute_path %>.</p>
 
-
-  <%= form_tag projects_path, method: :get do %>
-    <div class="form-row">
-      <div class="form-group mb-2 col-sm-4">
-        <%= select_tag :tag, options_for_select([["Zobraziť všetko", ""]] + ProjectsHelper::ALLOWED_TAGS.map{ |tag, trans| [trans, tag] }, @selected_tag), class: "form-control" %>
-      </div>
-      <%= submit_tag "Filtrovať", class: "btn mb-2" %>
-    </div>
-  <% end %>
   <table class="table">
     <thead>
     <tr style="background-color: #f4f4f4">
