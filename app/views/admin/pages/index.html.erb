@@ -65,7 +65,7 @@
           <% end %>
           <span class="badge text-dark"><%= page.revisions.size %></span>
         </td>
-        <td><%= l page.updated_at, format: '%F %T' %></td>
+        <td><%= l [page.updated_at, page.latest_revision.updated_at].max, format: '%F %T' %></td>
         <td>
           <% if page.publishable? %>
             <% if page.published? %>
@@ -75,6 +75,7 @@
               <%= link_to 'Publish', publish_admin_page_path(page, version: 'latest'), class: 'btn btn-primary btn-sm', method: :patch %>
               <%= link_to 'Preview', preview_admin_page_path(page, version: 'latest'), class: 'btn btn-link btn-sm' if page_preview?(page) && revision_preview?(page.latest_revision) %>
             <% end %>
+            <%= link_to 'Synchronize', sync_one_admin_page_path(page), class: 'btn btn-info btn-sm', method: :put %>
           <% end %>
         </td>
       </tr>
