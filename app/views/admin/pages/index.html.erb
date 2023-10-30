@@ -65,7 +65,7 @@
           <% end %>
           <span class="badge text-dark"><%= page.revisions.size %></span>
         </td>
-        <td><%= l [page.updated_at, page.latest_revision.updated_at].max, format: '%F %T' %></td>
+        <td><%= l page.updated_at, format: '%F %T' %></td>
         <td>
           <% if page.publishable? %>
             <% if page.published? %>

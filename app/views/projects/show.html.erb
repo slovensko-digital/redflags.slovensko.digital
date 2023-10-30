@@ -47,6 +47,22 @@
 
   <div class="row mb-4 mt-5 pt-4">
     <div class="col">
+      <h5>Hodnotenie zverejnené dňa</h5>
+      <p><%= l(@project.updated_at.to_date, format: :human) %></p>
+      <% if @project.outdated? %>
+        <div class="alert alert-warning my-2" role="alert">
+          <h5 class="alert-heading">Hodnotenie nie je aktuálne</h5>
+          <p class="mb-0">
+            V tomto projekte nastali zmeny, ktoré nie sú zahrnuté v súčasnom hodnotení. Na aktualizácii pracujeme, môžete sa do nej
+            <%= link_to 'zapojiť aj Vy', "https://platforma.slovensko.digital/t/#{@project.project_id}", title: 'Upraviť hodnotenie', class: 'alert-link' %>.
+          </p>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col">
       <h5>Aktuálny stav projektu</h5>
       <p><%= @project.stage %></p>
     </div>
@@ -68,19 +84,7 @@
       </div>
     </div>
     <hr class="mt-0 mb-2">
-    <p class="text-right mb-5 mt-1">
-      Posledná aktualizácia: <strong><%= l(@project.updated_at.to_date, format: :human) %></strong></strong>
-    </p>
-    <% if @project.outdated? %>
-      <div class="alert alert-warning my-2" role="alert">
-        <h5 class="alert-heading">Hodnotenie nie je aktuálne</h5>
-        <p class="mb-0">
-          V tomto projekte nastali zmeny, ktoré nie sú zahrnuté v súčasnom hodnotení. Na aktualizácii pracujeme, môžete sa do nej
-          <%= link_to 'zapojiť aj Vy', "https://platforma.slovensko.digital/t/#{@project.project_id}", title: 'Upraviť hodnotenie', class: 'alert-link' %>.
-        </p>
-      </div>
-    <% end %>
-    <div class="row">
+    <div class="row mt-5">
       <% @project.ratings.index_by(&:rating_type).each do |rating_type, rating| %>
         <div class="col-md-3">
           <%= rating_stars(rating) %>
