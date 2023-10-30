@@ -1,5 +1,5 @@
 class Admin::PagesController < AdminController
-  before_action :load_page, only: [:show, :preview, :publish, :unpublish]
+  before_action :load_page, only: [:show, :preview, :publish, :unpublish, :sync_one]
 
   def index
     @pages = Page.order(id: :desc).page(params[:page])
@@ -49,6 +49,12 @@ class Admin::PagesController < AdminController
 
   def sync
     SyncCategoryTopicsJob.perform_later(ENV.fetch('REDFLAGS_CATEGORY_SLUG'))
+
+    redirect_back fallback_location: { action: :index }
+  end
+
+  def sync_one
+    SyncTopicJob.perform_later(@page.id)
 
     redirect_back fallback_location: { action: :index }
   end

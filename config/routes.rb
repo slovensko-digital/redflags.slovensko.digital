@@ -17,6 +17,7 @@ Rails.application.routes.draw do
       patch :unpublish, on: :member
 
       put :sync, on: :collection
+      put :sync_one, on: :member
     end
 
     resources :projects
