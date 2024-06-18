@@ -2,43 +2,135 @@
   <h1 class="mt-5 mb-3">Zoznam hodnotených projektov</h1>
   <p class="lead"><strong>Chýba Vám tu nejaký projekt? Nezdá sa Vám hodnotenie?</strong> Toto hodnotenie je možné <%= link_to 'dopĺňať a upravovať', contribute_path %>.</p>
 
+  <div class="sort-selector text-right mb-4">
+    <%= form_with url: projects_path, method: :get, local: true, id: "sort-form" do |form| %>
+      <% form.label :sort %>
+      <%= form.select :sort, options_for_select([
+                                                  ['Usporiadať', '', {disabled: true, selected: true}],
+                                                  ['Abecedne (A-Z)', 'alpha'],
+                                                  ['Abecedne (Z-A)', 'alpha_reverse'],
+                                                  ['Podľa dátumu (najnovšie)', 'newest'],
+                                                  ['Podľa dátumu (najstaršie)', 'oldest'],
+                                                  ['Hodnotenie prípravy (vzostupne)', 'preparation_lowest'],
+                                                  ['Hodnotenie prípravy (zostupne)', 'preparation_highest'],
+                                                  ['Hodnotenie produktu (vzostupne)', 'product_lowest'],
+                                                  ['Hodnotenie produktu (zostupne)', 'product_highest'],
+                                                ], params[:sort]), {}, { class: 'bg-primary px-4 py-2 rounded border-0 text-white', onchange: "this.form.submit();" } %>
+    <% end %>
+  </div>
+
   <table class="table">
     <thead>
     <tr style="background-color: #f4f4f4">
-      <th>Projekt</th>
-      <th colspan="5" class="text-center">Hodnotenia podľa kritérií</th>
-      <th class="text-center tag-tooltip" title="Celkové hodnotenie">&sum;</th>
+      <th colspan="4">Projekt</th>
+      <th colspan="2" class="text-center">Hodnotenie prípravy</th>
+      <th colspan="2" class="text-center">Hodnotenie produktu</th>
+      <th colspan="2" class="text-center">Dátum aktualizácie hodnotenia</th>
+      <th colspan="2" class="text-center tag-tooltip" title="Rozbalťe pre detailné hodnotenia jednotlivých fáz">Detail</th>
     </tr>
     </thead>
     <tbody>
     <% @projects.each do |project| %>
-      <tr>
-        <td style="width: 12rem;">
-          <%= link_to truncate(project.title, length: 80), project_path(project.project), title: project.title %>
-          <% if project.stage %>
+      <tr data-toggle="collapse" data-target="#collapse-<%= project.id %>" class="accordion-toggle">
+        <td style="width: 12rem;" colspan="4">
+          <%= project.published_revisions.first.title %>
+          <% if project.published_revisions.first.stage %>
             <div class="mt-1">
-              <span class="badge badge-secondary" title="Prebiehajúca fáza"><%= project.stage %></span>
+              <span class="badge badge-secondary" title="Prebiehajúca fáza"><%= project.published_revisions.first.stage %></span>
             </div>
           <% end %>
         </td>
-        <% ratings = project.ratings.group_by(&:score) %>
-        <% 4.downto(0).each do |index| rt = ratings[index] %>
-          <td class="text-center">
-            <% if rt %>
-              <strong class = "tag-tooltip" title="<%= rt.map{|r| r.rating_type.name}.join(", ") %>">
-                <%= rt.count %> &times; <%= rating_stars(rt.first) %>
+        <% prep_revision = project.published_revisions.find { |r| r.revision.page.page_type == 'preparation' } %>
+        <% prep_page = prep_revision&.revision&.page %>
+        <td class="text-center" colspan="2">
+          <% if prep_page.nil? %>
+            -
+          <% elsif prep_page.latest_revision&.redflags_count > 0 %>
+            <div class="d-flex flex-column">
+              <strong class="text-danger">
+                <%= prep_page.latest_revision.redflags_count %> &times; <%= fa_icon('flag', class: 'text-danger') %>
               </strong>
-            <% end %>
-          </td>
-        <% end %>
-        <td style="background-color: #f4f4f4; width: 5em" class="text-center">
-          <% if project.redflags_count > 0 %>
-            <strong class="text-danger"><%= project.redflags_count %> &times; <%= fa_icon('flag', class: 'text-danger') %></strong>
+              <% if prep_page.latest_revision %>
+                <%= link_to 'Zobraziť', project_show_revision_type_path(project.id, 'preparation') %>
+              <% end %>
+            </div>
           <% else %>
-            <strong>
-            <%= number_to_percentage(project.total_score_percentage, precision: 0) %>
-            </strong>
+            <div class="d-flex flex-column">
+              <strong>
+                <%= number_to_percentage(prep_page.latest_revision.total_score_percentage, precision: 0) %>
+              </strong>
+              <% if prep_page.latest_revision %>
+                <%= link_to 'Zobraziť', project_show_revision_type_path(project.id, 'preparation') %>
+              <% end %>
+            </div>
           <% end %>
+        </td>
+
+        <% prod_revision = project.published_revisions.find { |r| r.revision.page.page_type == 'product' } %>
+        <% prod_page = prod_revision&.revision&.page%>
+        <td class="text-center" colspan="2">
+          <% if prod_page.nil? %>
+            -
+          <% elsif prod_page.latest_revision&.redflags_count > 0 %>
+            <div class="d-flex flex-column">
+              <strong class="text-danger">
+                <%= prod_page.latest_revision.redflags_count %> &times; <%= fa_icon('flag', class: 'text-danger') %>
+              </strong>
+              <% if prod_page.latest_revision %>
+                <%= link_to 'Zobraziť', project_show_revision_type_path(project.id, 'product') %>
+              <% end %>
+            </div>
+          <% else %>
+            <div class="d-flex flex-column">
+              <strong>
+                <%= number_to_percentage(prod_page.latest_revision.total_score_percentage, precision: 0) %>
+              </strong>
+              <% if prod_page.latest_revision %>
+                <%= link_to 'Zobraziť', project_show_revision_type_path(project.id, 'product') %>
+              <% end %>
+            </div>
+          <% end %>
+        </td>
+
+        <td class="text-center" colspan="2">
+          <% latest_revision_date = project.published_revisions.maximum(:updated_at) %>
+          <%= latest_revision_date.strftime('%d.%m.%Y') if latest_revision_date.present? %>
+        </td>
+
+        <td class="text-center" colspan="2">
+         <img src="https://static.thenounproject.com/png/2111581-200.png" alt="arrow" class="img-responsive" style="width: 24px">
+        </td>
+
+      </tr>
+      <tr class="hidden">
+        <td colspan="12" class="p-0">
+          <div class="collapse" id="collapse-<%= project.id %>">
+            <table class="table">
+              <thead>
+              <tr style="background-color: #f4f4f4">
+                <th colspan="4">Fáza</th>
+                <th colspan="8" class="text-center tag-tooltip" title="Rozbalťe pre detailné hodnotenia jednotlivých fáz">Hodnotenie podľa kriterií</th>
+              </tr>
+              </thead>
+              <tbody>
+              <% project.published_revisions.sort_by { |r| r.revision.page.page_type }.each do |revision| %>
+                <tr>
+                  <td colspan="4"><%= link_to revision.revision.page.page_type_label, project_show_revision_type_path(project.id, revision.revision.page.page_type) %></td>
+                  <% ratings = revision.revision.page.latest_revision.ratings.group_by(&:score) %>
+                  <% 4.downto(0).each do |index| rt = ratings[index] %>
+                    <td class="text-center">
+                      <% if rt %>
+                        <strong class = "tag-tooltip" title="<%= rt.map{|r| r.rating_type.name}.join(", ") %>">
+                          <%= rt.count %> &times; <%= rating_stars(rt.first) %>
+                        </strong>
+                      <% end %>
+                    </td>
+                  <% end %>
+                </tr>
+              <% end %>
+              </tbody>
+            </table>
+          </div>
         </td>
       </tr>
     <% end %>

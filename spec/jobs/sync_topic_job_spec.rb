@@ -2,7 +2,8 @@ require 'rails_helper'
 
 RSpec.describe SyncTopicJob, type: :job do
   it 'loads current version of topic into page and revision', vcr: true do
-    subject.perform(4034)
+    project = create(:project)
+    subject.perform(project.id ,4034)
 
     page = Page.first
 

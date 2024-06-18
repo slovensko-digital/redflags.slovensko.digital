@@ -4,8 +4,8 @@ module PreviewsHelper
   end
 
   def revision_preview?(revision)
-    return true unless Project.exists?(page: revision.page)
-    project_revision = ProjectRevision.where(revision: revision).first
-    project_revision && !project_revision.total_score_percentage.nan?
+    return true unless revision.page.project.present?
+
+    revision.total_score.present? && !revision.total_score_percentage.nan?
   end
 end

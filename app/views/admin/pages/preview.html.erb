@@ -2,9 +2,9 @@
 
 <div class="alert alert-warning">
   Preview of page <strong><%= @page.title %></strong>
-  at <%= 'latest' if @page.latest_revision.version == @revision.version %>
-  version <strong><%= @revision.version %></strong>
-  last updated at <strong><%= l @revision.updated_at, format: '%F %T' %></strong>.
+  at <%= 'latest' if @page.latest_revision.version == @project_revision.version %>
+  version <strong><%= @project_revision.version %></strong>
+  last updated at <strong><%= l @project_revision.updated_at, format: '%F %T' %></strong>.
   <%= link_to 'Synchonize', sync_one_admin_page_path(@page), class: 'btn btn-info btn-sm float-right', method: :put %>
   <%= link_to 'Go back', admin_pages_path, class: 'btn alert-link btn-sm float-right' %>
 </div>

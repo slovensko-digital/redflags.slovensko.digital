@@ -41,5 +41,7 @@ FactoryBot.define do
         create :revision, page: p if p.published?
       end
     end
+
+    association :project, factory: :project
   end
 end

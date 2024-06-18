@@ -48,6 +48,11 @@ gem 'annotate'
 gem 'rollbar'
 gem 'oj'
 
+# Use Google API gems
+gem 'google-apis-docs_v1'
+gem 'google-apis-drive_v3'
+gem 'google-apis-sheets_v4'
+
 group :development, :test do
   gem 'dotenv-rails'
   gem 'rspec-rails'

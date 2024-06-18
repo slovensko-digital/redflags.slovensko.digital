@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title><% if content_for?(:title) %><%= yield(:title) %><% else %>Red Flags &middot; Slovensko.Digital<% end %></title>
+  <%= csrf_meta_tags %>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+  <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+  <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css"/>
+  <meta name="theme-color" content="#ffffff">
+  <meta property="og:type" content="website"/>
+  <meta property="og:site_name" content="Red Flags Slovensko.Digital"/>
+  <meta property="og:url" content="<%= @metadata.og.url %>"/>
+  <meta property="og:title" content="<%= yield(:title).presence || @metadata.og.title %>"/>
+  <meta property="og:description" content="<%= @metadata.og.description %>"/>
+  <meta property="og:image" content="<%= @metadata.og.image %>"/>
+
+  <script defer data-domain="redflags.slovensko.digital" src="https://plausible.io/js/plausible.js"></script>
+
+  <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
+  <script>
+      window.addEventListener("load", function () {
+          window.cookieconsent.initialise({
+              "palette": {
+                  "popup": {
+                      "background": "#000000"
+                  },
+                  "button": {
+                      "background": "#3a67e8"
+                  }
+              },
+              "theme": "classic",
+              "content": {
+                  "message": "Tento web používa len nevyhnutné súbory cookies.",
+                  "dismiss": "Súhlasím"
+              },
+              "showLink": false
+          })
+      });
+  </script>
+</head>
+
+<body>
+<div class="container main mt-4">
+  <img width="300" src="/assets/temp_logo-b57b31c9d88844e3b0f502db12dcb4e2ecd6600f5e89fa3fcf9a19a29cbb42f6.svg" alt="Temp logo" class="">
+</div>
+<%= yield %>
+<script type="text/javascript">
+    window.onload = function() {
+        window.print();
+    }
+</script>
+</body>
+</html>

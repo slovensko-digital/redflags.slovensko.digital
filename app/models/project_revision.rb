@@ -20,6 +20,9 @@
 #  recommendation :text
 #  stage_id       :integer
 #  current_status :string
+#  published      :boolean          default(false)
+#  was_published  :boolean          default(false)
+#  published_at   :datetime
 #
 # Indexes
 #
@@ -39,18 +42,9 @@ class ProjectRevision < ApplicationRecord
   belongs_to :revision
   belongs_to :stage, class_name: 'ProjectStage', optional: true
 
-  has_many :ratings, class_name: 'ProjectRevisionRating'
-
-  delegate :category, to: :project
   delegate :version, :tags, to: :revision
 
-  def total_score_percentage
-    100.0 * total_score / maximum_score
-  end
-
-  def aggregated_rating
-    [redflags_count, -total_score_percentage]
-  end
+  scope :once_published, -> { where(was_published: true, published: false) }
 
   # TODO move elsewhere?
   def load_from_data(raw)
@@ -62,7 +56,6 @@ class ProjectRevision < ApplicationRecord
     self.body_html = rest
 
     load_metadata(summary)
-    load_ratings(rest)
   end
 
   def outdated?
@@ -73,57 +66,76 @@ class ProjectRevision < ApplicationRecord
 
   def load_metadata(summary)
     doc = Nokogiri::HTML.parse(summary)
-    doc.search('p').each do |p|
-      type = p.search('strong').first.try(:text)
-      value = p.text.gsub(type, '').strip if type
-      case type
-      when 'Názov:'
-        self.full_name = value
-      when 'Garant:'
-        self.guarantor = value
-      when 'Stručný opis:'
-        self.description = value
-      when 'Náklady na projekt:'
-        self.budget = value
-      when 'Aktuálny stav projektu:'
-        self.stage = ProjectStage.find_by(name: value)
-      when 'Čo sa práve deje:'
-        self.current_status = p.next_element
-      when 'Zhrnutie hodnotenia Red Flags:'
-        self.summary = value
-      when 'Stanovisko Slovensko.Digital:'
-        self.recommendation = value
+
+    metadata_mapping = {
+      "Názov:" => :full_name,
+      "Garant:" => :guarantor,
+      "Stručný opis:" => :description,
+      "Náklady na projekt:" => :budget,
+      "Aktuálny stav projektu:" => :stage,
+      "Čo sa práve deje:" => :current_status,
+      "Zhrnutie hodnotenia Red Flags:" => :summary,
+      "Stanovisko Slovensko.Digital:" => :recommendation
+    }
+
+    current_label = nil
+
+    doc.search('h3, p, ul, li').each do |element|
+      if element.name == 'h3'
+        current_label = element.text.strip.chomp(':').strip
+      elsif element.name == 'p'
+        strong_element = element.at('strong')
+        if strong_element
+
+          # Handling the <p><strong>...</strong> ... </p> format
+          type = strong_element.text.strip.chomp(':')
+          value = element.text.gsub(strong_element.text, '').strip
+          if metadata_mapping.key?(type + ":")
+            assign_value(metadata_mapping[type + ":"], value, element)
+          end
+        elsif current_label
+
+          # Handling the <h3>...</h3> <p>...</p> format
+            value = element.text.strip
+            if metadata_mapping.key?(current_label + ":")
+              assign_value(metadata_mapping[current_label + ":"], value, element)
+            end
+            current_label = nil
+        end
+=begin
+      else
+        puts "Here4"
+
+        puts "Revision2 value:", element.text.strip
+        value = element.text.strip
+        if metadata_mapping.key?(current_label + ":")
+          puts "Revision1 value:", metadata_mapping[current_label + ":"], value, element
+          assign_value(metadata_mapping[current_label + ":"], value, element)
+        end
+        current_label = nil
+=end
       end
     end
   end
 
-  def load_ratings(body)
-    redflags_count = 0
-    total_score = 0
-    maximum_score = 0
-    doc = Nokogiri::HTML.parse(body)
-    doc.css('h3').each do |heading|
-      value = heading.text.strip
-      rating_type = RatingType.find_by(name: value)
-      if rating_type
-        score = heading.css('img.emoji[title=":star:"]').count
-        bad_score = heading.css('img.emoji[title=":grey_star:"]').count
-        red_score = heading.css('img.emoji[title=":triangular_flag_on_post:"]').count
-        if red_score > 0
-          bad_score = 4
-        end
-        if score + bad_score > 0
-          rating = self.ratings.find_or_initialize_by(rating_type: rating_type)
-          rating.score = score
-          redflags_count += 1 if bad_score == 4
-          total_score += score
-          maximum_score += 4
-        end
-      end
-    end
+  def assign_value(attribute, value, element)
+    if attribute == :stage
+      self.stage = ProjectStage.find_by(name: value)
+    elsif attribute == :current_status
+      # Initialize current_status_content with the provided value
+      current_status_content = "<p>#{value}</p>"
+      next_element = element.next_element
 
-    self.redflags_count = redflags_count
-    self.total_score = total_score
-    self.maximum_score =  maximum_score
+      # Keep appending the content of next elements while they are either <p> or <ul>
+      while next_element && %w[ul p].include?(next_element.name)
+        current_status_content += next_element.to_html
+        next_element = next_element.next_element
+      end
+
+      # Strip and assign the final current_status_content
+      self.current_status = current_status_content.strip
+    else
+      self.send("#{attribute}=", value)
+    end
   end
 end

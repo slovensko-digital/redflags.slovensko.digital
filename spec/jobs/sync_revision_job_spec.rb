@@ -9,7 +9,9 @@ RSpec.describe SyncRevisionJob, type: :job do
   end
 
   it 'parses project metadata from revision' do
-    revision = create(:revision)
+    project = create(:project)
+    page = create(:page, project: project)
+    revision = create(:revision, page: page)
 
     subject.perform(revision)
 
@@ -34,24 +36,16 @@ RSpec.describe SyncRevisionJob, type: :job do
     expect(ratings['Biznis prínos'].score).to eq(0)
   end
 
-  it 'ignores pages from unknown category' do
-    revision = create(:revision)
-    revision.raw['category_id'] = 123
-    revision.save!
-
-    subject.perform(revision)
-
-    expect(ProjectRevision.count).to eq(0)
-  end
-
   it 'adds calculated total and max score to revision' do
-    revision = create(:revision)
+    project = create(:project)
+    page = create(:page, project: project)
+    revision = create(:revision, page: page)
 
     subject.perform(revision)
 
     snapshot = ProjectRevision.first
 
-    expect(snapshot.total_score).to eq(6)
-    expect(snapshot.maximum_score).to eq(12)
+    expect(snapshot.revision.total_score).to eq(6)
+    expect(snapshot.revision.maximum_score).to eq(12)
   end
 end

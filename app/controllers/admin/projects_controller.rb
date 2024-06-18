@@ -3,7 +3,7 @@ class Admin::ProjectsController < AdminController
 
   def update
     @project.update!(project_params)
-    redirect_to admin_page_path(@project.page)
+    redirect_to admin_page_path(@project.pages.first)
   end
 
   private
