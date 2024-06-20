@@ -1,6 +1,8 @@
 class SyncOneTopicJob < ApplicationJob
   queue_as :default
 
+  COLUMN_NAMES = ['Projekt', 'Projekt ID', 'Platforma', 'ID draft prípravy', 'ID prípravy', 'ID draft produktu', 'ID produktu'].freeze
+
   def perform(page_id)
     sheets_service = GoogleApiService.get_sheets_service
     response_values = sheets_service.get_spreadsheet_values(ENV.fetch('GOOGLE_SHEET_ID'), 'A:Z')&.values
@@ -26,12 +28,12 @@ class SyncOneTopicJob < ApplicationJob
     project_name = row[indices["Projekt"]]
     project_id = row[indices["Projekt ID"]]
     platform_link = row[indices["Platforma"]]
-    preparation_document_id = extract_id_from_link(row[indices["Draft prípravy"]])
+    preparation_document_id = row[indices["ID draft prípravy"]]
     preparation_page_id = row[indices["ID prípravy"]]
-    product_document_id = extract_id_from_link(row[indices["Draft produktu"]])
+    product_document_id = row[indices["ID draft produktu"]]
     product_page_id = row[indices["ID produktu"]]
 
-    if valid_link?(platform_link)
+    if platform_link != ''
       SyncTopicJob.perform_later(project_id, preparation_page_id)
     else
       if target_id == preparation_page_id.to_i
@@ -40,14 +42,6 @@ class SyncOneTopicJob < ApplicationJob
         enqueue_job_for_update("#{project_name} - Produkt", project_id, product_document_id, product_page_id, 1)
       end
     end
-  end
-
-  def valid_link?(link)
-    link.present? && (link.start_with?('http://') || link.start_with?('https://'))
-  end
-
-  def extract_id_from_link(link)
-    link&.split('/')&.[](5)
   end
 
   def enqueue_job_for_update(name, project_id, document_id, page_id, page_type)

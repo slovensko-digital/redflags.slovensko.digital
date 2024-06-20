@@ -65,11 +65,11 @@ class Admin::PagesController < AdminController
       {
         column_names: {"preparation" => "RF web príprava", "product" => "RF web produkt"},
         page_type: @page.page_type,
-        published_value: "https://redflags.slovensko.digital/admin/pages/#{@page.id}"
+        published_value: %(=HYPERLINK("https://redflags.slovensko.digital/admin/pages/#{@page.id}"; "Admin link"))
       }
     ]
-    UpdateMultipleSheetColumnsJob.perform_now(@page.id, updates)
-    ExportTopicIntoSheetJob.perform_now(new_revision)
+    UpdateMultipleSheetColumnsJob.perform_later(@page.id, updates)
+    ExportTopicIntoSheetJob.perform_later(new_revision)
 
     redirect_back fallback_location: { action: :index }
   end
@@ -98,7 +98,7 @@ class Admin::PagesController < AdminController
         published_value: ""
       }
     ]
-    UpdateMultipleSheetColumnsJob.perform_now(@page.id, updates)
+    UpdateMultipleSheetColumnsJob.perform_later(@page.id, updates)
 
     redirect_back fallback_location: { action: :index }
   end

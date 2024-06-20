@@ -79,61 +79,52 @@ class ProjectRevision < ApplicationRecord
     }
 
     current_label = nil
+    current_status_content = ''
+    collecting = false
 
     doc.search('h3, p, ul, li').each do |element|
       if element.name == 'h3'
         current_label = element.text.strip.chomp(':').strip
+
+        if collecting
+          assign_value(metadata_mapping["Čo sa práve deje:"], current_status_content)
+          collecting = false
+          current_status_content = ''
+        end
+
+        collecting = true if current_label == "Čo sa práve deje"
+      end
+
+      if collecting && %w[p ul].include?(element.name)
+        current_status_content += element.to_html
+
       elsif element.name == 'p'
         strong_element = element.at('strong')
         if strong_element
-
-          # Handling the <p><strong>...</strong> ... </p> format
           type = strong_element.text.strip.chomp(':')
-          value = element.text.gsub(strong_element.text, '').strip
-          if metadata_mapping.key?(type + ":")
-            assign_value(metadata_mapping[type + ":"], value, element)
+          if type == "Čo sa práve deje"
+            value = element.next_element.try(:to_html)
+          else
+            value = element.text.gsub(strong_element.text, '').strip
           end
+          assign_value(metadata_mapping[type + ":"], value) if metadata_mapping.key?(type + ":")
+
         elsif current_label
-
-          # Handling the <h3>...</h3> <p>...</p> format
-            value = element.text.strip
-            if metadata_mapping.key?(current_label + ":")
-              assign_value(metadata_mapping[current_label + ":"], value, element)
-            end
-            current_label = nil
+          value = element.text.strip
+          assign_value(metadata_mapping[current_label + ":"], value) if metadata_mapping.key?(current_label + ":")
+          current_label = nil unless current_label == "Čo sa práve deje:"
         end
-=begin
-      else
-        puts "Here4"
-
-        puts "Revision2 value:", element.text.strip
-        value = element.text.strip
-        if metadata_mapping.key?(current_label + ":")
-          puts "Revision1 value:", metadata_mapping[current_label + ":"], value, element
-          assign_value(metadata_mapping[current_label + ":"], value, element)
-        end
-        current_label = nil
-=end
       end
+    end
+
+    if collecting && metadata_mapping.key?("Čo sa práve deje:")
+      assign_value(metadata_mapping["Čo sa práve deje:"], current_status_content)
     end
   end
 
-  def assign_value(attribute, value, element)
+  def assign_value(attribute, value)
     if attribute == :stage
       self.stage = ProjectStage.find_by(name: value)
-    elsif attribute == :current_status
-      # Initialize current_status_content with the provided value
-      current_status_content = "<p>#{value}</p>"
-      next_element = element.next_element
-
-      # Keep appending the content of next elements while they are either <p> or <ul>
-      while next_element && %w[ul p].include?(next_element.name)
-        current_status_content += next_element.to_html
-        next_element = next_element.next_element
-      end
-
-      # Strip and assign the final current_status_content
-      self.current_status = current_status_content.strip
     else
       self.send("#{attribute}=", value)
     end

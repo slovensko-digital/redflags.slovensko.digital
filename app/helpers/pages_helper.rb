@@ -8,4 +8,9 @@ module PagesHelper
     end
     doc.to_html
   end
+
+  def map_page_type_to_route(page_type)
+    route_map = { 'preparation' => 'hodnotenie-pripravy', 'product' => 'hodnotenie-produktu' }
+    route_map[page_type] || page_type
+  end
 end

@@ -43,9 +43,9 @@ FactoryBot.define do
     full_name { 'Národný projekt IS Obchodného registra' }
     guarantor { '' }
     description { '' }
-    budget { '' }
     body_html { revision.body_html }
-    total_score { 75 }
-    maximum_score { 100 }
+    published { false }
+    was_published { false }
+    published_at { Time.zone.now }
   end
 end

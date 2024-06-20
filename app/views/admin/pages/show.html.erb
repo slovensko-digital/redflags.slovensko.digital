@@ -5,6 +5,7 @@
     <h6>Actions</h6>
     <div class="form-group">
       <%= link_to 'Back to pages', admin_pages_path, class: 'btn btn-secondary btn-sm' %>
+      <%= link_to 'Synchronize', sync_one_admin_page_path(@page), class: 'btn btn-info btn-sm', method: :put %>
     </div>
   </div>
   <div class="mr-3">
@@ -41,7 +42,13 @@
     <% @revisions.each do |revision| %>
       <tr id="<%= dom_id revision %>">
         <td><%= revision.version %></td>
-        <td class="w-50"><%= revision.title %></td>
+        <td class="w-50">
+          <% if revision.published? %>
+            <%= link_to revision.title, project_show_revision_type_path(@page.project_id, map_page_type_to_route(@page.page_type)) %>
+          <% else %>
+            <%= revision.title %>
+          <% end %>
+        </td>
         <td>
           <% if @page.publishable? %>
             <% if revision.published? %>
@@ -61,7 +68,7 @@
             <span class="badge badge-info">latest</span>
           <% end %>
         </td>
-        <td><%= l revision.updated_at, format: '%F %T' %></td>
+        <td><%= l revision.updated_at.in_time_zone('Europe/Bratislava'), format: "%H:%M, %d.%m.%y" %></td>
         <td>
           <% if @page.publishable? %>
             <% if revision.published? %>

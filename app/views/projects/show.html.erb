@@ -3,8 +3,11 @@
 
   <div class="row mb-5">
     <div class="col-md-12">
-      <h1 class="project-title"><%= @project_revision.title %></h1><%= link_to 'Stiahnuť PDF', project_show_pdf_project_path(@project_revision.project_id, @project_revision.revision.page.page_type)%>
-        <% @project_revision.tags.select { |tag| ProjectsHelper::ALLOWED_TAGS[tag] }.each do |tag| %>
+      <h1 class="project-title"><%= @project_revision.title %></h1>
+      <% if @project_revision.published? %>
+        <%= link_to 'Stiahnuť PDF', project_show_pdf_project_path(@project_revision.project_id, map_page_type_to_route(@project_revision.revision.page.page_type)) %>
+      <% end %>
+      <% @project_revision.tags.select { |tag| ProjectsHelper::ALLOWED_TAGS[tag] }.each do |tag| %>
           <p class="lead">
             <%= link_to projects_path(tag: tag) do%>
             <span class="badge badge-danger"><%= ProjectsHelper::ALLOWED_TAGS[tag] %></span>
@@ -95,14 +98,12 @@
     </div>
   </div>
 
-  <h2 class="mb-5">Predošlé verzie hodnotenia</h2>
-  <% if @project_revisions %>
+  <% if @project_revisions && @project_revisions.any? %>
+  <h2>Predchádzajúce hodnotenia</h2>
     <ul>
     <% @project_revisions.each do |revision| %>
-        <li><%= link_to "Hodnotenie z dňa - #{revision.published_at.strftime('%d.%m.%Y')}", show_history_project_path(@project.id, revision_type: revision.revision.page.page_type, page_id: revision.revision.page.id) %></li>
+        <li><%= link_to "Hodnotenie z dňa - #{revision.published_at.strftime('%d.%m.%Y')}",  project_show_history_path(@project.id, map_page_type_to_route(revision.revision.page.page_type), revision.revision.version) %></li>
     <% end %>
     </ul>
-  <% else %>
-    <p>No previously published revisions found.</p>
   <% end %>
 </div>

@@ -1,10 +1,11 @@
 class ProjectsController < ApplicationController
   def show
     @project = Project.find_by!(id: params[:project_id])
-    @revision_type = params[:revision_type]
+    revision_type_map = { 'hodnotenie-pripravy' => 'preparation', 'hodnotenie-produktu' => 'product' }
+    revision_type = revision_type_map[params[:revision_type]] || params[:revision_type]
 
     revision_types = { 'preparation' => 0, 'product' => 1 }
-    page_type = revision_types[@revision_type]
+    page_type = revision_types[revision_type]
 
     @project_revisions = @project.revisions.once_published.joins(revision: :page).where(pages: { page_type: page_type }).order(updated_at: :desc)
     @project_revision = @project.published_revisions.joins(revision: :page).find_by(pages: { page_type: page_type })
@@ -19,10 +20,11 @@ class ProjectsController < ApplicationController
 
   def pdf
     @project = Project.find_by!(id: params[:project_id])
-    @revision_type = params[:revision_type]
+    revision_type_map = { 'hodnotenie-pripravy' => 'preparation', 'hodnotenie-produktu' => 'product' }
+    revision_type = revision_type_map[params[:revision_type]] || params[:revision_type]
 
     revision_types = { 'preparation' => 0, 'product' => 1 }
-    page_type = revision_types[@revision_type]
+    page_type = revision_types[revision_type]
 
     @project_revision = @project.published_revisions.joins(revision: :page).find_by(pages: { page_type: page_type })
 
@@ -41,15 +43,19 @@ class ProjectsController < ApplicationController
   end
 
   def show_history
-    @project = Project.find_by!(id: params[:id])
+    @project = Project.find_by!(id: params[:project_id])
     @revision_type = params[:revision_type]
 
-    revision_types = { 'preparation' => 0, 'product' => 1 }
+    revision_types = { 'preparation' => 0, 'product' => 1, 'hodnotenie-pripravy' => 0, 'hodnotenie-produktu' => 1}
     page_type = revision_types[@revision_type]
 
-    page_id = params[:page_id]
+    version = params[:version]
 
-    @project_revision = @project.revisions.once_published.joins(revision: :page).find_by(pages: { page_type: page_type, id: page_id })
+    @project = Project.find_by!(id: params[:project_id])
+    @project.revisions
+    @project_revision = @project.revisions.joins(revision: :page)
+                                 .once_published
+                                 .where('revisions.version = ? AND pages.page_type = ?', version, page_type).first
 
     if @project_revision
       @revision = @project_revision.revision
@@ -74,9 +80,9 @@ class ProjectsController < ApplicationController
 
     case params[:sort]
     when 'newest'
-      @projects = Project.all.sort_by { |project| project.published_revisions.maximum(:published_at) }.reverse
+      @projects = Project.all.select { |p| p.published_revisions.any? && p.published_revisions.last.published }.sort_by { |p| p.published_revisions.maximum(:published_at) || Time.at(0) }.reverse
     when 'oldest'
-      @projects = Project.all.sort_by { |project| project.published_revisions.maximum(:published_at) }
+      @projects = Project.all.select { |p| p.published_revisions.any? && p.published_revisions.last.published }.sort_by { |p| p.published_revisions.maximum(:published_at) || Time.at(0) }
     when 'alpha'
       @projects = Project.joins(:published_revisions)
                          .select('DISTINCT ON (projects.id) projects.*, project_revisions.title AS rev_title')

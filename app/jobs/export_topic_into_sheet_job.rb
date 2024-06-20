@@ -2,16 +2,42 @@ class ExportTopicIntoSheetJob < ApplicationJob
   queue_as :default
 
   COLUMN_NAMES = [
-    'Projekt', 'Projekt ID', 'ID hodnotenia', 'Typ hodnotenia', 'Názov', 'Popis', 'Náklady', 'Garant', 'Zhrnutie',
-    'Stanovisko S.D', 'Aktuálny stav', 'Čo sa deje', 'Reforma VS body', 'Reforma VS', 'Merateľné ciele (KPI) body',
-    'Merateľné ciele (KPI)', 'Postup dosiahnutia cielov body', 'Postup dosiahnutia cielov', 'Súlad s KRIS body',
-    'Súlad s KRIS', 'Biznis prínos body', 'Biznis prínos', 'Príspevok v informatizácií body', 'Príspevok v informatizácií',
-    'Štúdia uskutočniteľnosti body', 'Štúdia uskutočniteľnosti', 'Alternatívy body', 'Alternatívy', 'Kalkulácia efektívnosti body',
-    'Kalkulácia efektívnosti', 'Participácia na príprave projektu body', 'Participácia na príprave projektu', 'Súlad s požiadavkami body',
-    'Súlad s požiadavkami', 'Elektronické služby body', 'Elektronické služby', 'Identifikácia, autentifikácia, autorizácia (IAA) body',
-    'Identifikácia, autentifikácia, autorizácia (IAA)', 'Riadenie údajov body', 'Riadenie údajov', 'OpenData body', 'OpenData',
-    'MyData body', 'MyData', 'OpenApi body', 'OpenApi', 'Zdrojový kód body', 'Zdrojový kód'
+    'Projekt', 'Projekt ID', 'ID hodnotenia prípravy', 'Link na hodnotenie prípravy', 'ID hodnotenia produktu', 'Link na hodnotenie produktu',
+    'Názov-Príprava', 'Garant-Príprava', 'Stručný opis-Príprava', 'Náklady na projekt-Príprava', 'Aktuálny stav projektu-Príprava',
+    'Čo sa práve deje-Príprava', 'Zhrnutie hodnotenia Red Flags-Príprava', 'Stanovisko Slovensko.Digital-Príprava', 'Reforma VS body-Príprava',
+    'Reforma VS-Príprava', 'Merateľné ciele (KPI) body-Príprava', 'Merateľné ciele (KPI)-Príprava', 'Postup dosiahnutia cieľov body-Príprava',
+    'Postup dosiahnutia cieľov-Príprava', 'Súlad s KRIT body-Príprava', 'Súlad s KRIT-Príprava', 'Biznis prínos body-Príprava',
+    'Biznis prínos-Príprava', 'Príspevok v informatizácii body-Príprava', 'Príspevok v informatizácii-Príprava', 'Kalkulácia efektívnosti body-Príprava',
+    'Kalkulácia efektívnosti-Príprava', 'Transparentnosť a participácia body-Príprava', 'Transparentnosť a participácia-Príprava', 'Názov-Produkt',
+    'Garant-Produkt', 'Stručný opis-Produkt', 'Náklady na projekt-Produkt', 'Aktuálny stav projektu-Produkt', 'Čo sa práve deje-Produkt',
+    'Zhrnutie hodnotenia Red Flags-Produkt', 'Stanovisko Slovensko.Digital-Produkt', 'Reforma VS body-Produkt', 'Reforma VS-Produkt',
+    'Merateľné ciele (KPI) body-Produkt', 'Merateľné ciele (KPI)-Produkt', 'Postup dosiahnutia cieľov body-Produkt', 'Postup dosiahnutia cieľov-Produkt',
+    'Súlad s KRIT body-Produkt', 'Súlad s KRIT-Produkt', 'Biznis prínos body-Produkt', 'Biznis prínos-Produkt', 'Príspevok v informatizácii body-Produkt',
+    'Príspevok v informatizácii-Produkt', 'Kalkulácia efektívnosti body-Produkt', 'Kalkulácia efektívnosti-Produkt', 'Transparentnosť a participácia body-Produkt',
+    'Transparentnosť a participácia-Produkt', 'Súlad s požiadavkami body-Produkt', 'Súlad s požiadavkami-Produkt', 'Elektronické služby body-Produkt',
+    'Elektronické služby-Produkt', 'Identifikácia, autentifikácia, autorizácia (IAA) body-Produkt', 'Identifikácia, autentifikácia, autorizácia (IAA)-Produkt',
+    'Riadenie údajov body-Produkt', 'Riadenie údajov-Produkt', 'OpenData body-Produkt', 'OpenData-Produkt', 'MyData body-Produkt', 'MyData-Produkt',
+    'OpenAPI body-Produkt', 'OpenAPI-Produkt', 'Zdrojový kód body-Produkt', 'Zdrojový kód-Produkt'
   ].freeze
+
+  RATINGS_CONSTANT = {
+    "Reforma VS" => "Reforma VS body",
+    "Merateľné ciele (KPI)" => "Merateľné ciele (KPI) body",
+    "Postup dosiahnutia cieľov" => "Postup dosiahnutia cieľov body",
+    "Súlad s KRIT" => "Súlad s KRIT body",
+    "Biznis prínos" => "Biznis prínos body",
+    "Príspevok v informatizácii" => "Príspevok v informatizácii body",
+    "Kalkulácia efektívnosti" => "Kalkulácia efektívnosti body",
+    "Transparentnosť a participácia" => "Transparentnosť a participácia body",
+    "Súlad s požiadavkami" => "Súlad s požiadavkami body",
+    "Elektronické služby" => "Elektronické služby body",
+    "Identifikácia, autentifikácia, autorizácia (IAA)" => "Identifikácia, autentifikácia, autorizácia (IAA) body",
+    "Riadenie údajov" => "Riadenie údajov body",
+    "OpenData" => "OpenData body",
+    "MyData" => "MyData body",
+    "OpenAPI" => "OpenAPI body",
+    "Zdrojový kód" => "Zdrojový kód body"
+  }
 
   def perform(new_revision)
     if new_revision.published?
@@ -24,32 +50,51 @@ class ExportTopicIntoSheetJob < ApplicationJob
   private
 
   def update_sheet(new_revision)
+    suffix = new_revision.revision.page.page_type == 'preparation' ? '-Príprava' : '-Produkt'
+
     result = extract_content_from_html(new_revision.body_html)
+    ratings = new_revision.revision.ratings.includes(:rating_type).index_by { |rating| rating.rating_type.name }
+
+    result["Názov"] = new_revision.title
+    result["Garant"] = new_revision.guarantor
+    result["Stručný opis"] = new_revision.description
+    result["Náklady na projekt"] = new_revision.budget
+    result["Aktuálny stav projektu"] = new_revision.stage.name
+    result["Čo sa práve deje"] = new_revision.current_status
+    result["Zhrnutie hodnotenia Red Flags"] = new_revision.summary
+    result["Stanovisko Slovensko.Digital"] = new_revision.recommendation
+
+    RATINGS_CONSTANT.each do |type_name, result_field_name|
+      result[result_field_name] = ratings[type_name]&.score || 'N/A'
+    end
+
+    result.transform_keys! { |k| k + suffix }
 
     result["Projekt"] = new_revision.title
     result["Projekt ID"] = new_revision.project_id
-    result["ID hodnotenia"] = new_revision.revision.page.id
-    result["Typ hodnotenia"] = new_revision.revision.page.page_type
-    result["Názov"] = new_revision.title
-    result["Popis"] = new_revision.description
-    result["Náklady"] = new_revision.budget
-    result["Garant"] = new_revision.guarantor
-    result["Zhrnutie"] = new_revision.summary
-    result["Stanovisko S.D"] = new_revision.recommendation
-    result["Aktuálny stav"] = new_revision.stage_id
-    result["Čo sa deje"] = new_revision.current_status
 
-    result["Reforma VS body"] = new_revision.revision.ratings.where(rating_type_id: 1).first&.score || 'N/A'
-    result["Merateľné ciele (KPI) body"] = new_revision.revision.ratings.where(rating_type_id: 2).first&.score || 'N/A'
+    if new_revision.revision.page.page_type == 'preparation'
+      result["ID hodnotenia prípravy"] = new_revision.revision.page.id
+      result["Link na hodnotenie prípravy"] = %(=HYPERLINK("https://redflags.slovensko.digital/admin/pages/#{new_revision.revision.page.id}"; "Hodnotenie v adminovi"))
+    else
+      result["ID hodnotenia produktu"] = new_revision.revision.page.id
+      result["Link na hodnotenie produktu"] = %(=HYPERLINK("https://redflags.slovensko.digital/admin/pages/#{new_revision.revision.page.id}"; "Hodnotenie v adminovi"))
+    end
 
     sheets_service = GoogleApiService.get_sheets_service
-    response = sheets_service.get_spreadsheet_values(ENV['GOOGLE_SHEET_EXPORT_ID'], 'A:BA')
+    response = sheets_service.get_spreadsheet_values(ENV['GOOGLE_SHEET_EXPORT_ID'], 'A:CA')
     header_row = response.values[2]
-    current_row_count = response.values.size
+    current_row_count = response.values.count
     column_indices = COLUMN_NAMES.map { |name| header_row.index(name) }
 
-    values = COLUMN_NAMES.map { |name| result[name] || "-" }
-    update_google_sheet(sheets_service, ENV['GOOGLE_SHEET_EXPORT_ID'], column_indices, values, current_row_count)
+    values = COLUMN_NAMES.map { |name| result[name]  }
+
+    if find_row_index_by_project_id(response.values[3..], header_row, new_revision.project_id)
+      range = "Hárok1!#{column_letter(column_indices.min + 1)}#{current_row_count}:#{column_letter(column_indices.max + 1)}#{current_row_count}"
+    else
+      range = "Hárok1!#{column_letter(column_indices.min + 1)}#{current_row_count + 1}:#{column_letter(column_indices.max + 1)}#{current_row_count + 1}"
+    end
+    update_google_sheet(sheets_service, ENV['GOOGLE_SHEET_EXPORT_ID'], column_indices, values, range)
   end
 
   def delete_row(new_revision)
@@ -77,12 +122,9 @@ class ExportTopicIntoSheetJob < ApplicationJob
     result
   end
 
-  def update_google_sheet(sheets_service, google_sheet_id, column_indices, values, current_row_count)
-    values.each_with_index do |value, i|
-      range = "Hárok1!#{(column_indices[i] + 65).chr}#{current_row_count + 1}"
-      value_range_object = Google::Apis::SheetsV4::ValueRange.new(values: [[value]])
-      sheets_service.update_spreadsheet_value(google_sheet_id, range, value_range_object, value_input_option: 'USER_ENTERED')
-    end
+  def update_google_sheet(sheets_service, google_sheet_id, column_indices, values, range)
+    value_range_object = Google::Apis::SheetsV4::ValueRange.new(values: [values])
+    sheets_service.update_spreadsheet_value(google_sheet_id, range, value_range_object, value_input_option: 'USER_ENTERED')
   end
 
   def delete_google_sheet_row(sheets_service, google_sheet_id, row_index)
@@ -111,5 +153,19 @@ class ExportTopicIntoSheetJob < ApplicationJob
   def find_row_index(rows, header_row, page_id)
     id_index = header_row.index('ID hodnotenia')
     rows.find_index { |row| row[id_index] == page_id.to_s }
+  end
+
+  def find_row_index_by_project_id(rows, header_row, project_id)
+    project_id_index = header_row.index('Projekt ID')
+    rows.find_index { |row| row[project_id_index] == project_id.to_s }
+  end
+
+  def column_letter(number)
+    letter = ''
+    while number > 0
+      number, remainder = (number - 1).divmod(26)
+      letter = (65 + remainder).chr + letter
+    end
+    letter
   end
 end

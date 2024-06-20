@@ -17,7 +17,7 @@ class UpdateSheetValueJob < ApplicationJob
 
     match_column_name = column_names[page_type]
     if match_column_name
-      handle_row(sheets_service, ENV['GOOGLE_SHEET_ID'], header_row, response_values[row_index + 3], row_index, match_column_name, published_value)
+      handle_row(sheets_service, ENV['GOOGLE_SHEET_ID'], header_row, row_index, match_column_name, published_value)
     else
       raise ArgumentError, "No matching column for page type."
     end
@@ -38,7 +38,7 @@ class UpdateSheetValueJob < ApplicationJob
     end
   end
 
-  def handle_row(sheets_service, google_sheet_id, header_row, row, row_index, column_name, published_value)
+  def handle_row(sheets_service, google_sheet_id, header_row, row_index, column_name, published_value)
     column_index = header_row.index(column_name)
     raise ArgumentError, "Could not find the provided column in the spreadsheet." if column_index.nil?
 

@@ -1,9 +1,9 @@
 <% content_for(:title) do %><%= @project_revision.title %> &middot; Red Flags &middot; Slovensko.Digital<% end %>
-<div id="project-show" class="container main">
+<div id="project-show" class="container main mt-5">
 
   <div class="row mb-5">
     <div class="col-md-12">
-      <h1 class="project-title"><%= @project_revision.title %></h1><%= link_to 'Hodnotenie na RF webe', project_show_revision_type_path(@project_revision.project_id, @project_revision.revision.page.page_type)%>
+      <h1 class="project-title"><%= @project_revision.title %></h1><%= link_to 'Hodnotenie na RF webe', project_show_revision_type_path(@project_revision.project_id, map_page_type_to_route(@project_revision.revision.page.page_type))%>
         <% @project_revision.tags.select { |tag| ProjectsHelper::ALLOWED_TAGS[tag] }.each do |tag| %>
           <p class="lead">
             <%= link_to projects_path(tag: tag) do%>

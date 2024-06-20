@@ -42,7 +42,7 @@
               <% @good_projects.each_with_index do |project, index| %>
                 <tr>
                   <th scope="row" class="pl-3"><%= index + 1 %></th>
-                  <td><%= link_to project.revision.page.title, project_path(project.project) %></td>
+                  <td><%= link_to project.revision.page.title, project_show_revision_type_path(project.project, project.revision.page.page_type) %></td>
                 </tr>
               <% end %>
             </tbody>
@@ -56,7 +56,7 @@
             <% @bad_projects.each_with_index do |project, index| %>
               <tr>
                 <th scope="row" class="pl-3"><%= index + 1 %></th>
-                <td><%= link_to project.revision.page.title, project_path(project.project) %></td>
+                <td><%= link_to project.revision.page.title, project_show_revision_type_path(project.project, project.revision.page.page_type) %></td>
               </tr>
             <% end %>
             </tbody>

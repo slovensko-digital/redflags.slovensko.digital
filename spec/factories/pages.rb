@@ -16,6 +16,8 @@
 
 FactoryBot.define do
   factory :page do
+    project
+    page_type { 'preparation' }
     after :create do |p|
       create :revision, page: p
     end
@@ -41,7 +43,5 @@ FactoryBot.define do
         create :revision, page: p if p.published?
       end
     end
-
-    association :project, factory: :project
   end
 end

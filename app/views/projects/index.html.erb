@@ -25,42 +25,43 @@
       <th colspan="4">Projekt</th>
       <th colspan="2" class="text-center">Hodnotenie prípravy</th>
       <th colspan="2" class="text-center">Hodnotenie produktu</th>
-      <th colspan="2" class="text-center">Dátum aktualizácie hodnotenia</th>
+      <th colspan="2" class="text-center">Posledná aktualizácia</th>
       <th colspan="2" class="text-center tag-tooltip" title="Rozbalťe pre detailné hodnotenia jednotlivých fáz">Detail</th>
     </tr>
     </thead>
     <tbody>
     <% @projects.each do |project| %>
-      <tr data-toggle="collapse" data-target="#collapse-<%= project.id %>" class="accordion-toggle">
+      <tr>
         <td style="width: 12rem;" colspan="4">
-          <%= project.published_revisions.first.title %>
-          <% if project.published_revisions.first.stage %>
+          <%= project.published_revisions.last.title %>
+          <% if project.published_revisions.last.stage %>
             <div class="mt-1">
-              <span class="badge badge-secondary" title="Prebiehajúca fáza"><%= project.published_revisions.first.stage %></span>
+              <span class="badge badge-secondary" title="Prebiehajúca fáza"><%= project.published_revisions.last.stage %></span>
             </div>
           <% end %>
         </td>
+
         <% prep_revision = project.published_revisions.find { |r| r.revision.page.page_type == 'preparation' } %>
         <% prep_page = prep_revision&.revision&.page %>
-        <td class="text-center" colspan="2">
+        <td class="align-middle text-center" colspan="2">
           <% if prep_page.nil? %>
-            -
+          -
           <% elsif prep_page.latest_revision&.redflags_count > 0 %>
-            <div class="d-flex flex-column">
+            <div class="d-flex flex-column justify-content-center align-items-center">
               <strong class="text-danger">
                 <%= prep_page.latest_revision.redflags_count %> &times; <%= fa_icon('flag', class: 'text-danger') %>
               </strong>
               <% if prep_page.latest_revision %>
-                <%= link_to 'Zobraziť', project_show_revision_type_path(project.id, 'preparation') %>
+                <%= link_to 'Zobraziť', project_show_revision_type_path(project.id, 'hodnotenie-pripravy') %>
               <% end %>
             </div>
           <% else %>
-            <div class="d-flex flex-column">
+            <div class="d-flex flex-column justify-content-center align-items-center">
               <strong>
                 <%= number_to_percentage(prep_page.latest_revision.total_score_percentage, precision: 0) %>
               </strong>
               <% if prep_page.latest_revision %>
-                <%= link_to 'Zobraziť', project_show_revision_type_path(project.id, 'preparation') %>
+                <%= link_to 'Zobraziť', project_show_revision_type_path(project.id, 'hodnotenie-pripravy') %>
               <% end %>
             </div>
           <% end %>
@@ -68,57 +69,59 @@
 
         <% prod_revision = project.published_revisions.find { |r| r.revision.page.page_type == 'product' } %>
         <% prod_page = prod_revision&.revision&.page%>
-        <td class="text-center" colspan="2">
+        <td class="align-middle text-center" colspan="2">
           <% if prod_page.nil? %>
-            -
+          -
           <% elsif prod_page.latest_revision&.redflags_count > 0 %>
-            <div class="d-flex flex-column">
+            <div class="d-flex flex-column justify-content-center align-items-center">
               <strong class="text-danger">
                 <%= prod_page.latest_revision.redflags_count %> &times; <%= fa_icon('flag', class: 'text-danger') %>
               </strong>
               <% if prod_page.latest_revision %>
-                <%= link_to 'Zobraziť', project_show_revision_type_path(project.id, 'product') %>
+                <%= link_to 'Zobraziť', project_show_revision_type_path(project.id, 'hodnotenie-produktu') %>
               <% end %>
             </div>
           <% else %>
-            <div class="d-flex flex-column">
+            <div class="d-flex flex-column justify-content-center align-items-center">
               <strong>
                 <%= number_to_percentage(prod_page.latest_revision.total_score_percentage, precision: 0) %>
               </strong>
               <% if prod_page.latest_revision %>
-                <%= link_to 'Zobraziť', project_show_revision_type_path(project.id, 'product') %>
+                <%= link_to 'Zobraziť', project_show_revision_type_path(project.id, 'hodnotenie-produktu') %>
               <% end %>
             </div>
           <% end %>
         </td>
 
-        <td class="text-center" colspan="2">
+        <td class="align-middle text-center" colspan="2">
           <% latest_revision_date = project.published_revisions.maximum(:updated_at) %>
           <%= latest_revision_date.strftime('%d.%m.%Y') if latest_revision_date.present? %>
         </td>
 
-        <td class="text-center" colspan="2">
-         <img src="https://static.thenounproject.com/png/2111581-200.png" alt="arrow" class="img-responsive" style="width: 24px">
+        <td class="align-middle text-center" colspan="2">
+          <button class="btn btn-link p-0" data-toggle="collapse" data-target="#collapse-<%= project.id %>" aria-expanded="false" aria-controls="collapse-<%= project.id %>">
+            <span class="collapsed h3 text-dark">+</span>
+            <span class="expanded h3 text-dark d-none">-</span>
+          </button>
         </td>
-
       </tr>
       <tr class="hidden">
         <td colspan="12" class="p-0">
-          <div class="collapse" id="collapse-<%= project.id %>">
-            <table class="table">
+          <div class="collapse p-0" id="collapse-<%= project.id %>">
+            <table class="table m-0">
               <thead>
               <tr style="background-color: #f4f4f4">
                 <th colspan="4">Fáza</th>
-                <th colspan="8" class="text-center tag-tooltip" title="Rozbalťe pre detailné hodnotenia jednotlivých fáz">Hodnotenie podľa kriterií</th>
+                <th colspan="8" class="text-center">Hodnotenie podľa kriterií</th>
               </tr>
               </thead>
               <tbody>
               <% project.published_revisions.sort_by { |r| r.revision.page.page_type }.each do |revision| %>
-                <tr>
-                  <td colspan="4"><%= link_to revision.revision.page.page_type_label, project_show_revision_type_path(project.id, revision.revision.page.page_type) %></td>
+                <tr class="p-0">
+                  <td colspan="4"><%= link_to revision.revision.page.page_type_label, project_show_revision_type_path(project.id, map_page_type_to_route(revision.revision.page.page_type)) %></td>
                   <% ratings = revision.revision.page.latest_revision.ratings.group_by(&:score) %>
                   <% 4.downto(0).each do |index| rt = ratings[index] %>
-                    <td class="text-center">
+                    <td class="align-middle text-center">
                       <% if rt %>
                         <strong class = "tag-tooltip" title="<%= rt.map{|r| r.rating_type.name}.join(", ") %>">
                           <%= rt.count %> &times; <%= rating_stars(rt.first) %>

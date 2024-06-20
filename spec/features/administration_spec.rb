@@ -7,7 +7,7 @@ RSpec.feature 'Administration', type: :feature do
     authorize_as_admin
     visit admin_root_path
 
-    expect { click_on 'Synchronize' }.to have_enqueued_job(SyncCategoryTopicsJob)
+    expect { click_on 'Synchronize' }.to have_enqueued_job(SyncAllTopicsJob)
   end
 
   def see_all_pages
@@ -27,10 +27,10 @@ RSpec.feature 'Administration', type: :feature do
   end
 
   scenario 'As admin I want to see all project pages' do
-    create(:page, :published)
-    create(:page, :unpublished)
-    create(:project, page: Page.first)
-    create(:project, page: Page.second)
+    page1 = create(:page, :published)
+    page2 = create(:page, :unpublished)
+    create(:project, pages: [page1])
+    create(:project, pages: [page2])
     see_all_pages
   end
 
@@ -44,12 +44,12 @@ RSpec.feature 'Administration', type: :feature do
   end
 
   scenario 'As admin I want to preview page' do
-    create(:page)
-    preview_page
-  end
+    page_to_preview = create(:page)
+    create(:project, pages: [page_to_preview])
+    revision = page_to_preview.revisions.first
 
-  scenario 'As admin I want to preview project page' do
-    create(:page)
+    SyncRevisionJob.perform_now(revision)
+
     preview_page
   end
 
@@ -65,13 +65,17 @@ RSpec.feature 'Administration', type: :feature do
   end
 
   scenario 'As admin I want to publish page' do
-    create(:page, :unpublished)
-    publish_page
-  end
+    allow(UpdateMultipleSheetColumnsJob).to receive(:perform_later)
+    allow(ExportTopicIntoSheetJob).to receive(:perform_later)
 
-  scenario 'As admin I want to publish project page' do
-    create(:page, :unpublished)
-    create(:project, page: Page.first)
+    page_to_preview = create(:page, :unpublished)
+    project = create(:project, pages: [page_to_preview])
+    revision = page_to_preview.revisions.first
+
+    project_revision = project.revisions.find_or_initialize_by(revision_id: revision&.id)
+    project_revision.load_from_data(revision&.raw)
+    project_revision.save!
+
     publish_page
   end
 
@@ -87,13 +91,15 @@ RSpec.feature 'Administration', type: :feature do
   end
 
   scenario 'As admin I want to unpublish page' do
-    create(:page, :published)
-    unpublish_page
-  end
+    allow(UpdateMultipleSheetColumnsJob).to receive(:perform_later)
 
-  scenario 'As admin I want to unpublish project page' do
-    create(:page, :published)
-    create(:project, page: Page.first)
+    page_to_preview = create(:page, :published)
+    project = create(:project, pages: [page_to_preview])
+    revision = page_to_preview.revisions.first
+
+    project_revision = project.revisions.find_or_initialize_by(revision_id: revision&.id)
+    project_revision.load_from_data(revision&.raw)
+    project_revision.save!
     unpublish_page
   end
 
@@ -119,90 +125,69 @@ RSpec.feature 'Administration', type: :feature do
   end
 
   scenario 'As admin I want to see all revisions of project page' do
-    create(:page, :published)
-    create(:project, page: Page.first)
-    create(:revision, page: Page.first)
+    page = create(:page, :published)
+    create(:project, pages: [page])
+    create(:revision, page: page)
+
     see_all_revisions
   end
 
-  def preview_non_latest_revision
+  def preview_non_latest_revision(version)
     authorize_as_admin
     visit admin_root_path
-
     click_on Page.first.id
-
-    within :id, dom_id(Revision.first) do
+    within :id, dom_id(Revision.find_by_version(version)) do
       expect(page).not_to have_content('published')
       expect(page).not_to have_content('latest')
-
-      click_on 'Preview'
     end
   end
 
   scenario 'As admin I want to preview non-latest page revision' do
-    create(:page, :unpublished)
-    create(:revision, page: Page.first)
-    preview_non_latest_revision
+    page = create(:page, :unpublished)
+    project = create(:project, pages: [page])
+
+    older_revision = create(:revision, page: page, version: 1)
+    create_project_revision(project, older_revision)
+
+    latest_revision = create(:revision, page: page, version: 2)
+    create_project_revision(project, latest_revision)
+
+    preview_non_latest_revision(older_revision.version)
   end
 
-  scenario 'As admin I want to preview non-latest project page revision' do
-    create(:page, :unpublished)
-    create(:project, page: Page.first)
-    create(:revision, page: Page.first)
-    preview_non_latest_revision
+  def create_project_revision(project, revision)
+    project_revision = project.revisions.find_or_initialize_by(revision_id: revision&.id)
+    project_revision.load_from_data(revision&.raw)
+    project_revision.save!
   end
 
-  def publish_non_latest_revision
+  def publish_non_latest_revision(version)
     authorize_as_admin
     visit admin_root_path
-
     click_on Page.first.id
 
-    within :id, dom_id(Revision.first) do
+    within :id, dom_id(Revision.find_by_version(version)) do
       expect(page).not_to have_content('published')
       expect(page).not_to have_content('latest')
-
       click_on 'Publish'
     end
 
-    within :id, dom_id(Revision.first) do
+    within :id, dom_id(Revision.find_by_version(version)) do
       expect(page).to have_content('published')
     end
   end
 
   scenario 'As admin I want to publish non-latest page revision' do
-    create(:page, :unpublished)
-    create(:revision, page: Page.first)
-    publish_non_latest_revision
-  end
+    page = create(:page, :unpublished)
+    project = create(:project, pages: [page])
+    # create two revisions for project page
+    older_revision = create(:revision, page: page, version: 1)
+    create(:project_revision, revision: older_revision, project: project)
 
-  scenario 'As admin I want to publish non-latest project page revision' do
-    create(:page, :unpublished)
-    create(:project, page: Page.first)
-    create(:revision, page: Page.first)
-    publish_non_latest_revision
-  end
-
-  context 'project page specific features' do
-    scenario 'As admin I want to edit project category' do
-      create(:project)
-
-      authorize_as_admin
-      visit admin_root_path
-
-      click_on Page.first.id
-
-      within 'h4' do
-        expect(page).to have_content('boring')
-      end
-
-      choose 'good'
-      click_on 'Update'
-
-      within 'h4' do
-        expect(page).to have_content('good')
-      end
-    end
+    latest_revision = create(:revision, page: page, version: 2)
+    create(:project_revision, revision: latest_revision, project: project)
+    # publish older, non-latest project page revision
+    publish_non_latest_revision(1)
   end
 
   private

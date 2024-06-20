@@ -59,7 +59,7 @@
           <% end %>
           <span class="badge text-dark"><%= page.revisions.size %></span>
         </td>
-        <td><%= l page.updated_at.in_time_zone('Europe/Bratislava'), format: "%H:%M, %d.%m.%y" %></td>
+        <td><%= l page.revisions.max.updated_at.in_time_zone('Europe/Bratislava'), format: "%H:%M, %d.%m.%y" %></td>
         <td>
           <% if page.publishable? %>
             <% if page.published? %>

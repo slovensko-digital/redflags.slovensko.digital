@@ -13,6 +13,9 @@ RSpec.describe SyncRevisionJob, type: :job do
     page = create(:page, project: project)
     revision = create(:revision, page: page)
 
+    revision.load_ratings(revision.raw)
+    revision.save
+
     subject.perform(revision)
 
     snapshot = ProjectRevision.first
@@ -29,23 +32,10 @@ RSpec.describe SyncRevisionJob, type: :job do
       recommendation: 'Odporúčame projekt pozastaviť a dôkladne zanalyzovať rôzne alternatívy budovania siete aj s ohľadom na podmienky na telekomunikačnom trhu.'
     )
 
-    ratings = snapshot.ratings.index_by { |r| r.rating_type.name }
+    ratings = snapshot.revision.ratings.index_by { |r| r.rating_type.name }
 
     expect(ratings['Reforma VS'].score).to eq(2)
     expect(ratings['Participácia na príprave projektu'].score).to eq(4)
     expect(ratings['Biznis prínos'].score).to eq(0)
-  end
-
-  it 'adds calculated total and max score to revision' do
-    project = create(:project)
-    page = create(:page, project: project)
-    revision = create(:revision, page: page)
-
-    subject.perform(revision)
-
-    snapshot = ProjectRevision.first
-
-    expect(snapshot.revision.total_score).to eq(6)
-    expect(snapshot.revision.maximum_score).to eq(12)
   end
 end

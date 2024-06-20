@@ -6,9 +6,9 @@ RSpec.describe SyncCategoryTopicsJob, type: :job do
   it 'schedules topic sync jobs for all topics in category', vcr: true do
     subject.perform('red-flags', sync_topic_job: sync_topic_job)
 
-    expect(sync_topic_job).to have_received(:perform_later).with(4034)
-    expect(sync_topic_job).to have_received(:perform_later).with(4334)
-    expect(sync_topic_job).to have_received(:perform_later).with(4035)
+    expect(sync_topic_job).to have_received(:perform_later).with(nil, 4034)
+    expect(sync_topic_job).to have_received(:perform_later).with(nil, 4334)
+    expect(sync_topic_job).to have_received(:perform_later).with(nil, 4035)
   end
 
   it 'schedules next topic page when listing too long', vcr: true do

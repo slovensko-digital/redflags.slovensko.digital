@@ -7,8 +7,7 @@ class UpdateMultipleSheetColumnsJob < ApplicationJob
       page_type = update[:page_type]
       published_value = update[:published_value]
 
-      UpdateSheetValueJob.perform_later(
-        ENV['GOOGLE_SHEET_EXPORT_ID'],
+      UpdateSheetValueJob.perform_now(
         page_id,
         column_names,
         page_type,

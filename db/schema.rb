@@ -40,12 +40,10 @@ ActiveRecord::Schema.define(version: 20240613113501) do
     t.text "recommendation"
     t.bigint "stage_id"
     t.string "current_status"
-    t.bigint "review_type_id"
     t.boolean "published", default: false
     t.boolean "was_published", default: false
     t.datetime "published_at"
     t.index ["project_id"], name: "index_project_revisions_on_project_id"
-    t.index ["review_type_id"], name: "index_project_revisions_on_review_type_id"
     t.index ["revision_id"], name: "index_project_revisions_on_revision_id"
     t.index ["stage_id"], name: "index_project_revisions_on_stage_id"
   end
@@ -110,7 +108,6 @@ ActiveRecord::Schema.define(version: 20240613113501) do
   add_foreign_key "pages", "revisions", column: "published_revision_id"
   add_foreign_key "project_revisions", "project_stages", column: "stage_id"
   add_foreign_key "project_revisions", "projects"
-  add_foreign_key "project_revisions", "review_types"
   add_foreign_key "project_revisions", "revisions"
   add_foreign_key "revision_ratings", "rating_types"
   add_foreign_key "revision_ratings", "revisions"

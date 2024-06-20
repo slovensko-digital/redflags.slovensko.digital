@@ -30,6 +30,8 @@ class Revision < ApplicationRecord
 
   has_many :ratings, class_name: 'RevisionRating'
 
+  after_save :schedule_sync_project_job
+
   def body_html
     raw['post_stream']['posts'].first['cooked']
   end
@@ -59,7 +61,7 @@ class Revision < ApplicationRecord
 
     doc = Nokogiri::HTML.parse(rest) # we are parsing rest here
     doc.css('h3').each do |heading|
-      value = heading.text.strip.gsub(/[^0-9A-Za-záäčďéíĺľňóôŕřšťúůýžÁÄČĎÉÍĹĽŇÓÔŔŘŠŤÚŮÝŽ() ]/, '').strip
+      value = heading.text.strip.gsub(/[^0-9A-Za-záäčďéíĺľňóôŕřšťúůýžÁÄČĎÉÍĹĽŇÓÔŔŘŠŤÚŮÝŽ(), ]/, '').strip
       rating_type = RatingType.find_by(name: value)
       if rating_type
         score = heading.css('img.emoji[title=":star:"]').count
@@ -81,5 +83,9 @@ class Revision < ApplicationRecord
     self.redflags_count = redflags_count
     self.total_score = total_score
     self.maximum_score = maximum_score
+  end
+
+  def schedule_sync_project_job
+    SyncRevisionJob.perform_later(self)
   end
 end
