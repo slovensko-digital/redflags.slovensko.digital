@@ -4,6 +4,8 @@ class UpdateRevisionRatings < ActiveRecord::Migration[5.1]
 
     RevisionRating.reset_column_information
     RevisionRating.find_each do |revision_rating|
+      next unless revision_rating.project_revision_id
+
       project_revision = ProjectRevision.find(revision_rating.project_revision_id)
       revision_rating.update!(revision_id: project_revision.revision_id)
     end

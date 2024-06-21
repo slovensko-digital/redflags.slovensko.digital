@@ -21,7 +21,7 @@ ActiveRecord::Schema.define(version: 20240613113501) do
     t.bigint "published_revision_id"
     t.bigint "latest_revision_id"
     t.bigint "project_id"
-    t.integer "page_type"
+    t.integer "page_type", default: 0
     t.index ["project_id"], name: "index_pages_on_project_id"
   end
 

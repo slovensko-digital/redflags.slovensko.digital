@@ -1,5 +1,5 @@
 class RemovePublishedRevisionIdFromProjects < ActiveRecord::Migration[5.1]
   def change
-    remove_column :projects, :published_revision_id
+    remove_column :projects, :published_revision_id, :integer
   end
 end
