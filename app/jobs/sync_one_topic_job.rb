@@ -37,9 +37,9 @@ class SyncOneTopicJob < ApplicationJob
       SyncTopicJob.perform_later(project_id, preparation_page_id)
     else
       if target_id == preparation_page_id.to_i
-        enqueue_job_for_update("#{project_name} - Príprava", project_id, preparation_document_id, preparation_page_id, 0)
+        enqueue_job_for_update("#{project_name} - Príprava", project_id, preparation_document_id, preparation_page_id, 'Prípravná fáza')
       else target_id == product_page_id.to_i
-        enqueue_job_for_update("#{project_name} - Produkt", project_id, product_document_id, product_page_id, 1)
+        enqueue_job_for_update("#{project_name} - Produkt", project_id, product_document_id, product_page_id, 'Fáza produkt')
       end
     end
   end

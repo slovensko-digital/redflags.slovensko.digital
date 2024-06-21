@@ -48,3 +48,7 @@ ProjectStage.find_or_create_by!(name: 'Testovacia prevádzka').update!(position:
 ProjectStage.find_or_create_by!(name: 'Prevádzka').update!(position: 5)
 ProjectStage.find_or_create_by!(name: 'Zastavený projekt').update!(position: 998)
 ProjectStage.find_or_create_by!(name: 'Zrušený projekt').update!(position: 999)
+
+PhaseType.find_or_create_by!(name: 'Prípravná fáza')
+PhaseType.find_or_create_by!(name: 'Fáza produkt')
+

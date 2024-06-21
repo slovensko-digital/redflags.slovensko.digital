@@ -2,13 +2,15 @@ class SyncRevisionJob < ApplicationJob
   queue_as :default
 
   def perform(revision)
-    Project.transaction do
-      page = revision.page
-      project = page.project
+    return if revision.raw['category_id'] != ENV.fetch('REDFLAGS_PROJECTS_CATEGORY_ID').to_i
 
-      project_revision = project.revisions.find_or_initialize_by(revision_id: revision.id)
-      project_revision.load_from_data(revision.raw)
-      project_revision.save!
+    Phase.transaction do
+      page = revision.page
+      phase = page.phase
+
+      phase_revision = phase.revisions.find_or_initialize_by(revision_id: revision.id)
+      phase_revision.load_from_data(revision.raw)
+      phase_revision.save!
     end
   end
 end

@@ -2,31 +2,32 @@ class Admin::PagesController < AdminController
   before_action :load_page, only: [:show, :preview, :publish, :unpublish, :sync_one]
 
   def index
-    @pages = Page.includes(:project).order(id: :desc)
-    @projects = @pages.map(&:project)
+    @pages = Page.includes(phase: :project).order(id: :desc)
+    @projects = @pages.map { |page| page.phase.project }.uniq
   end
 
   def show
     @revisions = @page.revisions.order(version: :desc).page(params[:page])
-    @project = @page.project
+    @project = @page.phase.project
   end
 
   def preview
-    @project = @page.project
+    @phase = @page.phase
 
     if @project.present?
       if params['version'] == 'latest'
-        @project_revision = @project.revisions.find_by!(revision: @page.latest_revision)
+        @phase_revision = @phase.revisions.find_by!(revision: @page.latest_revision)
       else
-        @project_revision = @project.revisions.find_by!(revision: Revision.where(page_id: @page.id, version: params['version']))
+        @phase_revision = @phase.revisions.find_by!(revision: @page.revisions.where(version: params['version']))
       end
 
-      @ratings_by_type = @project_revision.revision.ratings.index_by(&:rating_type)
+      @ratings_by_type = @phase.revisions.ratings.index_by(&:rating_type)
     else
       if params['version'] == 'latest'
-        @project_revision = @page.latest_revision
+        @phase_revision = PhaseRevision.find_by(revision: @page.latest_revision)
       else
-        @project_revision = @page.revisions.find_by!(version: params['version'])
+        @phase_revision = PhaseRevision.joins(:revision)
+                                       .find_by(revisions: { version: params['version'] })
       end
     end
   end
@@ -40,21 +41,21 @@ class Admin::PagesController < AdminController
       @page.update!(published_revision: @page.revisions.find_by!(version: params['version']))
     end
 
-    related_revisions = ProjectRevision.where(revision_id: @page.revisions.ids).where.not(revision_id: revision_id)
+    related_revisions = PhaseRevision.where(revision_id: @page.revisions.ids).where.not(revision_id: revision_id)
     related_revisions.update_all(published: false) if revision_id
 
-    new_revision = ProjectRevision.find_by(revision_id: revision_id)
+    new_revision = PhaseRevision.find_by(revision_id: revision_id)
     new_revision.update!(published: true, was_published: true, published_at: Time.now) if new_revision
 
     updates = [
       {
-        column_names: {"preparation" => "Príprava publikovaná?", "product" => "Produkt publikovaný?"},
-        page_type: @page.page_type,
+        column_names: {"Prípravná fáza" => "Príprava publikovaná?", "Fáza produkt" => "Produkt publikovaný?"},
+        page_type: @page.phase.phase_type.name,
         published_value: "Áno"
       },
       {
-        column_names: {"preparation" => "Dátum publikácie prípravy", "product" => "Dátum publikácie produktu"},
-        page_type: @page.page_type,
+        column_names: {"Prípravná fáza" => "Dátum publikácie prípravy", "Fáza produkt" => "Dátum publikácie produktu"},
+        page_type: @page.phase.phase_type.name,
         published_value: new_revision.published_at.in_time_zone('Europe/Bratislava').strftime('%H:%M %d.%m.%Y')
       },
       {
@@ -63,8 +64,8 @@ class Admin::PagesController < AdminController
         published_value: new_revision.published_at.in_time_zone('Europe/Bratislava').strftime('%H:%M %d.%m.%Y')
       },
       {
-        column_names: {"preparation" => "RF web príprava", "product" => "RF web produkt"},
-        page_type: @page.page_type,
+        column_names: {"Prípravná fáza" => "RF web príprava", "Fáza produkt" => "RF web produkt"},
+        page_type: @page.phase.phase_type.name,
         published_value: %(=HYPERLINK("https://redflags.slovensko.digital/admin/pages/#{@page.id}"; "Admin link"))
       }
     ]
@@ -79,22 +80,22 @@ class Admin::PagesController < AdminController
 
     @page.update!(published_revision: nil)
 
-    ProjectRevision.where(revision_id: revision_id).update_all(published: false, published_at: nil) if revision_id
+    PhaseRevision.where(revision_id: revision_id).update_all(published: false, published_at: nil) if revision_id
 
     updates = [
       {
-        column_names: {"preparation" => "Príprava publikovaná?", "product" => "Produkt publikovaný?"},
-        page_type: @page.page_type,
+        column_names: {"Prípravná fáza" => "Príprava publikovaná?", "Fáza produkt" => "Produkt publikovaný?"},
+        page_type: @page.phase.phase_type.name,
         published_value: "Nie"
       },
       {
-        column_names: {"preparation" => "Dátum publikácie prípravy", "product" => "Dátum publikácie produktu"},
-        page_type: @page.page_type,
+        column_names: {"Prípravná fáza" => "Dátum publikácie prípravy", "Fáza produkt" => "Dátum publikácie produktu"},
+        page_type: @page.phase.phase_type.name,
         published_value: ""
       },
       {
-        column_names: {"preparation" => "RF web príprava", "product" => "RF web produkt"},
-        page_type: @page.page_type,
+        column_names: {"Prípravná fáza" => "RF web príprava", "Fáza produkt" => "RF web produkt"},
+        page_type: @page.phase.phase_type.name,
         published_value: ""
       }
     ]

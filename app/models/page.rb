@@ -7,8 +7,6 @@
 #  updated_at            :datetime         not null
 #  published_revision_id :integer
 #  latest_revision_id    :integer
-#  project_id            :integer          not null
-#  page_type             :integer          not null
 #
 # Foreign Keys
 #
@@ -17,14 +15,12 @@
 #
 
 class Page < ApplicationRecord
-  belongs_to :project
+  belongs_to :phase
 
   has_many :revisions
 
   belongs_to :published_revision, class_name: 'Revision', optional: true
   belongs_to :latest_revision, class_name: 'Revision', optional: true
-
-  enum page_type: { preparation: 0, product: 1}
 
   delegate :title, to: :latest_revision
 
@@ -38,16 +34,5 @@ class Page < ApplicationRecord
 
   def synced?
     published_revision == latest_revision
-  end
-
-  def page_type_label
-    case page_type
-    when "preparation"
-      "Hodnotenie prípravy"
-    when "product"
-      "Hodnotenie produktu"
-    else
-      page_type # Or some default value
-    end
   end
 end

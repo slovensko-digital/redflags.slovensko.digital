@@ -12,15 +12,15 @@
 # Indexes
 #
 #  index_revision_ratings_on_rating_type_id  (rating_type_id)
-#  index_revision_ratings_on_revision_id     (revision_id)
+#  index_revision_ratings_on_phase_revision_id     (phase_revision_id)
 #
 # Foreign Keys
 #
 #  fk_rails_...  (rating_type_id => rating_types.id)
-#  fk_rails_...  (revision_id => revisions.id)
+#  fk_rails_...  (phase_revision_id => phase_revisions.id)
 #
 
-class RevisionRating < ApplicationRecord
-  belongs_to :revision
+class PhaseRevisionRating < ApplicationRecord
+  belongs_to :phase_revision
   belongs_to :rating_type
 end

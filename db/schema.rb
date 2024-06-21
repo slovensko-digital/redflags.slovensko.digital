@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20240613113501) do
+ActiveRecord::Schema.define(version: 20240621112043) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -20,13 +20,21 @@ ActiveRecord::Schema.define(version: 20240613113501) do
     t.datetime "updated_at", null: false
     t.bigint "published_revision_id"
     t.bigint "latest_revision_id"
-    t.bigint "project_id"
-    t.integer "page_type", default: 0
-    t.index ["project_id"], name: "index_pages_on_project_id"
+    t.bigint "phase_id"
+    t.index ["phase_id"], name: "index_pages_on_phase_id"
   end
 
-  create_table "project_revisions", force: :cascade do |t|
-    t.bigint "project_id", null: false
+  create_table "phase_revision_ratings", force: :cascade do |t|
+    t.bigint "phase_revision_id", null: false
+    t.bigint "rating_type_id", null: false
+    t.integer "score"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["phase_revision_id"], name: "index_phase_revision_ratings_on_phase_revision_id"
+    t.index ["rating_type_id"], name: "index_phase_revision_ratings_on_rating_type_id"
+  end
+
+  create_table "phase_revisions", force: :cascade do |t|
     t.bigint "revision_id", null: false
     t.string "title", null: false
     t.string "full_name"
@@ -36,6 +44,9 @@ ActiveRecord::Schema.define(version: 20240613113501) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "body_html"
+    t.integer "total_score"
+    t.integer "maximum_score"
+    t.integer "redflags_count", default: 0
     t.text "summary"
     t.text "recommendation"
     t.bigint "stage_id"
@@ -43,9 +54,25 @@ ActiveRecord::Schema.define(version: 20240613113501) do
     t.boolean "published", default: false
     t.boolean "was_published", default: false
     t.datetime "published_at"
-    t.index ["project_id"], name: "index_project_revisions_on_project_id"
-    t.index ["revision_id"], name: "index_project_revisions_on_revision_id"
-    t.index ["stage_id"], name: "index_project_revisions_on_stage_id"
+    t.bigint "phase_id"
+    t.index ["phase_id"], name: "index_phase_revisions_on_phase_id"
+    t.index ["revision_id"], name: "index_phase_revisions_on_revision_id"
+    t.index ["stage_id"], name: "index_phase_revisions_on_stage_id"
+  end
+
+  create_table "phase_types", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "phases", force: :cascade do |t|
+    t.bigint "project_id"
+    t.bigint "phase_type_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["phase_type_id"], name: "index_phases_on_phase_type_id"
+    t.index ["project_id"], name: "index_phases_on_project_id"
   end
 
   create_table "project_stages", force: :cascade do |t|
@@ -77,16 +104,6 @@ ActiveRecord::Schema.define(version: 20240613113501) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "revision_ratings", force: :cascade do |t|
-    t.bigint "rating_type_id", null: false
-    t.integer "score"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "revision_id"
-    t.index ["rating_type_id"], name: "index_revision_ratings_on_rating_type_id"
-    t.index ["revision_id"], name: "index_revision_ratings_on_revision_id"
-  end
-
   create_table "revisions", force: :cascade do |t|
     t.bigint "page_id", null: false
     t.integer "version", null: false
@@ -95,21 +112,20 @@ ActiveRecord::Schema.define(version: 20240613113501) do
     t.datetime "updated_at", null: false
     t.string "title", null: false
     t.string "tags", default: [], array: true
-    t.integer "total_score"
-    t.integer "maximum_score"
-    t.integer "redflags_count", default: 0
     t.index ["page_id", "version"], name: "index_revisions_on_page_id_and_version", unique: true
     t.index ["page_id"], name: "index_revisions_on_page_id"
     t.index ["tags"], name: "index_revisions_on_tags", using: :gin
   end
 
-  add_foreign_key "pages", "projects"
+  add_foreign_key "pages", "phases"
   add_foreign_key "pages", "revisions", column: "latest_revision_id"
   add_foreign_key "pages", "revisions", column: "published_revision_id"
-  add_foreign_key "project_revisions", "project_stages", column: "stage_id"
-  add_foreign_key "project_revisions", "projects"
-  add_foreign_key "project_revisions", "revisions"
-  add_foreign_key "revision_ratings", "rating_types"
-  add_foreign_key "revision_ratings", "revisions"
+  add_foreign_key "phase_revision_ratings", "phase_revisions"
+  add_foreign_key "phase_revision_ratings", "rating_types"
+  add_foreign_key "phase_revisions", "phases"
+  add_foreign_key "phase_revisions", "project_stages", column: "stage_id"
+  add_foreign_key "phase_revisions", "revisions"
+  add_foreign_key "phases", "phase_types"
+  add_foreign_key "phases", "projects"
   add_foreign_key "revisions", "pages"
 end

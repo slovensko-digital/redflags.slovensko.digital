@@ -1,7 +1,7 @@
 class AddWasPublishedAndPublishedAtToProjectRevisions < ActiveRecord::Migration[5.1]
   def up
-    add_column :project_revisions, :was_published, :boolean, default: false
-    add_column :project_revisions, :published_at, :datetime
+    add_column :phase_revisions, :was_published, :boolean, default: false
+    add_column :phase_revisions, :published_at, :datetime
 
     Project.find_each do |project|
       project.published_revisions.each do |revision|
@@ -11,7 +11,7 @@ class AddWasPublishedAndPublishedAtToProjectRevisions < ActiveRecord::Migration[
   end
 
   def down
-    remove_column :project_revisions, :was_published
-    remove_column :project_revisions, :published_at
+    remove_column :phase_revisions, :was_published
+    remove_column :phase_revisions, :published_at
   end
 end

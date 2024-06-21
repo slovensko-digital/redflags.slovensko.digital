@@ -16,6 +16,7 @@ class DocumentParserService
   def to_hash(html_content)
     {
       title: extract_title(html_content),
+      category_id: 43,
       post_stream: {
         posts: [
           { cooked: html_content },

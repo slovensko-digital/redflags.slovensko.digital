@@ -15,7 +15,7 @@ class InitializationOfTopicsToSheetsJob < ApplicationJob
 
     update_sheet_cells(sheets_service, column_indices, response_values.count, values)
 
-    ExportTopicIntoSheetJob.set(wait: 15.seconds).perform_later(found_page.published_revision)
+    ExportTopicIntoSheetJob.set(wait: 15.seconds).perform_later(found_page.revision.phase_revision)
   end
 
   private

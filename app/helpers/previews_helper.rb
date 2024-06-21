@@ -4,8 +4,11 @@ module PreviewsHelper
   end
 
   def revision_preview?(revision)
-    return true unless revision.page.project.present?
+    return true unless revision.phase_revision&.phase&.project.present?
 
-    revision.total_score.present? && !revision.total_score_percentage.nan?
+    phase_revision = revision.phase_revision
+    return false if phase_revision.nil?
+
+    phase_revision.total_score.present? && !phase_revision.total_score_percentage.nan?
   end
 end

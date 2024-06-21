@@ -33,23 +33,21 @@
     <% @projects.each do |project| %>
       <tr>
         <td style="width: 12rem;" colspan="4">
-          <%= project.published_revisions.last.title %>
-          <% if project.published_revisions.last.stage %>
-            <div class="mt-1">
-              <span class="badge badge-secondary" title="Prebiehajúca fáza"><%= project.published_revisions.last.stage %></span>
-            </div>
+          <% if project.has_published_phases? %>
+            <%= project.phases.select { |phase| phase.published_revision.present? }.map { |phase| phase.published_revision.title }.first %>
           <% end %>
         </td>
 
-        <% prep_revision = project.published_revisions.find { |r| r.revision.page.page_type == 'preparation' } %>
-        <% prep_page = prep_revision&.revision&.page %>
+        <% prep_revision = project.phases.select { |phase| phase.phase_type.name == 'Prípravná fáza' && phase.published_revision.present? }.first %>
+        <% prep_revision = prep_revision.published_revision %>
+        <% prep_page = prep_revision.revision.page %>
         <td class="align-middle text-center" colspan="2">
           <% if prep_page.nil? %>
           -
-          <% elsif prep_page.latest_revision&.redflags_count > 0 %>
+          <% elsif prep_revision.redflags_count > 0 %>
             <div class="d-flex flex-column justify-content-center align-items-center">
               <strong class="text-danger">
-                <%= prep_page.latest_revision.redflags_count %> &times; <%= fa_icon('flag', class: 'text-danger') %>
+                <%= prep_revision.redflags_count %> &times; <%= fa_icon('flag', class: 'text-danger') %>
               </strong>
               <% if prep_page.latest_revision %>
                 <%= link_to 'Zobraziť', project_show_revision_type_path(project.id, 'hodnotenie-pripravy') %>
@@ -58,7 +56,7 @@
           <% else %>
             <div class="d-flex flex-column justify-content-center align-items-center">
               <strong>
-                <%= number_to_percentage(prep_page.latest_revision.total_score_percentage, precision: 0) %>
+                <%= number_to_percentage(prep_revision.total_score_percentage, precision: 0) %>
               </strong>
               <% if prep_page.latest_revision %>
                 <%= link_to 'Zobraziť', project_show_revision_type_path(project.id, 'hodnotenie-pripravy') %>
@@ -67,15 +65,16 @@
           <% end %>
         </td>
 
-        <% prod_revision = project.published_revisions.find { |r| r.revision.page.page_type == 'product' } %>
+        <% prod_revision = project.phases.select { |phase| phase.phase_type.name == 'Fáza produkt' && phase.published_revision.present? }.first %>
+        <% prod_revision = prod_revision&.published_revision %>
         <% prod_page = prod_revision&.revision&.page%>
         <td class="align-middle text-center" colspan="2">
           <% if prod_page.nil? %>
           -
-          <% elsif prod_page.latest_revision&.redflags_count > 0 %>
+          <% elsif prod_revision&.redflags_count > 0 %>
             <div class="d-flex flex-column justify-content-center align-items-center">
               <strong class="text-danger">
-                <%= prod_page.latest_revision.redflags_count %> &times; <%= fa_icon('flag', class: 'text-danger') %>
+                <%= prod_revision.redflags_count %> &times; <%= fa_icon('flag', class: 'text-danger') %>
               </strong>
               <% if prod_page.latest_revision %>
                 <%= link_to 'Zobraziť', project_show_revision_type_path(project.id, 'hodnotenie-produktu') %>
@@ -84,7 +83,7 @@
           <% else %>
             <div class="d-flex flex-column justify-content-center align-items-center">
               <strong>
-                <%= number_to_percentage(prod_page.latest_revision.total_score_percentage, precision: 0) %>
+                <%= number_to_percentage(prod_revision.total_score_percentage, precision: 0) %>
               </strong>
               <% if prod_page.latest_revision %>
                 <%= link_to 'Zobraziť', project_show_revision_type_path(project.id, 'hodnotenie-produktu') %>
@@ -94,7 +93,7 @@
         </td>
 
         <td class="align-middle text-center" colspan="2">
-          <% latest_revision_date = project.published_revisions.maximum(:updated_at) %>
+          <% latest_revision_date = project.phases.map { |phase| phase.published_revision&.published_at }.compact.max %>
           <%= latest_revision_date.strftime('%d.%m.%Y') if latest_revision_date.present? %>
         </td>
 
@@ -116,10 +115,10 @@
               </tr>
               </thead>
               <tbody>
-              <% project.published_revisions.sort_by { |r| r.revision.page.page_type }.each do |revision| %>
+              <% project.phases.select { |phase| phase.published_revision.present? }.sort_by { |phase| phase.phase_type }.each do |phase| %>
                 <tr class="p-0">
-                  <td colspan="4"><%= link_to revision.revision.page.page_type_label, project_show_revision_type_path(project.id, map_page_type_to_route(revision.revision.page.page_type)) %></td>
-                  <% ratings = revision.revision.page.latest_revision.ratings.group_by(&:score) %>
+                  <td colspan="4"><%= link_to phase.phase_type_label, project_show_revision_type_path(project.id, map_page_type_to_route(phase.phase_type.name)) %></td>
+                  <% ratings = phase.published_revision&.ratings&.group_by(&:score) %>
                   <% 4.downto(0).each do |index| rt = ratings[index] %>
                     <td class="align-middle text-center">
                       <% if rt %>

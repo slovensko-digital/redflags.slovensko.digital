@@ -50,10 +50,10 @@ class ExportTopicIntoSheetJob < ApplicationJob
   private
 
   def update_sheet(new_revision)
-    suffix = new_revision.revision.page.page_type == 'preparation' ? '-Príprava' : '-Produkt'
+    suffix = new_revision.phase.phase_type.name == 'Prípravná fáza' ? '-Príprava' : '-Produkt'
 
     result = extract_content_from_html(new_revision.body_html)
-    ratings = new_revision.revision.ratings.includes(:rating_type).index_by { |rating| rating.rating_type.name }
+    ratings = new_revision.ratings.includes(:rating_type).index_by { |rating| rating.rating_type.name }
 
     result["Názov"] = new_revision.title
     result["Garant"] = new_revision.guarantor
@@ -71,9 +71,9 @@ class ExportTopicIntoSheetJob < ApplicationJob
     result.transform_keys! { |k| k + suffix }
 
     result["Projekt"] = new_revision.title
-    result["Projekt ID"] = new_revision.project_id
+    result["Projekt ID"] = new_revision.phase.project_id
 
-    if new_revision.revision.page.page_type == 'preparation'
+    if new_revision.phase.phase_type.name == 'Prípravná fáza'
       result["ID hodnotenia prípravy"] = new_revision.revision.page.id
       result["Link na hodnotenie prípravy"] = %(=HYPERLINK("https://redflags.slovensko.digital/admin/pages/#{new_revision.revision.page.id}"; "Hodnotenie v adminovi"))
     else
@@ -89,7 +89,7 @@ class ExportTopicIntoSheetJob < ApplicationJob
 
     values = COLUMN_NAMES.map { |name| result[name]  }
 
-    if find_row_index_by_project_id(response.values[3..], header_row, new_revision.project_id)
+    if find_row_index_by_project_id(response.values[3..], header_row, new_revision.phase.project_id)
       range = "Hárok1!#{column_letter(column_indices.min + 1)}#{current_row_count}:#{column_letter(column_indices.max + 1)}#{current_row_count}"
     else
       range = "Hárok1!#{column_letter(column_indices.min + 1)}#{current_row_count + 1}:#{column_letter(column_indices.max + 1)}#{current_row_count + 1}"
