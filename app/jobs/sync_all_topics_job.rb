@@ -33,8 +33,8 @@ class SyncAllTopicsJob < ApplicationJob
       SyncTopicJob.perform_later(project_id, preparation_page_id)
     else
       enqueue_job_for_update("#{project_name} - Príprava", project_id, preparation_document_id, preparation_page_id, 0)
-      enqueue_job_for_update("#{project_name} - Produkt", project_id, product_document_id, product_page_id, 1)
     end
+    enqueue_job_for_update("#{project_name} - Produkt", project_id, product_document_id, product_page_id, 1)
   end
 
   def enqueue_job_for_update(name, project_id, document_id, page_id, page_type)

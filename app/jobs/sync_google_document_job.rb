@@ -27,6 +27,7 @@ class SyncGoogleDocumentJob < ApplicationJob
       page.page_type = page_type
       page.save!
     end
+
 =begin
     Page.transaction do
       page = setup_page(project_id, page_id)
