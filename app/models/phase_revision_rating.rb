@@ -17,7 +17,7 @@
 # Foreign Keys
 #
 #  fk_rails_...  (rating_type_id => rating_types.id)
-#  fk_rails_...  (phase_revision_id => phase_revisions.id)
+#  fk_rails_...  (phase_revision_id => phase_revision.id)
 #
 
 class PhaseRevisionRating < ApplicationRecord

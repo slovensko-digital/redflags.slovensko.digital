@@ -5,7 +5,7 @@
     <div class="col-md-12">
       <h1 class="project-title"><%= @phase_revision.title %></h1>
       <% if @phase_revision.published? %>
-        <%= link_to 'Stiahnuť PDF', project_show_pdf_project_path(@phase_revision.phase.project_id, map_page_type_to_route(@phase_revision.phase.phase_type.name)) %>
+        <%= link_to 'Stiahnuť PDF', project_show_pdf_project_path(@phase_revision.phase.project_id, PhaseRevision.map_phase_type_to_route(@phase_revision.phase.phase_type.name)) %>
       <% end %>
       <% @phase_revision.tags.select { |tag| ProjectsHelper::ALLOWED_TAGS[tag] }.each do |tag| %>
           <p class="lead">
@@ -102,7 +102,7 @@
   <h2>Predchádzajúce hodnotenia</h2>
     <ul>
     <% @once_published_phase_revisions.each do |phase_revision| %>
-        <li><%= link_to "Hodnotenie z dňa - #{phase_revision.published_at.strftime('%d.%m.%Y')}",  project_show_history_path(@project.id, map_page_type_to_route(phase_revision.phase.phase_type.name), phase_revision.revision.version) %></li>
+        <li><%= link_to "Hodnotenie z dňa - #{phase_revision.published_at.strftime('%d.%m.%Y')}",  project_show_history_path(@project.id, PhaseRevision.map_phase_type_to_route(phase_revision.phase.phase_type.name), phase_revision.revision.version) %></li>
     <% end %>
     </ul>
   <% end %>

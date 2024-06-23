@@ -3,7 +3,7 @@
   <div class="row mb-5">
     <div class="col-md-12">
       <h1 class="project-title"><%= @phase_revision.title %></h1>
-      <%= link_to 'Hodnotenie na RF webe', project_show_revision_type_path(@phase_revision.phase.project_id, map_page_type_to_route(@phase_revision.phase.phase_type.name))%>
+      <%= link_to 'Hodnotenie na RF webe', project_show_revision_type_path(@phase_revision.phase.project_id, PhaseRevision.map_phase_type_to_route(@phase_revision.phase.phase_type.name))%>
       <% @phase_revision.tags.select { |tag| ProjectsHelper::ALLOWED_TAGS[tag] }.each do |tag| %>
         <p class="lead">
           <%= link_to projects_path(tag: tag) do%>
@@ -74,7 +74,7 @@
   <div class="mt-5">
     <div class="row">
       <div class="col">
-        <h2 id="hodnotenie" class="mb-0">Hodnotenie<% if @phase_revision.redflags_count > 0 %> <strong class="text-danger"><%= @project_revision.redflags_count %> &times; <%= fa_icon('flag', class: 'text-danger') %></strong><% end %></h2>
+        <h2 id="hodnotenie" class="mb-0">Hodnotenie<% if @phase_revision.redflags_count > 0 %> <strong class="text-danger"><%= @phase_revision.redflags_count %> &times; <%= fa_icon('flag', class: 'text-danger') %></strong><% end %></h2>
       </div>
     </div>
     <hr class="mt-0 mb-2">

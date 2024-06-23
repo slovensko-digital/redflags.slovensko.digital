@@ -25,10 +25,9 @@ class SyncTopicJob < ApplicationJob
 
       page.latest_revision = revision
       page.save!
-
     end
 
     # For initial import of current topics into Google Sheets
-    InitializationOfTopicsToSheetsJob.set(wait: 15.seconds).perform_later(topic_id, page, project)
+    #InitializationOfTopicsToSheetsJob.set(wait: 15.seconds).perform_later(topic_id, page, project)
   end
 end

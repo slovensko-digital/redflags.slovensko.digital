@@ -52,7 +52,11 @@ class PhaseRevision < ApplicationRecord
   scope :published, -> { where(published: true) }
   scope :once_published, -> { where(was_published: true, published: false) }
 
-  # TODO move elsewhere?
+  ROUTE_MAP = {
+    'Prípravná fáza' => 'hodnotenie-pripravy',
+    'Fáza produkt' => 'hodnotenie-produktu'
+  }.freeze
+
   def load_from_data(raw)
     self.title = raw['title'].gsub('Red Flags:', '').strip
 
@@ -176,5 +180,38 @@ class PhaseRevision < ApplicationRecord
     self.redflags_count = redflags_count
     self.total_score = total_score
     self.maximum_score = maximum_score
+  end
+
+  def self.map_phase_type_to_route(phase_type)
+    ROUTE_MAP[phase_type] || phase_type
+  end
+
+  def self.find_published_revision(project_id, revision_type)
+    phase_name = map_revision_type_to_phase_name(revision_type)
+    joins(phase: { project: :phases })
+      .where(projects: { id: project_id })
+      .where(phases: { phase_type: PhaseType.find_by(name: phase_name) })
+      .where(published: true)
+      .first
+  end
+
+  def self.find_revision_history(project_id, revision_type, version)
+    phase_name = map_revision_type_to_phase_name(revision_type)
+    joins(phase: { project: :phases })
+      .joins(:revision)
+      .where(projects: { id: project_id })
+      .where(phases: { phase_type: PhaseType.find_by(name: phase_name) })
+      .where(revisions: { version: version })
+      .first
+  end
+
+  private
+
+  def self.map_revision_type_to_phase_name(revision_type)
+    phase_type_map = {
+      'hodnotenie-pripravy' => 'Prípravná fáza',
+      'hodnotenie-produktu' => 'Fáza produkt'
+    }
+    phase_type_map[revision_type] || revision_type
   end
 end

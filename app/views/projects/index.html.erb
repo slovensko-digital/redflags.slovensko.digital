@@ -39,8 +39,8 @@
         </td>
 
         <% prep_revision = project.phases.select { |phase| phase.phase_type.name == 'Prípravná fáza' && phase.published_revision.present? }.first %>
-        <% prep_revision = prep_revision.published_revision %>
-        <% prep_page = prep_revision.revision.page %>
+        <% prep_revision = prep_revision&.published_revision %>
+        <% prep_page = prep_revision&.revision&.page %>
         <td class="align-middle text-center" colspan="2">
           <% if prep_page.nil? %>
           -
@@ -117,7 +117,7 @@
               <tbody>
               <% project.phases.select { |phase| phase.published_revision.present? }.sort_by { |phase| phase.phase_type }.each do |phase| %>
                 <tr class="p-0">
-                  <td colspan="4"><%= link_to phase.phase_type_label, project_show_revision_type_path(project.id, map_page_type_to_route(phase.phase_type.name)) %></td>
+                  <td colspan="4"><%= link_to phase.phase_type_label, project_show_revision_type_path(project.id, PhaseRevision.map_phase_type_to_route(phase.phase_type.name)) %></td>
                   <% ratings = phase.published_revision&.ratings&.group_by(&:score) %>
                   <% 4.downto(0).each do |index| rt = ratings[index] %>
                     <td class="align-middle text-center">
