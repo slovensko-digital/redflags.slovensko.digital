@@ -1,7 +1,7 @@
 class GoogleApiService
   def self.authorize
     Google::Auth::ServiceAccountCredentials.make_creds(
-      json_key_io: Base64.decode64(ENV['GOOGLE_APPLICATION_CREDENTIALS']),
+      json_key_io: StringIO.new(Base64.decode64(ENV['GOOGLE_APPLICATION_CREDENTIALS'])),
       scope: ['https://www.googleapis.com/auth/spreadsheets',
               'https://www.googleapis.com/auth/documents',
               'https://www.googleapis.com/auth/drive']
