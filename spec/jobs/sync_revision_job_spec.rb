@@ -9,16 +9,11 @@ RSpec.describe SyncRevisionJob, type: :job do
   end
 
   it 'parses project metadata from revision' do
-    project = create(:project)
-    page = create(:page, project: project)
-    revision = create(:revision, page: page)
-
-    revision.load_ratings(revision.raw)
-    revision.save
+    revision = create(:revision)
 
     subject.perform(revision)
 
-    snapshot = ProjectRevision.first
+    snapshot = revision.phase_revision
 
     expect(snapshot).to have_attributes(
       title: 'IS Obchodného registra',
@@ -32,7 +27,7 @@ RSpec.describe SyncRevisionJob, type: :job do
       recommendation: 'Odporúčame projekt pozastaviť a dôkladne zanalyzovať rôzne alternatívy budovania siete aj s ohľadom na podmienky na telekomunikačnom trhu.'
     )
 
-    ratings = snapshot.revision.ratings.index_by { |r| r.rating_type.name }
+    ratings = snapshot.ratings.index_by { |r| r.rating_type.name }
 
     expect(ratings['Reforma VS'].score).to eq(2)
     expect(ratings['Participácia na príprave projektu'].score).to eq(4)

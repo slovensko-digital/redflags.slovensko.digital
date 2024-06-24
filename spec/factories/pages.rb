@@ -16,8 +16,9 @@
 
 FactoryBot.define do
   factory :page do
-    project
-    page_type { 'preparation' }
+
+    phase
+
     after :create do |p|
       create :revision, page: p
     end

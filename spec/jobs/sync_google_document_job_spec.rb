@@ -18,6 +18,7 @@ RSpec.describe SyncGoogleDocumentJob, type: :job do
   let(:parsed_hash) { {content: 'Parsed content'} }
   let(:page) { create(:page) }
   let(:revision) { create(:revision) }
+  let(:revision) { create(:revision) }
 
   before do
     allow(Page).to receive_message_chain(:find_or_create_by!).and_return(page)
@@ -30,7 +31,7 @@ RSpec.describe SyncGoogleDocumentJob, type: :job do
     allow(parser_service).to receive(:to_hash).with(html_content).and_return(revision.raw)
     allow(page).to receive(:revisions).and_return(Revision)
     allow(Revision).to receive(:find_or_initialize_by).and_return(revision)
-    allow(revision).to receive(:load_ratings).with(revision.raw)
+    allow(revision.phase_revision).to receive(:load_ratings).with(revision.raw)
   end
 
   it 'queues the job' do

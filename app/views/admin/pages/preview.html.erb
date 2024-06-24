@@ -11,7 +11,7 @@
 
 <% if @phase.present? %>
   <% @project = @phase_revision %>
-  <%= render file: 'projects/show' %>
+  <%= render file: 'phase_revision/show' %>
 <% else %>
   <% @page = @revision %>
   <%= render file: 'static/page' %>

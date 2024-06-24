@@ -21,8 +21,8 @@
 #
 
 FactoryBot.define do
-  factory :revision_rating do
-    project_revision nil
+  factory :phase_revision_rating do
+    phase_revision nil
     rating_type nil
     score { 1 }
   end

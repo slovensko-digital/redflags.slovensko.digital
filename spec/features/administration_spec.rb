@@ -27,17 +27,17 @@ RSpec.feature 'Administration', type: :feature do
   end
 
   scenario 'As admin I want to see all project pages' do
-    page1 = create(:page, :published)
-    page2 = create(:page, :unpublished)
-    create(:project, pages: [page1])
-    create(:project, pages: [page2])
+    create(:page, :published)
+    create(:page, :unpublished)
+    create(:project)
+    create(:project)
     see_all_pages
   end
 
   def preview_page
     authorize_as_admin
     visit admin_root_path
-
+    
     click_on 'Preview'
 
     expect(page).to have_content("Preview of page Red Flags: IS Obchodného registra at latest version #{Page.first.revisions.first.version}")
@@ -45,7 +45,7 @@ RSpec.feature 'Administration', type: :feature do
 
   scenario 'As admin I want to preview page' do
     page_to_preview = create(:page)
-    create(:project, pages: [page_to_preview])
+    create(:project)
     revision = page_to_preview.revisions.first
 
     SyncRevisionJob.perform_now(revision)
@@ -69,12 +69,18 @@ RSpec.feature 'Administration', type: :feature do
     allow(ExportTopicIntoSheetJob).to receive(:perform_later)
 
     page_to_preview = create(:page, :unpublished)
-    project = create(:project, pages: [page_to_preview])
+    project = create(:project)
     revision = page_to_preview.revisions.first
 
-    project_revision = project.revisions.find_or_initialize_by(revision_id: revision&.id)
-    project_revision.load_from_data(revision&.raw)
-    project_revision.save!
+    phase_revision = nil
+    project.phases.each do |phase|
+      phase_revision = phase.revisions.find_or_initialize_by(revision_id: revision&.id)
+    end
+
+    if phase_revision.present?
+      phase_revision.load_from_data(revision&.raw)
+      phase_revision.save!
+    end
 
     publish_page
   end
@@ -94,12 +100,19 @@ RSpec.feature 'Administration', type: :feature do
     allow(UpdateMultipleSheetColumnsJob).to receive(:perform_later)
 
     page_to_preview = create(:page, :published)
-    project = create(:project, pages: [page_to_preview])
+    project = create(:project)
     revision = page_to_preview.revisions.first
 
-    project_revision = project.revisions.find_or_initialize_by(revision_id: revision&.id)
-    project_revision.load_from_data(revision&.raw)
-    project_revision.save!
+    phase_revision = nil
+    project.phases.each do |phase|
+      phase_revision = phase.revisions.find_or_initialize_by(revision_id: revision&.id)
+    end
+
+    if phase_revision.present?
+      phase_revision.load_from_data(revision&.raw)
+      phase_revision.save!
+    end
+
     unpublish_page
   end
 
@@ -126,7 +139,7 @@ RSpec.feature 'Administration', type: :feature do
 
   scenario 'As admin I want to see all revisions of project page' do
     page = create(:page, :published)
-    create(:project, pages: [page])
+    create(:project)
     create(:revision, page: page)
 
     see_all_revisions
@@ -144,7 +157,7 @@ RSpec.feature 'Administration', type: :feature do
 
   scenario 'As admin I want to preview non-latest page revision' do
     page = create(:page, :unpublished)
-    project = create(:project, pages: [page])
+    project = create(:project)
 
     older_revision = create(:revision, page: page, version: 1)
     create_project_revision(project, older_revision)
@@ -156,9 +169,15 @@ RSpec.feature 'Administration', type: :feature do
   end
 
   def create_project_revision(project, revision)
-    project_revision = project.revisions.find_or_initialize_by(revision_id: revision&.id)
-    project_revision.load_from_data(revision&.raw)
-    project_revision.save!
+    phase_revision = nil
+    project.phases.each do |phase|
+      phase_revision = phase.revisions.find_or_initialize_by(revision_id: revision&.id)
+    end
+
+    if phase_revision.present?
+      phase_revision.load_from_data(revision&.raw)
+      phase_revision.save!
+    end
   end
 
   def publish_non_latest_revision(version)
@@ -179,14 +198,14 @@ RSpec.feature 'Administration', type: :feature do
 
   scenario 'As admin I want to publish non-latest page revision' do
     page = create(:page, :unpublished)
-    project = create(:project, pages: [page])
-    # create two revisions for project page
+    phase = create(:phase)
+
     older_revision = create(:revision, page: page, version: 1)
-    create(:project_revision, revision: older_revision, project: project)
+    create(:phase_revision, revision: older_revision, phase: phase)
 
     latest_revision = create(:revision, page: page, version: 2)
-    create(:project_revision, revision: latest_revision, project: project)
-    # publish older, non-latest project page revision
+    create(:phase_revision, revision: latest_revision, phase: phase)
+
     publish_non_latest_revision(1)
   end
 

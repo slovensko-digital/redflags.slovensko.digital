@@ -66,7 +66,7 @@ class PhaseRevision < ApplicationRecord
     self.body_html = rest
 
     load_metadata(summary)
-    load_ratings(raw)
+    load_ratings(rest)
   end
 
   def outdated?
@@ -149,12 +149,10 @@ class PhaseRevision < ApplicationRecord
     end
   end
 
-  def load_ratings(raw)
+  def load_ratings(rest)
     redflags_count = 0
     total_score = 0
     maximum_score = 0
-    body = raw['post_stream']['posts'].first['cooked']
-    summary, rest = body.split(/<h1>.+?<\/h1>/m, 2)
 
     doc = Nokogiri::HTML.parse(rest)
     doc.css('h3').each do |heading|
