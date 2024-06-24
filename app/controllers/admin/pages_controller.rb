@@ -3,7 +3,7 @@ class Admin::PagesController < AdminController
 
   def index
     @pages = Page.includes(phase: :project).order(id: :desc)
-    @projects = @pages.map { |page| page.phase.project }.uniq
+    @projects = @pages.map { |page| page.phase&.project }.uniq
   end
 
   def show
