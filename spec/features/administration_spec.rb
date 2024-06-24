@@ -37,7 +37,7 @@ RSpec.feature 'Administration', type: :feature do
   def preview_page
     authorize_as_admin
     visit admin_root_path
-    
+
     click_on 'Preview'
 
     expect(page).to have_content("Preview of page Red Flags: IS Obchodného registra at latest version #{Page.first.revisions.first.version}")
@@ -45,7 +45,6 @@ RSpec.feature 'Administration', type: :feature do
 
   scenario 'As admin I want to preview page' do
     page_to_preview = create(:page)
-    create(:project)
     revision = page_to_preview.revisions.first
 
     SyncRevisionJob.perform_now(revision)

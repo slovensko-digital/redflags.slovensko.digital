@@ -9,11 +9,12 @@ RSpec.describe SyncRevisionJob, type: :job do
   end
 
   it 'parses project metadata from revision' do
-    revision = create(:revision)
+    page_to_preview = create(:page)
+    revision = page_to_preview.revisions.first
 
     subject.perform(revision)
 
-    snapshot = revision.phase_revision
+    snapshot = PhaseRevision.last
 
     expect(snapshot).to have_attributes(
       title: 'IS Obchodného registra',

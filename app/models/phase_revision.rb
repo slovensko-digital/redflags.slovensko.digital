@@ -149,12 +149,12 @@ class PhaseRevision < ApplicationRecord
     end
   end
 
-  def load_ratings(rest)
+  def load_ratings(body)
     redflags_count = 0
     total_score = 0
     maximum_score = 0
 
-    doc = Nokogiri::HTML.parse(rest)
+    doc = Nokogiri::HTML.parse(body)
     doc.css('h3').each do |heading|
       value = heading.text.strip.gsub(/[^0-9A-Za-záäčďéíĺľňóôŕřšťúůýžÁÄČĎÉÍĹĽŇÓÔŔŘŠŤÚŮÝŽ(), ]/, '').strip
       rating_type = RatingType.find_by(name: value)
