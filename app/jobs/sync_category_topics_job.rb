@@ -9,7 +9,7 @@ class SyncCategoryTopicsJob < ApplicationJob
     SyncCategoryTopicsJob.perform_later(category_slug, page + 1) if topics.count >= 30
 
     topics.each do |topic|
-      sync_topic_job.perform_later(topic.fetch('id'))
+      sync_topic_job.perform_later(nil, topic.fetch('id'))
     end
   end
 end

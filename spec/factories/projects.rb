@@ -22,10 +22,5 @@
 
 FactoryBot.define do
   factory :project do
-    page
-
-    after :create do |p|
-      create :project_revision, project: p, revision: p.page.latest_revision
-    end
   end
 end

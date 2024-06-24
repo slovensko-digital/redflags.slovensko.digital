@@ -16,6 +16,9 @@
 
 FactoryBot.define do
   factory :page do
+
+    phase
+
     after :create do |p|
       create :revision, page: p
     end

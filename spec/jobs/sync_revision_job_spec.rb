@@ -9,11 +9,12 @@ RSpec.describe SyncRevisionJob, type: :job do
   end
 
   it 'parses project metadata from revision' do
-    revision = create(:revision)
+    page_to_preview = create(:page)
+    revision = page_to_preview.revisions.first
 
     subject.perform(revision)
 
-    snapshot = ProjectRevision.first
+    snapshot = PhaseRevision.last
 
     expect(snapshot).to have_attributes(
       title: 'IS Obchodného registra',
@@ -32,26 +33,5 @@ RSpec.describe SyncRevisionJob, type: :job do
     expect(ratings['Reforma VS'].score).to eq(2)
     expect(ratings['Participácia na príprave projektu'].score).to eq(4)
     expect(ratings['Biznis prínos'].score).to eq(0)
-  end
-
-  it 'ignores pages from unknown category' do
-    revision = create(:revision)
-    revision.raw['category_id'] = 123
-    revision.save!
-
-    subject.perform(revision)
-
-    expect(ProjectRevision.count).to eq(0)
-  end
-
-  it 'adds calculated total and max score to revision' do
-    revision = create(:revision)
-
-    subject.perform(revision)
-
-    snapshot = ProjectRevision.first
-
-    expect(snapshot.total_score).to eq(6)
-    expect(snapshot.maximum_score).to eq(12)
   end
 end

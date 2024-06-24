@@ -2,14 +2,14 @@
 #
 # Table name: revisions
 #
-#  id         :integer          not null, primary key
-#  page_id    :integer          not null
-#  version    :integer          not null
-#  raw        :jsonb
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  title      :string           not null
-#  tags       :string           default([]), is an Array
+#  id             :integer          not null, primary key
+#  page_id        :integer          not null
+#  version        :integer          not null
+#  raw            :jsonb
+#  created_at     :datetime         not null
+#  updated_at     :datetime         not null
+#  title          :string           not null
+#  tags           :string           default([]), is an Array
 #
 # Indexes
 #
@@ -24,8 +24,9 @@
 
 class Revision < ApplicationRecord
   belongs_to :page
+  has_one :phase_revision
 
-  after_save :schedule_sync_project_job # TODO: move to domain events and pubsub
+  after_save :schedule_sync_project_job
 
   def body_html
     raw['post_stream']['posts'].first['cooked']
@@ -38,8 +39,6 @@ class Revision < ApplicationRecord
   def latest?
     page.latest_revision == self
   end
-
-  private
 
   def schedule_sync_project_job
     SyncRevisionJob.perform_later(self)

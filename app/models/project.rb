@@ -3,32 +3,69 @@
 # Table name: projects
 #
 #  id                    :integer          not null, primary key
-#  page_id               :integer          not null
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
-#  published_revision_id :integer
-#  category              :integer          default("boring"), not null
-#
-# Indexes
-#
-#  index_projects_on_page_id                (page_id)
-#  index_projects_on_published_revision_id  (published_revision_id)
-#
-# Foreign Keys
-#
-#  fk_rails_...  (page_id => pages.id)
-#  fk_rails_...  (published_revision_id => project_revisions.id)
 #
 
 class Project < ApplicationRecord
-  belongs_to :page
+  has_many :phases
 
-  has_many :revisions, class_name: 'ProjectRevision'
+  def has_published_phases?
+    phases.any? { |phase| phase.published_revision.present? }
+  end
 
-  belongs_to :published_revision, class_name: 'ProjectRevision', optional: true
+  def self.filtered_projects(selected_tag, sort_param)
 
-  scope :published, -> { where('published_revision_id IS NOT NULL') }
-  scope :with_tag, -> (tag) { joins(published_revision: :revision).where("? = ANY(revisions.tags)", tag) }
+    case sort_param
+    when 'newest'
+      projects = Project.joins(phases: :published_revision)
+                         .select('projects.*, MAX(phase_revisions.published_at) AS newest_published_at')
+                         .group('projects.id')
+                         .order('newest_published_at DESC')
+    when 'oldest'
+      projects = Project.joins(phases: :published_revision)
+                         .select('projects.*, MIN(phase_revisions.published_at) AS oldest_published_at')
+                         .group('projects.id')
+                         .order('oldest_published_at')
+    when 'alpha', 'alpha_reverse'
+      projects = Project.joins(phases: :published_revision)
+                   .select('DISTINCT ON (projects.id) projects.*, phase_revisions.title AS alpha_title')
+                   .order('projects.id, alpha_title')
+      projects = projects.sort_by(&:alpha_title)
+      projects = projects.reverse if sort_param == 'alpha_reverse'
+    when 'preparation_lowest'
+      projects = Project.joins(phases: :published_revision)
+                        .where(phases: { phase_type: PhaseType.find_by(name: 'Prípravná fáza') })
+                        .select('projects.*, phase_revisions.total_score')
+                        .order('phase_revisions.total_score ASC NULLS LAST')
+                        .distinct
+    when 'preparation_highest'
+      projects = Project.joins(phases: :published_revision)
+                         .where(phases: { phase_type: PhaseType.find_by(name: 'Prípravná fáza') })
+                         .select('projects.*, phase_revisions.total_score')
+                         .order('phase_revisions.total_score DESC NULLS LAST')
+                         .distinct
+    when 'product_lowest'
+      projects = Project.joins(phases: :published_revision)
+                         .where(phases: { phase_type: PhaseType.find_by(name: 'Fáza produkt') })
+                         .select('projects.*, phase_revisions.total_score')
+                         .order('phase_revisions.total_score ASC NULLS LAST')
+                         .distinct
+    when 'product_highest'
+      projects = Project.joins(phases: :published_revision)
+                         .where(phases: { phase_type: PhaseType.find_by(name: 'Fáza produkt') })
+                         .select('projects.*, phase_revisions.total_score')
+                         .order('phase_revisions.total_score DESC NULLS LAST')
+                         .distinct
+    else
+      projects = Project.joins(phases: :published_revision).distinct
 
-  enum category: { good: 0, bad: 1, boring: 2 }
+      if ProjectsHelper::ALLOWED_TAGS.keys.include?(selected_tag)
+        projects = Project.joins(phases: :published_revision)
+                          .where(phase_revisions: { tags: selected_tag })
+      end
+    end
+
+    projects
+  end
 end

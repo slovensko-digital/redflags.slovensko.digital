@@ -1,5 +1,5 @@
 # == Schema Information
-#
+  #
 # Table name: project_revision_ratings
 #
 #  id                  :integer          not null, primary key
@@ -20,7 +20,10 @@
 #  fk_rails_...  (rating_type_id => rating_types.id)
 #
 
-class ProjectRevisionRating < ApplicationRecord
-  belongs_to :project_revision
-  belongs_to :rating_type
+FactoryBot.define do
+  factory :phase_revision_rating do
+    phase_revision nil
+    rating_type nil
+    score { 1 }
+  end
 end

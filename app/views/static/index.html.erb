@@ -39,10 +39,10 @@
           <h4 class="mb-4"><%= fa_icon 'thumbs-o-up', class: 'mr-2' %> Najlepšie hodnotené</h4>
           <table class="table table-sm toplist">
             <tbody>
-              <% @good_projects.each_with_index do |project, index| %>
+              <% @good_projects.each_with_index do |phase_revision, index| %>
                 <tr>
                   <th scope="row" class="pl-3"><%= index + 1 %></th>
-                  <td><%= link_to project.title, project_path(project.project) %></td>
+                  <td><%= link_to phase_revision.title, project_show_revision_type_path(phase_revision.phase.project, PhaseRevision.map_phase_type_to_route(phase_revision.phase.phase_type.name)) %></td>
                 </tr>
               <% end %>
             </tbody>
@@ -53,10 +53,10 @@
           <h4 class="mb-4"><%= fa_icon 'thumbs-o-down', class: 'mr-2' %> Najhoršie hodnotené</h4>
           <table class="table table-sm toplist">
             <tbody>
-            <% @bad_projects.each_with_index do |project, index| %>
+            <% @bad_projects.each_with_index do |phase_revision, index| %>
               <tr>
                 <th scope="row" class="pl-3"><%= index + 1 %></th>
-                <td><%= link_to project.title, project_path(project.project) %></td>
+                <td><%= link_to phase_revision.revision.page.title, project_show_revision_type_path(phase_revision.phase.project, PhaseRevision.map_phase_type_to_route(phase_revision.phase.phase_type.name)) %></td>
               </tr>
             <% end %>
             </tbody>

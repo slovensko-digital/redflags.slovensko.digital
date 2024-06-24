@@ -2,59 +2,67 @@ class Admin::PagesController < AdminController
   before_action :load_page, only: [:show, :preview, :publish, :unpublish, :sync_one]
 
   def index
-    @pages = Page.order(id: :desc).page(params[:page])
-    @projects = @pages.map { |page| Project.find_by(page: page) }
+    @pages = Page.includes(phase: :project).order(id: :desc)
+    @projects = @pages.map { |page| page.phase.project }.uniq
   end
 
   def show
     @revisions = @page.revisions.order(version: :desc).page(params[:page])
-    @project = Project.find_by(page: @page)
+    @project = @page.phase.project
   end
 
   def preview
-    @project = Project.find_by(page: @page)
+    @phase = @page.phase
 
     if @project.present?
       if params['version'] == 'latest'
-        @revision = ProjectRevision.find_by!(revision: @page.latest_revision)
+        @phase_revision = @phase.revisions.find_by!(revision: @page.latest_revision)
       else
-        @revision = ProjectRevision.joins(:project, :revision).find_by!(projects: { page: @page }, revisions: { version: params['version'] })
+        @phase_revision = @phase.revisions.find_by!(revision: @page.revisions.where(version: params['version']))
       end
 
-      @ratings_by_type = @revision.ratings.index_by(&:rating_type)
+      @ratings_by_type = @phase.revisions.ratings.index_by(&:rating_type)
     else
       if params['version'] == 'latest'
-        @revision = @page.latest_revision
+        @phase_revision = PhaseRevision.find_by(revision: @page.latest_revision)
       else
-        @revision = @page.revisions.find_by!(version: params['version'])
+        @phase_revision = PhaseRevision.joins(:revision)
+                                       .find_by(revisions: { version: params['version'] })
       end
     end
   end
 
   def publish
     if params['version'] == 'latest'
-      @page.update!(published_revision: @page.latest_revision)
+      revision = @page.latest_revision
+      @page.update!(published_revision: revision)
     else
-      @page.update!(published_revision: @page.revisions.find_by!(version: params['version']))
+      revision = @page.revisions.find_by!(version: params['version'])
+      @page.update!(published_revision: revision)
     end
+
+    @page.publish_and_enqueue_jobs(revision)
 
     redirect_back fallback_location: { action: :index }
   end
 
   def unpublish
+    revision_id = @page.published_revision.id if @page.published_revision.present?
+
     @page.update!(published_revision: nil)
+    @page.unpublish_and_enqueue_jobs(revision_id)
 
     redirect_back fallback_location: { action: :index }
   end
 
   def sync
-    SyncCategoryTopicsJob.perform_later(ENV.fetch('REDFLAGS_CATEGORY_SLUG'))
+    SyncAllTopicsJob.perform_later
 
     redirect_back fallback_location: { action: :index }
   end
 
   def sync_one
-    SyncTopicJob.perform_later(@page.id)
+    SyncOneTopicJob.perform_later(@page.id)
 
     redirect_back fallback_location: { action: :index }
   end

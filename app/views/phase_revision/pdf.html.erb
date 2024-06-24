@@ -1,0 +1,97 @@
+<% content_for(:title) do %><%= @phase_revision.title %> &middot; Red Flags &middot; Slovensko.Digital<% end %>
+<div id="project-show" class="container main mt-5">
+  <div class="row mb-5">
+    <div class="col-md-12">
+      <h1 class="project-title"><%= @phase_revision.title %></h1>
+      <%= link_to 'Hodnotenie na RF webe', project_show_revision_type_path(@phase_revision.phase.project_id, PhaseRevision.map_phase_type_to_route(@phase_revision.phase.phase_type.name))%>
+      <% @phase_revision.tags.select { |tag| ProjectsHelper::ALLOWED_TAGS[tag] }.each do |tag| %>
+        <p class="lead">
+          <%= link_to projects_path(tag: tag) do%>
+            <span class="badge badge-danger"><%= ProjectsHelper::ALLOWED_TAGS[tag] %></span>
+          <% end %>
+        </p>
+      <% end %>
+      <p class="lead text-muted mt-4"><%= @phase_revision.description %></p>
+    </div>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <h5>Náklady na projekt</h5>
+      <p><%= @phase_revision.budget %></p>
+    </div>
+
+    <div class="col-md-6">
+      <h5>Garant <%= help_icon_if_blank(@phase_revision.guarantor) %></h5>
+      <p><%= @phase_revision.guarantor %></p>
+    </div>
+  </div>
+
+  <% if @phase_revision.summary.present? %>
+    <div class="row mb-3">
+      <div class="col">
+        <h5>Zhrnutie hodnotenia Red Flags</h5>
+        <p class="mb-4"><%= @phase_revision.summary %></p>
+      </div>
+    </div>
+  <% end %>
+
+  <% if @phase_revision.recommendation.present? %>
+    <div class="card mb-4 text-white <%= @phase_revision.redflags_count.zero? ? 'bg-secondary' : 'bg-danger' %>">
+      <div class="card-body">
+        <h5 class="card-title">Stanovisko Slovensko.Digital</h5>
+        <p class="card-text"><%= @phase_revision.recommendation %></p>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="row mb-4 mt-5 pt-4">
+    <div class="col">
+      <h5>Hodnotenie zverejnené dňa</h5>
+      <p><%= l(@phase_revision.updated_at.to_date, format: :human) %></p>
+      <% if @phase_revision.outdated? %>
+        <div class="alert alert-warning my-2" role="alert">
+          <h5 class="alert-heading">Hodnotenie nie je aktuálne</h5>
+          <p class="mb-0">
+            V tomto projekte nastali zmeny, ktoré nie sú zahrnuté v súčasnom hodnotení. Na aktualizácii pracujeme, môžete sa do nej
+          </p>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col">
+      <h5>Aktuálny stav projektu</h5>
+      <p><%= @phase_revision.stage %></p>
+    </div>
+    <div class="col">
+      <h5>Čo sa práve deje</h5>
+      <p><%= @phase_revision.current_status&.html_safe %></p>
+    </div>
+  </div>
+
+  <div class="mt-5">
+    <div class="row">
+      <div class="col">
+        <h2 id="hodnotenie" class="mb-0">Hodnotenie<% if @phase_revision.redflags_count > 0 %> <strong class="text-danger"><%= @phase_revision.redflags_count %> &times; <%= fa_icon('flag', class: 'text-danger') %></strong><% end %></h2>
+      </div>
+    </div>
+    <hr class="mt-0 mb-2">
+    <div class="row mt-5">
+      <% @phase_revision.ratings.index_by(&:rating_type).each do |rating_type, rating| %>
+        <div class="col-md-3">
+          <%= rating_stars(rating) %>
+          <p><%= rating_type.name %></p>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="my-5">
+    <h2 class="mb-5">Detailné hodnotenie projektu</h2>
+    <div id="detailed-rating">
+      <%== formatted_body_html(@phase_revision.body_html) %>
+    </div>
+  </div>
+</div>
