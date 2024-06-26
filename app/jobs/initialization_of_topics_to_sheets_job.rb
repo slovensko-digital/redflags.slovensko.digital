@@ -1,7 +1,7 @@
 class InitializationOfTopicsToSheetsJob < ApplicationJob
   queue_as :default
 
-  COLUMN_NAMES = ['Projekt', 'Projekt ID', 'Platforma', 'Dátum poslednej aktualizácie', 'Draft prípravy', 'ID draft prípravy', 'ID prípravy', 'Príprava publikovaná?', 'Dátum publikácie prípravy', 'RF web príprava'].freeze
+  COLUMN_NAMES = ['Projekt', 'Projekt ID', 'Gestor', 'Platforma', 'Dátum poslednej aktualizácie', 'Draft prípravy', 'ID draft prípravy', 'ID prípravy', 'Príprava publikovaná?', 'Dátum publikácie prípravy', 'RF web príprava'].freeze
 
   def perform(topic_id, found_page, project)
     uri = URI(ENV['GOOGLE_SHEET_SCRIPT_URL'])
@@ -32,8 +32,9 @@ class InitializationOfTopicsToSheetsJob < ApplicationJob
   def construct_values(topic_id, found_page, project)
     title_parametrized = found_page.latest_revision.title.parameterize
     [
-      found_page.latest_revision.title,
+      found_page.latest_revision.phase_revision.title,
       project.id,
+      found_page.latest_revision.phase_revision.guarantor,
       %(=HYPERLINK("https://platforma.slovensko.digital/t/#{title_parametrized}/#{topic_id}"; "Platforma link")),
       found_page.published_revision&.updated_at&.in_time_zone('Europe/Bratislava')&.strftime('%H:%M %d.%m.%Y') || '',
       '',
