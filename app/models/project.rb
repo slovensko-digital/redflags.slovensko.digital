@@ -29,7 +29,7 @@ class Project < ApplicationRecord
                          .order('oldest_published_at')
     when 'alpha', 'alpha_reverse'
       projects = Project.joins(phases: :published_revision)
-                   .select('DISTINCT ON (projects.id) projects.*, phase_revisions.title AS alpha_title')
+                   .select('DISTINCT ON (projects.id) projects.*, LOWER phase_revisions.title AS alpha_title')
                    .order('projects.id, alpha_title')
       projects = projects.sort_by(&:alpha_title)
       projects = projects.reverse if sort_param == 'alpha_reverse'
