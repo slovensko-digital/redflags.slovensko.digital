@@ -9,12 +9,14 @@ class SyncTopicJob < ApplicationJob
 
     Page.transaction do
       page = Page.find_or_create_by!(id: topic_id) do |new_page|
-        project = Project.find_or_create_by(id: new_page&.latest_revision&.phase_revision&.phase&.project_id || project_id)
+        project = Project.find_or_create_by(id: new_page.latest_revision&.phase_revision&.phase&.project&.id || project_id)
         phase_type = PhaseType.find_by(name: 'Prípravná fáza')
         new_phase = Phase.find_or_create_by(project: project, phase_type: phase_type)
         new_page.phase = new_phase
         new_page.save!
       end
+
+      project ||= Project.find_by(id: page.latest_revision&.phase_revision&.phase&.project&.id || project_id || page.id)
 
       version = topic['post_stream']['posts'].first['version']
 

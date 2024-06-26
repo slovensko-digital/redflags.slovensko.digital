@@ -31,10 +31,15 @@ class InitializationOfTopicsToSheetsJob < ApplicationJob
 
   def construct_values(topic_id, found_page, project)
     title_parametrized = found_page.latest_revision.title.parameterize
+
+    phase_revision_title = found_page.latest_revision.phase_revision.nil? ?
+                             nil : found_page.latest_revision.phase_revision.title
+    phase_revision_guarantor = found_page.latest_revision.phase_revision&.guarantor
+
     [
-      found_page.latest_revision.phase_revision.title,
+      phase_revision_title || found_page.latest_revision.title,
       project.id,
-      found_page.latest_revision.phase_revision.guarantor,
+      phase_revision_guarantor || '',
       %(=HYPERLINK("https://platforma.slovensko.digital/t/#{title_parametrized}/#{topic_id}"; "Platforma link")),
       found_page.published_revision&.updated_at&.in_time_zone('Europe/Bratislava')&.strftime('%H:%M %d.%m.%Y') || '',
       '',
