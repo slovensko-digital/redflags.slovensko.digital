@@ -6,7 +6,6 @@ RSpec.describe SyncOneTopicJob, type: :job do
   subject(:job) { described_class.perform_later(page_id) }
 
   let(:page_id) { 'ABC1' }
-  let(:sheets_service) { instance_double('GoogleApiService') }
   let(:response_values) do
     [
       [],
@@ -22,9 +21,11 @@ RSpec.describe SyncOneTopicJob, type: :job do
   let(:indices) { { 'Projekt' => 0, 'Projekt ID' => 1, 'Platforma' => 2, 'ID draft prípravy' => 3, 'ID prípravy' => 4, 'ID draft produktu' => 5, 'ID produktu' => 6 } }
 
   before do
-    allow(Google::Auth::ServiceAccountCredentials).to receive(:make_creds).and_return(instance_double(Google::Auth::ServiceAccountCredentials))
     google_sheets_service = instance_double(Google::Apis::SheetsV4::SheetsService)
     allow(GoogleApiService).to receive(:get_sheets_service).and_return(google_sheets_service)
+    mock_document = instance_double("Google::Apis::DocsV1::Document")
+    allow(mock_document).to receive(:title).and_return("Dokument RF-priprava-template")
+    allow(GoogleApiService).to receive(:get_document).and_return(mock_document)
     allow(google_sheets_service).to receive(:get_spreadsheet_values).with(ENV.fetch('GOOGLE_SHEET_ID'), 'A:Z').and_return(OpenStruct.new(values: response_values))
   end
 
@@ -35,8 +36,8 @@ RSpec.describe SyncOneTopicJob, type: :job do
   end
 
   it 'executes perform' do
+    expect(SyncGoogleDocumentJob).to receive(:perform_now)
     described_class.perform_now(page_id)
-    expect(ActiveJob::Base.queue_adapter.enqueued_jobs.map { |j| j[:job] }).to include(SyncGoogleDocumentJob)
   end
 
   context 'when performing the job' do

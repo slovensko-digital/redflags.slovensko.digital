@@ -18,7 +18,6 @@ RSpec.describe SyncGoogleDocumentJob, type: :job do
   let(:parsed_hash) { {content: 'Parsed content'} }
   let(:page) { create(:page) }
   let(:revision) { create(:revision) }
-  let(:revision) { create(:revision) }
 
   before do
     allow(Page).to receive_message_chain(:find_or_create_by!).and_return(page)
