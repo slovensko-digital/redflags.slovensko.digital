@@ -34,7 +34,7 @@ class SyncOneTopicJob < ApplicationJob
     product_page_id = row[indices["ID produktu"]]
 
     if platform_link != ''
-      SyncTopicJob.perform_later(project_id, preparation_page_id)
+      SyncTopicJob.perform_now(project_id, preparation_page_id)
     else
       if target_id == preparation_page_id.to_i
         enqueue_job_for_update("#{project_name} - Príprava", project_id, preparation_document_id, preparation_page_id, 'Prípravná fáza')
@@ -46,7 +46,7 @@ class SyncOneTopicJob < ApplicationJob
 
   def enqueue_job_for_update(name, project_id, document_id, page_id, page_type)
     unless has_template_name?(document_id)
-      SyncGoogleDocumentJob.perform_later(name, project_id, document_id, page_id, page_type)
+      SyncGoogleDocumentJob.perform_now(name, project_id, document_id, page_id, page_type)
     end
   end
 

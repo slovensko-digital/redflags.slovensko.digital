@@ -34,7 +34,14 @@
       <tr>
         <td style="width: 12rem;" colspan="4">
           <% if project.has_published_phases? %>
-            <%= project.phases.select { |phase| phase.published_revision.present? }.map { |phase| phase.published_revision.title }.first %>
+            <% latest_published_revision = project.phases.select { |phase| phase.published_revision.present? }&.max_by { |phase| phase.published_revision.published_at }&.published_revision %>
+            <%= latest_published_revision&.title %>
+            <% latest_stage = latest_published_revision&.stage %>
+            <% if latest_stage %>
+              <div class="mt-1">
+                <span class="badge badge-secondary" title="Prebiehajúca fáza"><%= latest_stage %></span>
+              </div>
+            <% end %>
           <% end %>
         </td>
 

@@ -31,6 +31,6 @@ class SyncTopicJob < ApplicationJob
     end
 
     # For initial import of current topics into Google Sheets
-    InitializationOfTopicsToSheetsJob.set(wait: 30.seconds).perform_later(topic_id, page, project)
+    InitializationOfTopicsToSheetsJob.set(wait: 30.seconds).perform_later(topic_id, page, project) unless project.nil?
   end
 end

@@ -8,7 +8,7 @@ class Admin::PagesController < AdminController
 
   def show
     @revisions = @page.revisions.order(version: :desc).page(params[:page])
-    @project = @page.phase.project
+    @project = @page.phase ? @page.phase.project : Project.find_by(id: @page.id)
   end
 
   def preview
