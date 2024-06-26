@@ -45,6 +45,13 @@ class SyncOneTopicJob < ApplicationJob
   end
 
   def enqueue_job_for_update(name, project_id, document_id, page_id, page_type)
-    SyncGoogleDocumentJob.perform_later(name, project_id, document_id, page_id, page_type)
+    unless has_template_name?(document_id)
+      SyncGoogleDocumentJob.perform_later(name, project_id, document_id, page_id, page_type)
+    end
+  end
+
+  def has_template_name?(document_id)
+    document_name = GoogleApiService.get_document(document_id)&.title
+    document_name == 'Kópia dokumentu RF-priprava-template' || document_name == 'Kópia dokumentu RF-produkt-template'
   end
 end

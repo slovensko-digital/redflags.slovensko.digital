@@ -7,8 +7,10 @@ class ExportTopicIntoSheetJob < ApplicationJob
     'Čo sa práve deje-Príprava', 'Zhrnutie hodnotenia Red Flags-Príprava', 'Stanovisko Slovensko.Digital-Príprava', 'Reforma VS body-Príprava',
     'Reforma VS-Príprava', 'Merateľné ciele (KPI) body-Príprava', 'Merateľné ciele (KPI)-Príprava', 'Postup dosiahnutia cieľov body-Príprava',
     'Postup dosiahnutia cieľov-Príprava', 'Súlad s KRIT body-Príprava', 'Súlad s KRIT-Príprava', 'Biznis prínos body-Príprava',
-    'Biznis prínos-Príprava', 'Príspevok v informatizácii body-Príprava', 'Príspevok v informatizácii-Príprava', 'Kalkulácia efektívnosti body-Príprava',
-    'Kalkulácia efektívnosti-Príprava', 'Transparentnosť a participácia body-Príprava', 'Transparentnosť a participácia-Príprava', 'Názov-Produkt',
+    'Biznis prínos-Príprava', 'Príspevok v informatizácii body-Príprava', 'Príspevok v informatizácii-Príprava', 'Štúdia uskutočniteľnosti body-Príprava',
+    'Štúdia uskutočniteľnosti-Príprava', 'Alternatívy body-Príprava', 'Alternatívy-Príprava', 'Kalkulácia efektívnosti body-Príprava',
+    'Kalkulácia efektívnosti-Príprava', 'Transparentnosť a participácia body-Príprava', 'Transparentnosť a participácia-Príprava',
+    'Participácia na príprave projektu body-Príprava', 'Participácia na príprave projektu-Príprava', 'Názov-Produkt',
     'Garant-Produkt', 'Stručný opis-Produkt', 'Náklady na projekt-Produkt', 'Aktuálny stav projektu-Produkt', 'Čo sa práve deje-Produkt',
     'Zhrnutie hodnotenia Red Flags-Produkt', 'Stanovisko Slovensko.Digital-Produkt', 'Reforma VS body-Produkt', 'Reforma VS-Produkt',
     'Merateľné ciele (KPI) body-Produkt', 'Merateľné ciele (KPI)-Produkt', 'Postup dosiahnutia cieľov body-Produkt', 'Postup dosiahnutia cieľov-Produkt',
@@ -24,11 +26,15 @@ class ExportTopicIntoSheetJob < ApplicationJob
     "Reforma VS" => "Reforma VS body",
     "Merateľné ciele (KPI)" => "Merateľné ciele (KPI) body",
     "Postup dosiahnutia cieľov" => "Postup dosiahnutia cieľov body",
+    "Súlad s KRIS" => "Súlad s KRIT body",
     "Súlad s KRIT" => "Súlad s KRIT body",
     "Biznis prínos" => "Biznis prínos body",
     "Príspevok v informatizácii" => "Príspevok v informatizácii body",
+    "Štúdia uskutočniteľnosti" => "Štúdia uskutočniteľnosti body",
+    "Alternatívy" => "Alternatívy body",
     "Kalkulácia efektívnosti" => "Kalkulácia efektívnosti body",
     "Transparentnosť a participácia" => "Transparentnosť a participácia body",
+    "Participácia na príprave projektu" => "Participácia na príprave projektu body",
     "Súlad s požiadavkami" => "Súlad s požiadavkami body",
     "Elektronické služby" => "Elektronické služby body",
     "Identifikácia, autentifikácia, autorizácia (IAA)" => "Identifikácia, autentifikácia, autorizácia (IAA) body",
@@ -59,7 +65,7 @@ class ExportTopicIntoSheetJob < ApplicationJob
     result["Garant"] = new_revision.guarantor
     result["Stručný opis"] = new_revision.description
     result["Náklady na projekt"] = new_revision.budget
-    result["Aktuálny stav projektu"] = new_revision.stage.name
+    result["Aktuálny stav projektu"] = new_revision.stage&.name || 'N/A'
     result["Čo sa práve deje"] = new_revision.current_status
     result["Zhrnutie hodnotenia Red Flags"] = new_revision.summary
     result["Stanovisko Slovensko.Digital"] = new_revision.recommendation
