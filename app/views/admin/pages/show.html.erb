@@ -46,6 +46,8 @@
           <% if revision.published? %>
             <% if @page.phase&.phase_type&.name %>
              <%= link_to revision.title, project_show_revision_type_path(@project, PhaseRevision.map_phase_type_to_route(@page.phase.phase_type.name)) %>
+            <% else %>
+              <%= revision.title %>
             <% end %>
           <% else %>
             <%= revision.title %>

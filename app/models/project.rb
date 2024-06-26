@@ -29,41 +29,55 @@ class Project < ApplicationRecord
                          .order('oldest_published_at')
     when 'alpha', 'alpha_reverse'
       projects = Project.joins(phases: :published_revision)
-                   .select('DISTINCT ON (projects.id) projects.*, LOWER phase_revisions.title AS alpha_title')
+                   .select('DISTINCT ON (projects.id) projects.*, LOWER(phase_revisions.title) AS alpha_title')
                    .order('projects.id, alpha_title')
       projects = projects.sort_by(&:alpha_title)
       projects = projects.reverse if sort_param == 'alpha_reverse'
     when 'preparation_lowest'
       projects = Project.joins(phases: :published_revision)
                         .where(phases: { phase_type: PhaseType.find_by(name: 'Prípravná fáza') })
-                        .select('projects.*, phase_revisions.total_score')
-                        .order('phase_revisions.total_score ASC NULLS LAST')
                         .distinct
+      projects = projects.sort_by do |project|
+        phase_prep = project.phases.find { |p| p.phase_type.name == 'Prípravná fáza' }
+        phase_prep ? (phase_prep.published_revision.aggregated_rating) : 0
+      end
     when 'preparation_highest'
       projects = Project.joins(phases: :published_revision)
-                         .where(phases: { phase_type: PhaseType.find_by(name: 'Prípravná fáza') })
-                         .select('projects.*, phase_revisions.total_score')
-                         .order('phase_revisions.total_score DESC NULLS LAST')
-                         .distinct
+                        .where(phases: { phase_type: PhaseType.find_by(name: 'Prípravná fáza') })
+                        .distinct
+      projects = projects.sort_by do |project|
+        phase_prep = project.phases.find { |p| p.phase_type.name == 'Prípravná fáza' }
+        phase_prep ? (phase_prep.published_revision.aggregated_rating) : 0
+      end.reverse
     when 'product_lowest'
       projects = Project.joins(phases: :published_revision)
-                         .where(phases: { phase_type: PhaseType.find_by(name: 'Fáza produkt') })
-                         .select('projects.*, phase_revisions.total_score')
-                         .order('phase_revisions.total_score ASC NULLS LAST')
-                         .distinct
+                        .where(phases: { phase_type: PhaseType.find_by(name: 'Fáza produkt') })
+                        .distinct
+      projects = projects.sort_by do |project|
+        phase_prep = project.phases.find { |p| p.phase_type.name == 'Fáza produkt' }
+        phase_prep ? (phase_prep.published_revision.aggregated_rating) : 0
+      end
     when 'product_highest'
       projects = Project.joins(phases: :published_revision)
-                         .where(phases: { phase_type: PhaseType.find_by(name: 'Fáza produkt') })
-                         .select('projects.*, phase_revisions.total_score')
-                         .order('phase_revisions.total_score DESC NULLS LAST')
-                         .distinct
+                        .where(phases: { phase_type: PhaseType.find_by(name: 'Fáza produkt') })
+                        .distinct
+      projects = projects.sort_by do |project|
+        phase_prep = project.phases.find { |p| p.phase_type.name == 'Fáza produkt' }
+        phase_prep ? (phase_prep.published_revision.aggregated_rating) : 0
+      end.reverse
     else
-      projects = Project.joins(phases: :published_revision).distinct
+      projects = Project.joins(phases: :published_revision)
+                        .distinct
 
       if ProjectsHelper::ALLOWED_TAGS.keys.include?(selected_tag)
         projects = Project.joins(phases: :published_revision)
                           .where(phase_revisions: { tags: selected_tag })
       end
+
+      projects = projects.sort_by do |project|
+        max_rating = project.phases.map { |p| p.published_revision.aggregated_rating }.max
+        max_rating
+      end.reverse
     end
 
     projects

@@ -53,12 +53,12 @@ class InitializationOfTopicsToSheetsJob < ApplicationJob
       project.id,
       phase_revision_guarantor || '',
       %(=HYPERLINK("https://platforma.slovensko.digital/t/#{title_parametrized}/#{topic_id}"; "Platforma link")),
-      found_page.published_revision&.created_at&.in_time_zone('Europe/Bratislava')&.strftime('%H:%M %d.%m.%Y') || '',
+      found_page.published_revision&.updated_at&.in_time_zone('Europe/Bratislava')&.strftime('%H:%M %d.%m.%Y') || '',
       '',
       '',
       topic_id.to_s,
       found_page.published_revision.present? ? 'Áno' : 'Nie',
-      found_page.published_revision&.created_at&.in_time_zone('Europe/Bratislava')&.strftime('%H:%M %d.%m.%Y') || '',
+      found_page.published_revision&.updated_at&.in_time_zone('Europe/Bratislava')&.strftime('%H:%M %d.%m.%Y') || '',
       found_page.published_revision.present? ? %(=HYPERLINK("https://redflags.slovensko.digital/admin/pages/#{found_page.id}"; "Admin link")) : ''
     ]
   end
