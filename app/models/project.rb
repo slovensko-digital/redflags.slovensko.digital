@@ -40,7 +40,7 @@ class Project < ApplicationRecord
       projects = projects.sort_by do |project|
         phase_prep = project.phases.find { |p| p.phase_type.name == 'Prípravná fáza' }
         phase_prep ? (phase_prep.published_revision.aggregated_rating) : 0
-      end
+      end.reverse
     when 'preparation_highest'
       projects = Project.joins(phases: :published_revision)
                         .where(phases: { phase_type: PhaseType.find_by(name: 'Prípravná fáza') })
@@ -48,7 +48,7 @@ class Project < ApplicationRecord
       projects = projects.sort_by do |project|
         phase_prep = project.phases.find { |p| p.phase_type.name == 'Prípravná fáza' }
         phase_prep ? (phase_prep.published_revision.aggregated_rating) : 0
-      end.reverse
+      end
     when 'product_lowest'
       projects = Project.joins(phases: :published_revision)
                         .where(phases: { phase_type: PhaseType.find_by(name: 'Fáza produkt') })
@@ -56,7 +56,7 @@ class Project < ApplicationRecord
       projects = projects.sort_by do |project|
         phase_prep = project.phases.find { |p| p.phase_type.name == 'Fáza produkt' }
         phase_prep ? (phase_prep.published_revision.aggregated_rating) : 0
-      end
+      end.reverse
     when 'product_highest'
       projects = Project.joins(phases: :published_revision)
                         .where(phases: { phase_type: PhaseType.find_by(name: 'Fáza produkt') })
@@ -64,7 +64,7 @@ class Project < ApplicationRecord
       projects = projects.sort_by do |project|
         phase_prep = project.phases.find { |p| p.phase_type.name == 'Fáza produkt' }
         phase_prep ? (phase_prep.published_revision.aggregated_rating) : 0
-      end.reverse
+      end
     else
       projects = Project.joins(phases: :published_revision)
                         .distinct
@@ -75,9 +75,9 @@ class Project < ApplicationRecord
       end
 
       projects = projects.sort_by do |project|
-        max_rating = project.phases.map { |p| p.published_revision.aggregated_rating }.max
+        max_rating = project.phases.map { |p| p.published_revision&.aggregated_rating }.compact.max
         max_rating
-      end.reverse
+      end
     end
 
     projects
