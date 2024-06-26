@@ -33,14 +33,14 @@ class SyncOneTopicJob < ApplicationJob
     product_document_id = row[indices["ID draft produktu"]]
     product_page_id = row[indices["ID produktu"]]
 
-    if platform_link != ''
-      SyncTopicJob.perform_now(project_id, preparation_page_id)
-    else
-      if target_id == preparation_page_id.to_i
+    if target_id == preparation_page_id.to_i
+      if platform_link != ''
+        SyncTopicJob.perform_now(project_id, preparation_page_id)
+      else
         enqueue_job_for_update("#{project_name} - Príprava", project_id, preparation_document_id, preparation_page_id, 'Prípravná fáza')
-      else target_id == product_page_id.to_i
-        enqueue_job_for_update("#{project_name} - Produkt", project_id, product_document_id, product_page_id, 'Fáza produkt')
       end
+    else target_id == product_page_id.to_i
+      enqueue_job_for_update("#{project_name} - Produkt", project_id, product_document_id, product_page_id, 'Fáza produkt')
     end
   end
 

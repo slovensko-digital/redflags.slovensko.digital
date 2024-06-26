@@ -19,6 +19,7 @@ RSpec.describe SyncAllTopicsJob, type: :job do
   let(:indices) { { 'Projekt' => 0, 'Projekt ID' => 1, 'Platforma' => 2, 'ID draft prípravy' => 3, 'ID prípravy' => 4, 'ID draft produktu' => 5, 'ID produktu' => 6 } }
 
   before do
+    allow(Google::Auth::ServiceAccountCredentials).to receive(:make_creds).and_return(instance_double(Google::Auth::ServiceAccountCredentials))
     google_sheets_service = instance_double(Google::Apis::SheetsV4::SheetsService)
     allow(GoogleApiService).to receive(:get_sheets_service).and_return(google_sheets_service)
     allow(google_sheets_service).to receive(:get_spreadsheet_values).with(ENV.fetch('GOOGLE_SHEET_ID'), 'A:Z').and_return(OpenStruct.new(values: response_values))
