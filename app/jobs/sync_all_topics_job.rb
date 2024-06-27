@@ -29,12 +29,29 @@ class SyncAllTopicsJob < ApplicationJob
     product_document_id = row[indices["ID draft produktu"]]
     product_page_id = row[indices["ID produktu"]]
 
-    if platform_link != '' && sync_all
+    if sync_all
+      process_row_for_sync_all(project_name, project_id, platform_link, preparation_document_id, preparation_page_id, product_document_id, product_page_id)
+    else
+      process_row_for_google_sync(project_name, project_id, preparation_document_id, preparation_page_id, product_document_id, product_page_id)
+    end
+  end
+
+  def process_row_for_sync_all(project_name, project_id, platform_link, preparation_document_id, preparation_page_id, product_document_id, product_page_id)
+    if platform_link.present?
       SyncTopicJob.perform_later(project_id, preparation_page_id)
     else
       enqueue_job_for_update("#{project_name} - Príprava", project_id, preparation_document_id, preparation_page_id, 'Prípravná fáza')
     end
     enqueue_job_for_update("#{project_name} - Produkt", project_id, product_document_id, product_page_id, 'Fáza produkt')
+  end
+
+  def process_row_for_google_sync(project_name, project_id, preparation_document_id, preparation_page_id, product_document_id, product_page_id)
+    if preparation_document_id.present?
+      enqueue_job_for_update("#{project_name} - Príprava", project_id, preparation_document_id, preparation_page_id, 'Prípravná fáza')
+    end
+    if product_document_id.present?
+      enqueue_job_for_update("#{project_name} - Produkt", project_id, product_document_id, product_page_id, 'Fáza produkt')
+    end
   end
 
   def enqueue_job_for_update(name, project_id, document_id, page_id, page_type)

@@ -66,7 +66,11 @@ class Admin::PagesController < AdminController
   end
 
   def sync_one
-    SyncOneTopicJob.perform_later(@page.id)
+    if @page.phase.present?
+      SyncOneTopicJob.perform_later(@page.id)
+    else
+      SyncTopicJob.perform_later(nil, @page.id)
+    end
 
     redirect_back fallback_location: { action: :index }
   end
