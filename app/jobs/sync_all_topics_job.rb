@@ -3,7 +3,7 @@ class SyncAllTopicsJob < ApplicationJob
 
   COLUMN_NAMES = ['Projekt', 'Projekt ID', 'Platforma', 'ID draft prípravy', 'ID prípravy', 'ID draft produktu', 'ID produktu'].freeze
 
-  def perform(sync_all: false)
+  def perform(sync_all: true)
     sheets_service = GoogleApiService.get_sheets_service
     response_values = sheets_service.get_spreadsheet_values(ENV.fetch('GOOGLE_SHEET_ID'), 'A:Z')&.values
 

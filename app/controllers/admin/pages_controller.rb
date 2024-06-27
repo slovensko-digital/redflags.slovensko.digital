@@ -60,7 +60,7 @@ class Admin::PagesController < AdminController
   end
 
   def sync_google
-    SyncAllTopicsJob.perform_later(sync_all: true)
+    SyncAllTopicsJob.perform_later(sync_all: false)
 
     redirect_back fallback_location: { action: :index }
   end
