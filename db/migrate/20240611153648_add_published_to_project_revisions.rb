@@ -2,6 +2,7 @@ class AddPublishedToProjectRevisions < ActiveRecord::Migration[5.1]
   def up
     add_column :phase_revisions, :published, :boolean, default: false
 
+    PhaseRevision.reset_column_information
     Project.find_each do |project|
       project.phases.find_each do |phase|
         phase.revisions.find_each do |revision|

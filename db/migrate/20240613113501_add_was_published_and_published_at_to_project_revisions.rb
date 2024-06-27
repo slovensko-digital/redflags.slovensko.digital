@@ -3,7 +3,7 @@ class AddWasPublishedAndPublishedAtToProjectRevisions < ActiveRecord::Migration[
     add_column :phase_revisions, :was_published, :boolean, default: false
     add_column :phase_revisions, :published_at, :datetime
 
-    Phase.reset_column_information
+    PhaseRevision.reset_column_information
     Phase.find_each do |phase|
       if phase.published_revision.present?
         published_revision = phase.published_revision

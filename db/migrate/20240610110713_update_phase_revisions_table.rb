@@ -4,7 +4,7 @@ class UpdatePhaseRevisionsTable < ActiveRecord::Migration[5.1]
 
     project_to_phase = {}
 
-    Phase.reset_column_information
+    PhaseRevision.reset_column_information
     PhaseRevision.find_each do |phase_revision|
       project_id = phase_revision.project_id
       unless project_to_phase[project_id]
