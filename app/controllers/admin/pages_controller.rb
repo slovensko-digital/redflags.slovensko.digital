@@ -13,18 +13,19 @@ class Admin::PagesController < AdminController
 
   def preview
     @phase = @page.phase
-    if @project.present?
+    if @phase.present?
       if params['version'] == 'latest'
         @phase_revision = @phase.revisions.find_by(revision: @page.latest_revision)
       else
         @phase_revision = @phase.revisions.find_by(revision: @page.revisions.find_by(version: params['version']))
       end
-      @ratings_by_type = @phase.revisions.ratings.index_by(&:rating_type)
+      @ratings_by_type = @phase_revision.ratings.index_by(&:rating_type)
+
     else
       if params['version'] == 'latest'
-        @phase_revision = @page.latest_revision.phase_revision
+        @phase_revision = @page.latest_revision
       else
-        @phase_revision = @page.revisions.find_by(version: params['version'])&.phase_revision
+        @phase_revision = @page.revisions.find_by(version: params['version'])
       end
     end
   end
