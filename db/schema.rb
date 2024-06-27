@@ -51,10 +51,10 @@ ActiveRecord::Schema.define(version: 20240621112043) do
     t.text "recommendation"
     t.bigint "stage_id"
     t.string "current_status"
+    t.bigint "phase_id"
     t.boolean "published", default: false
     t.boolean "was_published", default: false
     t.datetime "published_at"
-    t.bigint "phase_id"
     t.index ["phase_id"], name: "index_phase_revisions_on_phase_id"
     t.index ["revision_id"], name: "index_phase_revisions_on_revision_id"
     t.index ["stage_id"], name: "index_phase_revisions_on_stage_id"

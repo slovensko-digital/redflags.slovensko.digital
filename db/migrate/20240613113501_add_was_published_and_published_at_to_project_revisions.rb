@@ -6,7 +6,7 @@ class AddWasPublishedAndPublishedAtToProjectRevisions < ActiveRecord::Migration[
     Phase.find_each do |phase|
       if phase.published_revision.present?
         published_revision = phase.published_revision
-        published_revision.update_attributes!(was_published: true, published_at: published_revision.revision.updated_at)
+        published_revision.update_attributes!(was_published: true, published_at: published_revision.revision.created_at)
       end
     end
   end
