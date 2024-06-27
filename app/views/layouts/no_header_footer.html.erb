@@ -47,7 +47,9 @@
 
 <body>
 <div class="container main mt-4">
-  <img width="300" src="/assets/temp_logo-b57b31c9d88844e3b0f502db12dcb4e2ecd6600f5e89fa3fcf9a19a29cbb42f6.svg" alt="Red Flags logo" class="">
+  <a class="navbar-brand" href="<%= root_path %>">
+    <%= image_tag 'temp_logo.svg' %>
+  </a>
 </div>
 <%= yield %>
 </body>

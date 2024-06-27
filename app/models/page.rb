@@ -15,7 +15,7 @@
 #
 
 class Page < ApplicationRecord
-  belongs_to :phase
+  belongs_to :phase, optional: true
 
   has_many :revisions
 
@@ -60,6 +60,11 @@ class Page < ApplicationRecord
   def build_publish_updates(revision)
     [
       {
+        column_names: { "project" => "Dátum poslednej aktualizácie" },
+        page_type: "project",
+        published_value: revision.published_at.in_time_zone('Europe/Bratislava').strftime('%H:%M %d.%m.%Y')
+      },
+      {
         column_names: { "Prípravná fáza" => "Príprava publikovaná?", "Fáza produkt" => "Produkt publikovaný?" },
         page_type: revision.phase.phase_type.name,
         published_value: "Áno"
@@ -67,11 +72,6 @@ class Page < ApplicationRecord
       {
         column_names: { "Prípravná fáza" => "Dátum publikácie prípravy", "Fáza produkt" => "Dátum publikácie produktu" },
         page_type: revision.phase.phase_type.name,
-        published_value: revision.published_at.in_time_zone('Europe/Bratislava').strftime('%H:%M %d.%m.%Y')
-      },
-      {
-        column_names: { "project" => "Dátum poslednej aktualizácie" },
-        page_type: "project",
         published_value: revision.published_at.in_time_zone('Europe/Bratislava').strftime('%H:%M %d.%m.%Y')
       },
       {
@@ -91,6 +91,11 @@ class Page < ApplicationRecord
 
   def build_unpublish_updates
     [
+      {
+        column_names: { "project" => "Dátum poslednej aktualizácie" },
+        page_type: "project",
+        published_value: Time.now.in_time_zone('Europe/Bratislava').strftime('%H:%M %d.%m.%Y')
+      },
       {
         column_names: { "Prípravná fáza" => "Príprava publikovaná?", "Fáza produkt" => "Produkt publikovaný?" },
         page_type: phase.phase_type.name,

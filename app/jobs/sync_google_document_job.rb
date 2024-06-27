@@ -13,6 +13,7 @@ class SyncGoogleDocumentJob < ApplicationJob
         phase_type = PhaseType.find_by(name: phase_type_name)
         new_phase = Phase.find_or_create_by(project: new_project, phase_type: phase_type)
         new_page.phase = new_phase
+        new_page.save!
       end
 
       drive_service = GoogleApiService.get_drive_service

@@ -42,7 +42,7 @@
               <% @good_projects.each_with_index do |phase_revision, index| %>
                 <tr>
                   <th scope="row" class="pl-3"><%= index + 1 %></th>
-                  <td><%= link_to phase_revision.title, project_show_revision_type_path(phase_revision.phase.project, PhaseRevision.map_phase_type_to_route(phase_revision.phase.phase_type.name)) %></td>
+                  <td><%= link_to "#{phase_revision.title} - #{phase_revision.phase.phase_type.name}", project_show_revision_type_path(phase_revision.phase.project, PhaseRevision.map_phase_type_to_route(phase_revision.phase.phase_type.name)) %></td>
                 </tr>
               <% end %>
             </tbody>
@@ -56,7 +56,7 @@
             <% @bad_projects.each_with_index do |phase_revision, index| %>
               <tr>
                 <th scope="row" class="pl-3"><%= index + 1 %></th>
-                <td><%= link_to phase_revision.revision.page.title, project_show_revision_type_path(phase_revision.phase.project, PhaseRevision.map_phase_type_to_route(phase_revision.phase.phase_type.name)) %></td>
+                <td><%= link_to "#{phase_revision.title} - #{phase_revision.phase.phase_type.name}", project_show_revision_type_path(phase_revision.phase.project, PhaseRevision.map_phase_type_to_route(phase_revision.phase.phase_type.name)) %></td>
               </tr>
             <% end %>
             </tbody>

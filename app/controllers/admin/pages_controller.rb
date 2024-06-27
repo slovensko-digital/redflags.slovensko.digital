@@ -2,32 +2,30 @@ class Admin::PagesController < AdminController
   before_action :load_page, only: [:show, :preview, :publish, :unpublish, :sync_one]
 
   def index
-    @pages = Page.includes(phase: :project).order(id: :desc)
-    @projects = @pages.map { |page| page.phase.project }.uniq
+    @pages = Page.includes(phase: :project).order(created_at: :desc)
+    @projects = @pages.map { |page| page.phase&.project }.uniq
   end
 
   def show
     @revisions = @page.revisions.order(version: :desc).page(params[:page])
-    @project = @page.phase.project
+    @project = @page.phase ? @page.phase.project : Project.find_by(id: @page.id)
   end
 
   def preview
     @phase = @page.phase
-
-    if @project.present?
+    if @phase.present?
       if params['version'] == 'latest'
-        @phase_revision = @phase.revisions.find_by!(revision: @page.latest_revision)
+        @phase_revision = @phase.revisions.find_by(revision: @page.latest_revision)
       else
-        @phase_revision = @phase.revisions.find_by!(revision: @page.revisions.where(version: params['version']))
+        @phase_revision = @phase.revisions.find_by(revision: @page.revisions.find_by(version: params['version']))
       end
+      @ratings_by_type = @phase_revision.ratings.index_by(&:rating_type)
 
-      @ratings_by_type = @phase.revisions.ratings.index_by(&:rating_type)
     else
       if params['version'] == 'latest'
-        @phase_revision = PhaseRevision.find_by(revision: @page.latest_revision)
+        @phase_revision = @page.latest_revision
       else
-        @phase_revision = PhaseRevision.joins(:revision)
-                                       .find_by(revisions: { version: params['version'] })
+        @phase_revision = @page.revisions.find_by(version: params['version'])
       end
     end
   end

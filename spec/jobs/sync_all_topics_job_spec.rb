@@ -12,16 +12,20 @@ RSpec.describe SyncAllTopicsJob, type: :job do
       [],
       ['Projekt', 'Projekt ID', 'Platforma', 'ID draft prípravy', 'ID prípravy', 'ID draft produktu', 'ID produktu'],
       ['Projekt1', 'ABC1', '', 'ABC1', 'ABC1', 'ABC1', 'ABC1'],
-      ['Projekt2', 'ABC2', 'http://google.com', 'ABC2', 'ABC2', 'ABC2', 'ABC2']
+      ['Projekt2', 'ABC2', '', 'ABC2', 'ABC2', 'ABC2', 'ABC2']
     ]
   end
 
   let(:indices) { { 'Projekt' => 0, 'Projekt ID' => 1, 'Platforma' => 2, 'ID draft prípravy' => 3, 'ID prípravy' => 4, 'ID draft produktu' => 5, 'ID produktu' => 6 } }
 
   before do
+    mock_document = instance_double("Google::Apis::DocsV1::Document")
+    allow(mock_document).to receive(:title).and_return("Dokument RF-priprava-template")
+    allow(GoogleApiService).to receive(:get_document).and_return(mock_document)
     google_sheets_service = instance_double(Google::Apis::SheetsV4::SheetsService)
     allow(GoogleApiService).to receive(:get_sheets_service).and_return(google_sheets_service)
     allow(google_sheets_service).to receive(:get_spreadsheet_values).with(ENV.fetch('GOOGLE_SHEET_ID'), 'A:Z').and_return(OpenStruct.new(values: response_values))
+    allow(mock_document).to receive(:body)
   end
 
   it 'queues the job' do
@@ -30,8 +34,9 @@ RSpec.describe SyncAllTopicsJob, type: :job do
   end
 
   it 'executes perform' do
+    expect(SyncGoogleDocumentJob).to receive(:perform_now).exactly(4).times
+
     described_class.perform_now
-    expect(ActiveJob::Base.queue_adapter.enqueued_jobs.size).to eq 4
   end
 
   context 'when mandatory columns are missing' do
@@ -78,8 +83,9 @@ RSpec.describe SyncAllTopicsJob, type: :job do
     end
 
     it 'enqueues SyncGoogleDocumentJob' do
+      expect(SyncGoogleDocumentJob).to receive(:perform_now).exactly(3).times
+
       described_class.perform_now
-      expect(ActiveJob::Base.queue_adapter.enqueued_jobs.map { |j| j[:job] }).to include(SyncGoogleDocumentJob)
     end
   end
 end

@@ -33,18 +33,25 @@ class SyncOneTopicJob < ApplicationJob
     product_document_id = row[indices["ID draft produktu"]]
     product_page_id = row[indices["ID produktu"]]
 
-    if platform_link != ''
-      SyncTopicJob.perform_later(project_id, preparation_page_id)
-    else
-      if target_id == preparation_page_id.to_i
+    if target_id == preparation_page_id.to_i
+      if platform_link != ''
+        SyncTopicJob.perform_now(project_id, preparation_page_id)
+      else
         enqueue_job_for_update("#{project_name} - Príprava", project_id, preparation_document_id, preparation_page_id, 'Prípravná fáza')
-      else target_id == product_page_id.to_i
-        enqueue_job_for_update("#{project_name} - Produkt", project_id, product_document_id, product_page_id, 'Fáza produkt')
       end
+    else target_id == product_page_id.to_i
+      enqueue_job_for_update("#{project_name} - Produkt", project_id, product_document_id, product_page_id, 'Fáza produkt')
     end
   end
 
   def enqueue_job_for_update(name, project_id, document_id, page_id, page_type)
-    SyncGoogleDocumentJob.perform_later(name, project_id, document_id, page_id, page_type)
+    unless has_template_name?(document_id)
+      SyncGoogleDocumentJob.perform_now(name, project_id, document_id, page_id, page_type)
+    end
+  end
+
+  def has_template_name?(document_id)
+    document_name = GoogleApiService.get_document(document_id)&.title
+    document_name == 'Kópia dokumentu RF-priprava-template' || document_name == 'Kópia dokumentu RF-produkt-template'
   end
 end

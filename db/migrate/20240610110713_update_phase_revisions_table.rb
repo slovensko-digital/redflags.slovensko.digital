@@ -4,17 +4,16 @@ class UpdatePhaseRevisionsTable < ActiveRecord::Migration[5.1]
 
     project_to_phase = {}
 
-    Phase.reset_column_information
-
-    PhaseRevision.select(:project_id).distinct.find_each do |phase_revision|
+    PhaseRevision.reset_column_information
+    PhaseRevision.find_each do |phase_revision|
       project_id = phase_revision.project_id
-      next if project_to_phase[project_id]
-
-      phase = Phase.find_or_create_by!(
-        project_id: project_id,
-        phase_type: PhaseType.find_by!(name: 'Prípravná fáza')
-      )
-      project_to_phase[project_id] = phase.id
+      unless project_to_phase[project_id]
+        phase = Phase.find_or_create_by!(
+          project_id: project_id,
+          phase_type: PhaseType.find_by(name: 'Prípravná fáza')
+        )
+        project_to_phase[project_id] = phase.id
+      end
     end
 
     PhaseRevision.find_each do |phase_revision|

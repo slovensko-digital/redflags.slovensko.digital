@@ -2,21 +2,22 @@
   <h1 class="mt-5 mb-3">Zoznam hodnotených projektov</h1>
   <p class="lead"><strong>Chýba Vám tu nejaký projekt? Nezdá sa Vám hodnotenie?</strong> Toto hodnotenie je možné <%= link_to 'dopĺňať a upravovať', contribute_path %>.</p>
 
-  <div class="sort-selector text-right mb-4">
+  <div class="sort-selector text-right mb-4 d-flex justify-content-end">
     <%= form_with url: projects_path, method: :get, local: true, id: "sort-form" do |form| %>
       <% form.label :sort %>
       <%= form.select :sort, options_for_select([
                                                   ['Usporiadať', '', {disabled: true, selected: true}],
                                                   ['Abecedne (A-Z)', 'alpha'],
                                                   ['Abecedne (Z-A)', 'alpha_reverse'],
-                                                  ['Podľa dátumu (najnovšie)', 'newest'],
-                                                  ['Podľa dátumu (najstaršie)', 'oldest'],
+                                                  ['Podľa dátumu (od najnovších)', 'newest'],
+                                                  ['Podľa dátumu (od najstarších)', 'oldest'],
                                                   ['Hodnotenie prípravy (vzostupne)', 'preparation_lowest'],
                                                   ['Hodnotenie prípravy (zostupne)', 'preparation_highest'],
                                                   ['Hodnotenie produktu (vzostupne)', 'product_lowest'],
                                                   ['Hodnotenie produktu (zostupne)', 'product_highest'],
-                                                ], params[:sort]), {}, { class: 'bg-primary px-4 py-2 rounded border-0 text-white', onchange: "this.form.submit();" } %>
+                                                ], params[:sort]), {}, { class: 'bg-primary pl-2 py-2 rounded border-0 text-white', onchange: "this.form.submit();" } %>
     <% end %>
+    <%= link_to "Reset", projects_path, class: 'btn btn-link' %>
   </div>
 
   <table class="table">
@@ -34,7 +35,14 @@
       <tr>
         <td style="width: 12rem;" colspan="4">
           <% if project.has_published_phases? %>
-            <%= project.phases.select { |phase| phase.published_revision.present? }.map { |phase| phase.published_revision.title }.first %>
+            <% latest_published_revision = project.phases.select { |phase| phase.published_revision.present? }&.max_by { |phase| phase.published_revision.published_at }&.published_revision %>
+            <%= latest_published_revision&.title %>
+            <% latest_stage = latest_published_revision&.stage %>
+            <% if latest_stage %>
+              <div class="mt-1">
+                <span class="badge badge-secondary" title="Prebiehajúca fáza"><%= latest_stage %></span>
+              </div>
+            <% end %>
           <% end %>
         </td>
 
@@ -98,9 +106,7 @@
         </td>
 
         <td class="align-middle text-center" colspan="2">
-          <button class="btn btn-link p-0" data-toggle="collapse" data-target="#collapse-<%= project.id %>" aria-expanded="false" aria-controls="collapse-<%= project.id %>">
-            <span class="collapsed h3 text-dark">+</span>
-            <span class="expanded h3 text-dark d-none">-</span>
+          <button class="btn btn-lg btn-link p-0 accordion collapsed text-dark" data-toggle="collapse" data-target="#collapse-<%= project.id %>" aria-expanded="false" aria-controls="collapse-<%= project.id %>">
           </button>
         </td>
       </tr>

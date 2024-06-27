@@ -44,7 +44,11 @@
         <td><%= revision.version %></td>
         <td class="w-50">
           <% if revision.published? %>
-            <%= link_to revision.title, project_show_revision_type_path(@project, PhaseRevision.map_phase_type_to_route(@page.phase.phase_type.name)) %>
+            <% if @page.phase&.phase_type&.name %>
+             <%= link_to revision.title, project_show_revision_type_path(@project, PhaseRevision.map_phase_type_to_route(@page.phase.phase_type.name)) %>
+            <% else %>
+              <%= revision.title %>
+            <% end %>
           <% else %>
             <%= revision.title %>
           <% end %>
