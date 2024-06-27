@@ -20,6 +20,7 @@ Rails.application.routes.draw do
       patch :publish, on: :member
       patch :unpublish, on: :member
 
+      put :sync_google, on: :collection
       put :sync, on: :collection
       put :sync_one, on: :member
     end
