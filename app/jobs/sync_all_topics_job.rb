@@ -3,12 +3,12 @@ class SyncAllTopicsJob < ApplicationJob
 
   COLUMN_NAMES = ['Projekt', 'Projekt ID', 'Platforma', 'ID draft prípravy', 'ID prípravy', 'ID draft produktu', 'ID produktu'].freeze
 
-  def perform
+  def perform(sync_all: false)
     sheets_service = GoogleApiService.get_sheets_service
     response_values = sheets_service.get_spreadsheet_values(ENV.fetch('GOOGLE_SHEET_ID'), 'A:Z')&.values
 
     indices = find_indices(response_values[2])
-    response_values[3..-1].each { |row| process_row(row, indices) }
+    response_values[3..-1].each { |row| process_row(row, indices, sync_all) }
   end
 
   private
@@ -20,7 +20,7 @@ class SyncAllTopicsJob < ApplicationJob
     raise ArgumentError, "Could not find required columns in the spreadsheet."
   end
 
-  def process_row(row, indices)
+  def process_row(row, indices, sync_all)
     project_name = row[indices["Projekt"]]
     project_id = row[indices["Projekt ID"]]
     platform_link = row[indices["Platforma"]]
@@ -29,7 +29,7 @@ class SyncAllTopicsJob < ApplicationJob
     product_document_id = row[indices["ID draft produktu"]]
     product_page_id = row[indices["ID produktu"]]
 
-    if platform_link != ''
+    if platform_link != '' && sync_all
       SyncTopicJob.perform_later(project_id, preparation_page_id)
     else
       enqueue_job_for_update("#{project_name} - Príprava", project_id, preparation_document_id, preparation_page_id, 'Prípravná fáza')
