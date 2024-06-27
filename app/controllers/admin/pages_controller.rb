@@ -59,6 +59,12 @@ class Admin::PagesController < AdminController
     redirect_back fallback_location: { action: :index }
   end
 
+  def sync_google
+    SyncAllTopicsJob.perform_later(sync_all: false)
+
+    redirect_back fallback_location: { action: :index }
+  end
+
   def sync_one
     SyncOneTopicJob.perform_later(@page.id)
 
