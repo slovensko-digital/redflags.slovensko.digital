@@ -1,7 +1,7 @@
 class InitializationOfTopicsToSheetsJob < ApplicationJob
   queue_as :default
 
-  COLUMN_NAMES = ['Projekt', 'Projekt ID', 'Gestor', 'Platforma', 'Dátum poslednej aktualizácie', 'Draft prípravy', 'ID draft prípravy', 'ID prípravy', 'Príprava publikovaná?', 'Dátum publikácie prípravy', 'RF web príprava'].freeze
+  COLUMN_NAMES = ['Projekt', 'Projekt ID', 'Gestor', 'Platforma', 'Draft prípravy', 'ID draft prípravy', 'ID prípravy', 'Príprava publikovaná?', 'Dátum publikácie prípravy', 'RF web príprava'].freeze
 
   def perform(topic_id, found_page, project)
     create_new_row
@@ -53,7 +53,6 @@ class InitializationOfTopicsToSheetsJob < ApplicationJob
       project.id,
       phase_revision_guarantor || '',
       %(=HYPERLINK("https://platforma.slovensko.digital/t/#{title_parametrized}/#{topic_id}"; "Platforma link")),
-      found_page.published_revision&.created_at&.in_time_zone('Europe/Bratislava')&.strftime('%H:%M %d.%m.%Y') || '',
       '',
       '',
       topic_id.to_s,

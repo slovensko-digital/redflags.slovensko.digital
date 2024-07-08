@@ -12,5 +12,8 @@ module Clockwork
     Rake::Task[job].invoke
   end
 
-  every(1.day, 'redflags:sync', at: '9:00')
+  every(1.week, 'redflags:sync', at: '2:00')
+  
+  every(1.day, 'redflags:sync_google_drafts', at: '3:00')
+  every(1.day, 'redflags:sync_sheets', at: '5:00')
 end
