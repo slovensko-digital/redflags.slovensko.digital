@@ -2,30 +2,40 @@ require 'rails_helper'
 
 RSpec.describe SyncSheetsProjectInfoJob, type: :job do
   describe '#perform' do
-    let(:mock_phase) { instance_double(Phase, present?: true) }
-    let(:phase_revision) { instance_double(PhaseRevision) }
-    let(:published_revision) { instance_double(Revision, phase_revision: phase_revision) }
-    let(:unpublished_page) { instance_double(Page, published?: false, phase: mock_phase, id: 1, build_unpublish_updates: 'unpublish_updates') }
-    let(:published_page) { instance_double(Page, published?: true, phase: mock_phase, id: 2, published_revision: published_revision, build_publish_updates: 'publish_updates') }
-
-    before do
-      allow(UpdateMultipleSheetColumnsJob).to receive(:set).and_return(UpdateMultipleSheetColumnsJob)
-      allow(UpdateMultipleSheetColumnsJob).to receive(:perform_later)
-      allow(ExportTopicIntoSheetJob).to receive(:set).and_return(ExportTopicIntoSheetJob)
-      allow(ExportTopicIntoSheetJob).to receive(:perform_later)
+    let(:phase) { instance_double(Phase, nil?: false) }
+    let(:page_attributes) do
+      {
+        phase: phase,
+        build_unpublish_updates: 'unpublish_updates',
+        build_publish_updates: 'publish_updates'
+      }
     end
 
-    it 'calls UpdateMultipleSheetColumnsJob and ExportTopicIntoSheetJob for published pages' do
-      allow(Page).to receive(:all).and_return([published_page])
+    let(:unpublished_page) { instance_double(Page, page_attributes.merge(published?: false, id: 1)) }
+    let(:published_page) { instance_double(Page, page_attributes.merge(published?: true, id: 2, published_revision: instance_double(Revision, phase_revision: instance_double(PhaseRevision)))) }
+
+    let(:relation) { double('ActiveRecord::Relation') }
+    let(:jobs) { [UpdateMultipleSheetColumnsJob, ExportTopicIntoSheetJob] }
+
+    before do
+      allow(Page).to receive(:where).and_return(relation)
+      jobs.each do |job|
+        allow(job).to receive(:set).and_return(job)
+        allow(job).to receive(:perform_later)
+      end
+    end
+
+    it 'processes published pages' do
+      allow(relation).to receive(:not).and_return([published_page])
 
       SyncSheetsProjectInfoJob.perform_now
 
       expect(UpdateMultipleSheetColumnsJob).to have_received(:perform_later).with(published_page.id, 'publish_updates')
-      expect(ExportTopicIntoSheetJob).to have_received(:perform_later).with(phase_revision)
+      expect(ExportTopicIntoSheetJob).to have_received(:perform_later).with(published_page.published_revision.phase_revision)
     end
 
-    it 'calls UpdateMultipleSheetColumnsJob for unpublished pages' do
-      allow(Page).to receive(:all).and_return([unpublished_page])
+    it 'processes unpublished pages' do
+      allow(relation).to receive(:not).and_return([unpublished_page])
 
       SyncSheetsProjectInfoJob.perform_now
 
