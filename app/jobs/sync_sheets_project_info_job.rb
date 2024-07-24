@@ -2,9 +2,7 @@ class SyncSheetsProjectInfoJob < ApplicationJob
   queue_as :default
 
   def perform
-    pages = Page.all.select{ |page| page.phase.present? }
-
-    pages.each do |page|
+    Page.where.not(phase: nil).each do |page|
       if page.published?
         updates = page.build_publish_updates(page.published_revision.phase_revision)
         UpdateMultipleSheetColumnsJob.set(wait: 15.seconds).perform_later(page.id, updates)
