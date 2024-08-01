@@ -60,11 +60,6 @@ class Page < ApplicationRecord
   def build_publish_updates(revision)
     [
       {
-        column_names: { "project" => "Dátum poslednej aktualizácie" },
-        page_type: "project",
-        published_value: revision.published_at.in_time_zone('Europe/Bratislava').strftime('%H:%M %d.%m.%Y')
-      },
-      {
         column_names: { "Prípravná fáza" => "Príprava publikovaná?", "Fáza produkt" => "Produkt publikovaný?" },
         page_type: revision.phase.phase_type.name,
         published_value: "Áno"
@@ -92,11 +87,6 @@ class Page < ApplicationRecord
   def build_unpublish_updates
     [
       {
-        column_names: { "project" => "Dátum poslednej aktualizácie" },
-        page_type: "project",
-        published_value: Time.now.in_time_zone('Europe/Bratislava').strftime('%H:%M %d.%m.%Y')
-      },
-      {
         column_names: { "Prípravná fáza" => "Príprava publikovaná?", "Fáza produkt" => "Produkt publikovaný?" },
         page_type: phase.phase_type.name,
         published_value: "Nie"
@@ -109,7 +99,7 @@ class Page < ApplicationRecord
       {
         column_names: { "Prípravná fáza" => "RF web príprava", "Fáza produkt" => "RF web produkt" },
         page_type: phase.phase_type.name,
-        published_value: ""
+        published_value: %(=HYPERLINK("https://redflags.slovensko.digital/admin/pages/#{id}"; "Admin link"))
       }
     ]
   end
