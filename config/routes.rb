@@ -6,6 +6,7 @@ end
 
 Rails.application.routes.draw do
   resources :projects, path: 'projekty' do
+    get ':id', to: redirect('/projekty/%{id}/hodnotenie-pripravy')
     get ':revision_type/verzia/:version', to: 'phase_revision#show_history', as: 'show_history'
     get ':revision_type', to: 'phase_revision#show', as: 'show_revision_type'
     get ':revision_type/pdf', to: 'phase_revision#pdf', as: 'show_pdf_project'
