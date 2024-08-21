@@ -4,28 +4,35 @@
       <div class="row">
         <div class="col-md-7">
           <span class="rating-known" style="font-size: 5rem;">
-          <%= fa_icon('flag', class: 'text-danger') %>
+            <%= fa_icon('flag', class: 'text-danger') %>
             <%= fa_icon('flag-o', class: 'text-danger') %>
             <%= fa_icon('flag-o', class: 'text-danger') %>
         </span>
         </div>
       </div>
       <div class="row">
-        <div class="col-md-7">
+        <div class="col-lg-8">
           <h1>
-            Štátne IT projekty<br>
-            hodnotené odborníkmi
+            Štátne IT projekty<br> <span class="text-danger">nemusia byť len zlé</span>
           </h1>
+          <div>
+            <p class="lead mb-0">
+              <span class="badge badge-primary">Novinka!</span>
+            </p>
+            <p class="lead">
+              <b>Moderný</b> a <b>jednoduchý prehľad</b> k štátnym IT projektom <span class="text-danger font-weight-bold">je tu</span>. Zabudnite na hodiny strávené nad zložitou a neprehľadnou dokumentáciou.
+            </p>
+          </div>
           <p class="lead">
-            Otvorené a transparentné hodnotenie projektov informatizácie komunitou IT odborníkov.
+            Mnohé z týchto projektov informatizácie <b>disponujú</b> transparentným <b>hodnotením</b> vyhotoveným komunitou IT odborníkov.
           </p>
           <div class="mt-4">
-            <%= link_to 'O projekte', about_path, class: 'btn btn-primary btn-lg mr-3 my-1' %>
-            <%= link_to 'Zoznam projektov', projects_path, class: 'btn btn-outline-secondary btn-lg mr-3 my-1' %>
-            <%= link_to 'Štátne IT v číslach', stats_path, class: 'btn btn-outline-secondary btn-lg my-1' %>
+            <%= link_to 'O projekte', about_path, class: 'btn btn-primary btn-lg mr-3 my-1 font-weight-bold' %>
+            <%= link_to 'Zoznam projektov', metais_projects_path, class: 'btn btn-outline-secondary btn-lg mr-3 my-1 font-weight-bold' %>
+            <%= link_to 'Zoznam hodnotení', projects_path, class: 'btn btn-outline-secondary btn-lg mr-3 my-1 font-weight-bold' %>
           </div>
         </div>
-        <div class="col-md-5 text-center d-none d-lg-block">
+        <div class="col-md-4 text-center d-none d-lg-block">
           <span class="rating-known" style="font-size: 5rem;"><%= fa_icon('star') %> <%= fa_icon('star') %> <%= fa_icon('star') %> <%= fa_icon('star-o') %></span>
         </div>
       </div>
@@ -64,23 +71,23 @@
         </div>
       </div>
       <div class="text-center my-5">
-        <%= link_to 'Všetky projekty', projects_path, class: 'btn btn-lg btn-outline-light mt-3' %>
+        <%= link_to 'Všetky hodnotenia', projects_path, class: 'btn btn-lg btn-outline-light mt-3 font-weight-bold' %>
       </div>
     </div>
   </div>
 
   <div class="container">
     <div class="row my-5">
-      <div class="col-md-8 mx-auto py-5">
+      <div class="col-md-10 mx-auto py-5">
         <h2 class="text-center mb-3">Čo je to Red Flags?</h2>
-        <p class="lead">
+        <p class="lead text-justify">
           Red Flags je pokračovaním systematickej kontroly štátnych IT projektov občianskym združením Slovensko.Digital. Pozeráme sa na problematické oblasti projektov a verejným hodnotením vytvárame tlak na zlepšovanie ich kvality a výsledkov.
         </p>
         <div class="text-center my-2">
-          <%= link_to 'Viac o projekte', about_path, class: 'btn btn btn-outline-primary' %>
+          <%= link_to 'Viac o projekte', about_path, class: 'btn btn btn-outline-primary font-weight-bold' %>
         </div>
         <h2 class="text-center mt-5 mb-3">Ako hodnotíme</h2>
-        <p class="lead">
+        <p class="lead text-justify">
           Projekty sú hodnotené pomocou sady kritérií, rovnakých pre každý projekt, pričom v každom kritériu je uvedené
           slovné a&nbsp;bodové hodnotenie
           od
@@ -89,7 +96,7 @@
           <span class="rating-known"><%= rating_stars(OpenStruct.new(score: 4)) %></span>. Zásadné problémy sú označené <span class="rating-known"><%= rating_stars(OpenStruct.new(score: 0)) %></span>. Hodnotenie môže navrhovať ktokoľvek, avšak pred finálnou publikáciou je schvaľované tímom Slovensko.Digital pod dohľadom poradnej komisie.
         </p>
         <div class="text-center my-2">
-          <%= link_to 'Viac o hodnotení a poradnej komisii', about_rating_path, class: 'btn btn btn-outline-primary mt-3' %>
+          <%= link_to 'Viac o hodnotení a poradnej komisii', about_rating_path, class: 'btn btn btn-outline-primary mt-3 font-weight-bold' %>
         </div>
       </div>
     </div>

@@ -1,0 +1,244 @@
+<div id="project-show" class="container main">
+
+  <div class="row mb-5">
+    <div class="col-md-12">
+      <h1 class="project-title"><%= @project_info.title %></h1>
+      <p class="lead text-muted mt-4 text-justify"><%= @project_info.description %></p>
+    </div>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col">
+      <div class="row">
+        <div class="col">
+          <h5>Garant <%= help_icon_if_blank(@project_info.guarantor) %></h5>
+          <p><%= @project_info.guarantor %></p>
+        </div>
+        <div class="col">
+          <h5 class="d-flex align-items-center">Projektový manažér
+            <% if @project_info.project_manager.present? %>
+              <%= image_tag origin_type_logo(@project_info.project_manager.origin), style: "width: 16px; height: 16px; margin-left: 6px;" %>
+            <% end %>
+            <%= help_icon_if_blank(@project_info.project_manager) %>
+          </h5>
+          <p><%= @project_info.project_manager %></p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <h5>Zdroj financovania <%= help_icon_if_blank(@project_info.finance_source) %></h5>
+          <p><%= @project_info.finance_source %></p>
+        </div>
+        <div class="col">
+          <h5>Aktuálny stav <%= help_icon_if_blank(@project_info.status || @project_info.phase) %></h5>
+          <p><b>Stav:</b> <%= @project_info.status %></p>
+          <p><b>Fáza:</b> <%= @project_info.phase %></p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <h5>Dátum začiatku <%= help_icon_if_blank(@project_info.start_date) %></h5>
+          <p><%= @project_info.start_date&.strftime('%d.%m.%Y') %></p>
+        </div>
+        <div class="col">
+          <h5>Termín ukončenia <%= help_icon_if_blank(@project_info.end_date) %></h5>
+          <p><%= @project_info.end_date&.strftime('%d.%m.%Y') %></p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <h5>MetaIS <%= help_icon_if_blank(@project.code) %></h5>
+          <%= link_to @project.code, "https://metais.vicepremier.gov.sk/detail/Projekt/#{@project.uuid}/cimaster?tab=basicForm", target: "_blank" %>
+        </div>
+        <div class="col">
+          <h5>Posledná zmena <%= help_icon_if_blank(@project_info.end_date) %></h5>
+          <p><%= @project.updated_at&.strftime('%d.%m.%Y') %></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-5">
+      <h5 class="mb-4">Rozpočet projektu</h5>
+      <div class="row col">
+        <p><b>Investícia:</b> <%= number_to_currency(@project_info.investment, :unit => "€",  :separator => ",", :delimiter => " ", :format => "%n %u")%></p>
+      </div>
+      <div class="row col">
+        <p><b>Schválená investícia:</b> <%= number_to_currency(@project_info.approved_investment, :unit => "€",  :separator => ",", :delimiter => " ", :format => "%n %u")%></p>
+      </div>
+
+      <hr class="mt-0 mb-2">
+
+      <div class="row col">
+        <p><b>Ročné náklady:</b> <%= number_to_currency(@project_info.operation, :unit => "€",  :separator => ",", :delimiter => " ", :format => "%n %u")%></p>
+      </div>
+      <div class="row col">
+        <p><b>Schválené ročné náklady:</b> <%= number_to_currency(@project_info.approved_operation, :unit => "€",  :separator => ",", :delimiter => " ", :format => "%n %u")%></p>
+      </div>
+    </div>
+  </div>
+
+  <% if @combined_project&.evaluation&.phases.present? %>
+    <% @combined_project.evaluation.phases.each do |phase| %>
+      <% if phase.published_revision.present? %>
+        <hr class="mt-0 mb-4">
+        <% if phase.phase_type.name == 'Prípravná fáza' %>
+          <h5><%= link_to 'Hodnotenie prípravnej fázy', project_show_revision_type_path(phase.project.id, 'hodnotenie-pripravy')%></h5>
+        <% else %>
+          <h5><%= link_to 'Hodnotenie fázy produkt', project_show_revision_type_path(phase.project.id, 'hodnotenie-produkt')%></h5>
+        <% end %>
+        <div class="row mb-4">
+          <div class="col-md-12">
+            <% if phase.published_revision.summary.present? %>
+              <div class="row mb-3">
+                <div class="col">
+                  <h5>Zhrnutie hodnotenia Red Flags</h5>
+                  <p class="mb-4"><%= phase.published_revision.summary %></p>
+                </div>
+              </div>
+            <% end %>
+
+            <% if phase.published_revision.recommendation.present? %>
+              <div class="card mb-4 text-white <%= phase.published_revision.redflags_count.zero? ? 'bg-secondary' : 'bg-danger' %>">
+                <div class="card-body">
+                  <h5 class="card-title">Stanovisko Slovensko.Digital</h5>
+                  <p class="card-text"><%= phase.published_revision.recommendation %></p>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <hr class="mt-0 mb-4">
+
+  <div class="row mb-4">
+    <div class="col-md-12">
+        <h5 class="d-flex align-items-center">Merateľné ciele a ukazovatele
+          <% if @project_info.targets_text.present? %>
+            <%= image_tag origin_type_logo(@project_info.targets_text.origin), style: "width: 18px; height: 18px; margin-left: 6px;" %>
+        <% end %>
+          <%= help_icon_if_blank(@project_info.targets_text) %>
+        </h5>
+        <% if @project_info.targets_text.present? %>
+          <%= convert_to_list(@project_info.targets_text) %>
+        <% else %>
+          Žiadne ciele neboli nájdené.
+        <% end %>
+    </div>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-md-12">
+      <h5>Harmonogram</h5>
+      <div class="row d-flex justify-content-center">
+        <div class="col-md-6">
+          <div class="main-card mb-3 card mt-2" style="border: none;">
+            <p>Predpokladaný harmonogram projektu</p>
+            <div class="card-body">
+              <div class="vertical-timeline vertical-timeline--animate vertical-timeline--one-column">
+                <% @assumption_events.each do |event| %>
+                  <div class="vertical-timeline-item vertical-timeline-element">
+                      <div>
+                                                            <span class="vertical-timeline-element-icon bounce-in">
+                                                                <i class="badge badge-dot badge-dot-xl badge-danger"> </i>
+                                                            </span>
+                        <div class="vertical-timeline-element-content bounce-in">
+                          <h4 class="timeline-title">
+                            <%= event.name %> <%= image_tag origin_type_logo(event.origin_type), style: "width: 12px; height: 12px;", class: 'mr-2' if event.origin_type.present? %>
+                          </h4>
+                          <p><%= event.value %></p>
+                          <span class="vertical-timeline-element-date"><%= event.date.in_time_zone('Europe/Bratislava').strftime('%m/%Y') %></span>
+                        </div>
+                      </div>
+                    </div>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="main-card mb-3 mt-2 card" style="border: none;">
+            <p>Realný harmonogram projektu</p>
+            <div class="card-body">
+              <div class="vertical-timeline vertical-timeline--animate vertical-timeline--one-column">
+                <% @real_events.each do |event| %>
+                  <div class="vertical-timeline-item vertical-timeline-element">
+                    <div>
+                                                            <span class="vertical-timeline-element-icon bounce-in">
+                                                                <i class="badge badge-dot badge-dot-xl badge-danger"> </i>
+                                                            </span>
+                      <div class="vertical-timeline-element-content bounce-in">
+                        <h4 class="timeline-title">
+                          <%= event.name %> <%= image_tag origin_type_logo(event.origin_type), style: "width: 12px; height: 12px;", class: 'mr-2' if event.origin_type.present? %>
+                        </h4>
+                        <p><%= event.value %></p>
+                        <span class="vertical-timeline-element-date"><%= event.date.in_time_zone('Europe/Bratislava').strftime('%m/%Y') %></span>
+                      </div>
+                    </div>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-md-12">
+      <h5>Dodávateľ projektu</h5>
+      <% if @project_info.supplier.present? %>
+        <p><b>Dodávateľ:</b> <a href="https://www.finstat.sk/00166197"><%= @project_info.supplier %></a> <%= image_tag origin_type_logo(@project_info.supplier.origin), style: "width: 16px; height: 16px; margin-left: 6px;" %></p>
+      <% end %>
+      <ul>
+        <% @all_suppliers.each do |supplier| %>
+          <b><%= supplier.supplier_type.name if supplier.supplier_type.present? %></b>
+          <li>
+            <%= image_tag origin_type_logo(supplier.origin_type), style: "width: 12px; height: 12px;" if supplier.origin_type.present? %>
+            <%= link_to supplier.name, supplier.value %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-md-12">
+      <h5>Dokumenty</h5>
+      <% if @project_info.documents_text.present? %>
+        <p><%= @project_info.documents_text %></p>
+      <% end %>
+      <ul>
+        <% @project_origin.documents.each do |doc| %>
+          <li>
+            <%= image_tag origin_type_logo(doc.origin_type), style: "width: 12px; height: 12px;" if doc.origin_type.present? %>
+            <%= link_to doc.name, doc.value %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-md-12">
+      <h5>Linky</h5>
+      <% if @project_info.links_text.present? %>
+        <p><%= @project_info.links_text %></p>
+      <% end %>
+      <ul>
+        <% @project_origin.links.each do |link| %>
+          <li>
+            <%= image_tag origin_type_logo(link.origin_type), style: "width: 12px; height: 12px;" if link.origin_type.present? %>
+            <%= link_to link.name, link.value %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+</div>

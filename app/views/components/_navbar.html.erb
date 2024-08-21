@@ -1,0 +1,45 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-white" role="navigation">
+  <div class="container">
+    <a class="navbar-brand my-1" href="<%= root_path %>">
+      <%= image_tag 'temp_logo.svg', width: 200 %>
+    </a>
+    <button class="border-0 navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-nav" aria-controls="navbar-nav" aria-expanded="false" aria-label="Ukázať/skryť navigáciu">
+      <span>
+        <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20" height="20" viewBox="0 0 50 50">
+            <path d="M 0 7.5 L 0 12.5 L 50 12.5 L 50 7.5 L 0 7.5 z M 0 22.5 L 0 27.5 L 50 27.5 L 50 22.5 L 0 22.5 z M 0 37.5 L 0 42.5 L 50 42.5 L 50 37.5 L 0 37.5 z"></path>
+        </svg>
+      </span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbar-nav">
+      <ul class="navbar-nav ml-auto pt-1 text-center">
+        <li class="nav-item mr-lg-4 <%= "active" if current_page?(metais_projects_path) %>">
+          <%= link_to 'Štátne IT projekty', metais_projects_path, class: 'nav-link' %>
+        </li>
+        <li class="nav-item mr-lg-4 <%= "active" if current_page?(projects_path) %>">
+          <%= link_to 'Hodnotenia', projects_path, class: 'nav-link' %>
+        </li>
+        <li class="nav-item mr-lg-4 d-lg-none <%= "active" if current_page?(about_path) %>">
+          <%= link_to 'Čo je Red Flags', about_path, class: 'nav-link' %>
+        </li>
+        <li class="nav-item mr-lg-4 d-lg-none <%= "active" if current_page?(contribute_path) %>">
+          <%= link_to 'Ako sa zapojiť', contribute_path, class: 'nav-link' %>
+        </li>
+        <li class="nav-item d-lg-none <%= "active" if current_page?(about_rating_path) %>">
+          <%= link_to 'Ako hodnotíme', about_rating_path, class: 'nav-link' %>
+        </li>
+        <li class="nav-item dropdown d-none d-lg-block">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            O projekte
+          </a>
+          <div class="dropdown-menu font-weight-bold" aria-labelledby="navbarDropdown">
+            <a class="nav-link font-weight-bold <%= 'text-primary' if current_page?(about_path) %>" href="<%= about_path %>">Čo je Red Flags</a>
+            <div class="dropdown-divider"></div>
+            <a class="nav-link font-weight-bold <%= 'text-primary' if current_page?(contribute_path) %>" href="<%= contribute_path %>">Ako sa zapojiť</a>
+            <a class="nav-link font-weight-bold <%= 'text-primary' if current_page?(about_rating_path) %>" href="<%= about_rating_path %>">Ako hodnotíme</a>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<hr class="mt-0 bg-primary" style="height:1px;">

@@ -9,14 +9,32 @@ development:
   <<: *default
   database: redflags_development
 
+development_datahub:
+  <<: *default
+  database: datahub_development
+
 test:
   <<: *default
   database: redflags_test
+
+test_datahub:
+  <<: *default
+  database: datahub_test
 
 staging:
   <<: *default
   url: <%= ENV['DATABASE_URL'] %>
 
+staging_datahub:
+  <<: *default
+  database: <%= ENV['DATAHUB_DATABASE_URL'] %>
+  replica: true
+
 production:
   <<: *default
   url: <%= ENV['DATABASE_URL'] %>
+
+production_datahub:
+  <<: *default
+  database: <%= ENV['DATAHUB_DATABASE_URL'] %>
+  replica: true

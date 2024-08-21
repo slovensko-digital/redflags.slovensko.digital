@@ -109,13 +109,12 @@ img.emoji {
 }
 
 .accordion:after {
-  font-family: 'Merriweather';
-  font-size: $h3-font-size;
-  content: "-";
+  color: $blue;
+  font-size: medium;
+  text-decoration: underline;
+  content: "Schovať";
 }
 
 .accordion.collapsed:after {
-  font-family: 'Merriweather';
-  font-size: $h3-font-size;
-  content: "+";
+  content: "Zobraziť";
 }

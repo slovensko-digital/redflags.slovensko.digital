@@ -1,0 +1,63 @@
+<h1>Admin</h1>
+
+<div class="d-flex flex-row flex-wrap">
+  <div class="mr-3">
+    <h6>Metais Project Origins</h6>
+  </div>
+</div>
+
+<h4>
+  <%= @project.get_project_origin_info.title %>
+</h4>
+
+<div class="d-flex justify-content-start mb-4">
+  <% human_origin = @project.project_origins.find_by(origin_type: Metais::OriginType.find_by(name: 'Human')) %>
+  <% if human_origin %>
+    <%= link_to 'Edit Human Origin', edit_admin_metais_project_project_origin_path(@project, human_origin), class: 'btn btn-primary' %>
+  <% else %>
+    <%= button_to 'Create Human Origin', create_human_origin_admin_metais_project_path(@project), method: :post, class: 'btn btn-primary' %>
+  <% end %>
+</div>
+
+<table class="table table-striped table-sm">
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th colspan="10">Typ</th>
+    <th class="text-center">Dokumenty</th>
+    <th class="text-center">Dodávatelia</th>
+    <th class="text-center">Aktivity</th>
+    <th class="text-center">Linky</th>
+    <th class="text-center">Akcie</th>
+  </tr>
+  </thead>
+  <tbody>
+  <% @project.project_origins.each do |project_origin| %>
+    <tr id="<%= dom_id project_origin %>">
+      <td><%= project_origin.id %></td>
+      <td class="w-50" colspan="10">
+        <%= link_to project_origin.origin_type.name, metais_project_path(project_origin.project) %>
+      </td>
+      <td class="text-center">
+        <%= project_origin.documents.count %>
+      </td>
+      <td class="text-center">
+        <%= project_origin.suppliers.count %>
+      </td>
+      <td class="text-center">
+        <%= project_origin.events.count %>
+      </td>
+      <td class="text-center">
+        <%= project_origin.links.count %>
+      </td>
+      <% if project_origin.origin_type.name == 'Human'%>
+        <td class="text-center">
+          <%= link_to 'Edit', edit_admin_metais_project_project_origin_path(project_origin.project, project_origin) %>
+        </td>
+      <% else %>
+        <td class="text-center">
+        </td>
+      <% end %>
+  <% end %>
+  </tbody>
+</table>

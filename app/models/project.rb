@@ -9,6 +9,7 @@
 
 class Project < ApplicationRecord
   has_many :phases
+  has_many :combined_projects, class_name: 'CombinedProject', foreign_key: 'evaluation_id'
 
   def has_published_phases?
     phases.any? { |phase| phase.published_revision.present? }

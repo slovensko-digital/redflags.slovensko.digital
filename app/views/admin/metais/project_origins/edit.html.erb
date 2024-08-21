@@ -1,0 +1,205 @@
+<%= form_with(model: [@project, @project_origin], url: admin_metais_project_project_origin_path(@project, @project_origin), method: :patch, local: true) do |form| %>
+  <div id="project-show" class="container main">
+
+    <div class="row mb-5">
+      <div class="col-md-12 mb-3">
+        <h5><%= form.label :title, "Názov projektu" %></h5>
+        <%= form.text_field :title, value: @project_info.title, class: "form-control"  %>
+      </div>
+      <div class="col-md-12">
+        <h5><%= form.label :description, "Popis" %></h5>
+        <%= form.text_area :description, value: @project_info.description, class: "form-control", rows: 12 %>
+      </div>
+    </div>
+
+    <div class="row mb-4">
+          <div class="col-md-6">
+            <h6 class="m-0"><%= form.label :guarantor, "Garant" %></h6>
+            <%= form.text_field :guarantor, value: @project_info.guarantor, class: "form-control"  %>
+          </div>
+          <div class="col-md-6">
+            <h6 class="m-0"><%= form.label :project_manager, "Projektový manažér" %></h6>
+            <%= form.text_field :project_manager, value: @project_info.project_manager, class: "form-control"  %>
+          </div>
+
+          <div class="col-md-6 mt-3">
+            <h6 class="m-0"><%= form.label :finance_source, "Zdroj financovania" %></h6>
+            <%= form.text_field :finance_source, value: @project_info.finance_source, class: "form-control"  %>
+          </div>
+          <div class="col-md-6 mt-3">
+            <h6 class="m-0"><%= form.label :status, "Stav" %></h6>
+            <%= form.select :status, Metais::ProjectOrigin.pluck(:status).uniq.reject(&:blank?), {}, { class: "form-control" }  %>
+            <h6 class="m-0 mt-3"><%= form.label :phase, "Fáza" %></h6>
+            <%= form.select :phase, Metais::ProjectOrigin.pluck(:phase).uniq.reject(&:blank?), {}, { class: "form-control" }  %>
+          </div>
+
+          <div class="col-md-6 mt-3">
+            <h6 class="m-0"><%= form.label :start_date, "Dátum začiatku" %></h6>
+            <%= form.date_field :start_date, value: @project_info.start_date.strftime("%F"), class: "form-control datepicker"  %>
+          </div>
+          <div class="col-md-6 mt-3">
+            <h6 class="m-0"><%= form.label :end_date, "Termín ukončenia " %></h6>
+            <%= form.date_field :end_date, value: @project_info.end_date.strftime("%F"), class: "form-control"  %>
+          </div>
+
+          <div class="col-md-12 mt-3">
+            <h5>Rozpočet projektu</h5>
+            <div class="row">
+              <div class="col-md-6">
+                <h6 class="m-0"><%= form.label :investment, "Investícia" %></h6>
+                <%= form.number_field :investment, value: @project_info.investment, step: 10000, class: "form-control"  %>
+                <h6 class="m-0 mt-3"><%= form.label :operation, "Ročné náklady" %></h6>
+                <%= form.number_field :operation, value: @project_info.operation, step: 10000, class: "form-control"  %>
+              </div>
+              <div class="col-md-6">
+                <h6 class="m-0"><%= form.label :approved_investment, "Schválená investícia" %></h6>
+                <%= form.number_field :approved_investment, value: @project_info.approved_investment, step: 10000, class: "form-control"  %>
+                <h6 class="m-0 mt-3"><%= form.label :approved_operation, "Schválené ročné náklady" %></h6>
+                <%= form.number_field :approved_operation, value: @project_info.approved_operation, step: 10000, class: "form-control"  %>
+              </div>
+            </div>
+          </div>
+    </div>
+
+    <hr class="mt-0 mb-2">
+
+    <div class="row mb-4 mt-4">
+      <div class="col-md-12">
+        <h5><%= form.label :targets, "Merateľné ciele a ukazovatele" %></h5>
+        <%= form.text_area :targets, value: @project_info.targets_text, class: "form-control", rows: 5 %>
+      </div>
+    </div>
+
+    <div class="row mb-4 mt-4">
+      <div class="col-md-12">
+        <h5><%= form.label :documents, "Dokumenty" %></h5>
+        <%= form.text_area :documents, value: @project_info.documents_text, class: "form-control", rows: 2 %>
+      </div>
+    </div>
+
+    <div class="row mb-4 mt-4">
+      <div class="col-md-12">
+        <h5><%= form.label :links, "Linky" %></h5>
+        <%= form.text_area :links, value: @project_info.links_text, class: "form-control", rows: 2 %>
+      </div>
+    </div>
+
+    <div class="row mb-4">
+      <div class="col-md-12">
+        <h5>Dodávateľ projektu</h5>
+        <h6><%= form.label :supplier, "Dodávateľ" %></h6>
+        <%= form.text_field :supplier, value: @project_info.supplier, class: "form-control"  %>
+      </div>
+    </div>
+    <div class="form-group col-md-12 d-flex justify-content-end">
+      <%= form.submit 'Uložiť', class: 'btn btn-primary' %>
+    </div>
+  </div>
+<% end %>
+
+<div class="container main">
+  <div class="row mb-4">
+    <div class="col-md-12">
+    <h5>VO, CRZ, NFP</h5>
+    <table class="table w-100">
+      <thead>
+      <tr>
+        <th>Typ</th>
+        <th>Link</th>
+        <th>Akcia</th>
+      </tr>
+      </thead>
+      <tbody>
+      <% @all_suppliers.each do |supplier| %>
+        <tr>
+          <td><b><%= supplier.supplier_type.name if supplier.supplier_type.present? %></b></td>
+          <td><%= link_to supplier.name, supplier.value, class: "w-100" %></td>
+          <td>
+            <%= link_to 'Odstrániť', admin_metais_project_project_origin_remove_supplier_path(project_id: @project.id, project_origin_id: @project_origin.id, supplier_id: supplier.id), method: :delete, data: { confirm: 'Naozaj chcete item odstrániť?' } %>
+          </td>
+        </tr>
+      <% end %>
+      <tr>
+        <%= form_with(url: admin_metais_project_project_origin_add_supplier_path(project_id: @project.id, project_origin_id: @project_origin.id), method: :post, local: true) do |f| %>
+          <td><%= f.select 'supplier[supplier_type]', Metais::SupplierType.pluck(:name, :id), {}, {class: 'form-control'} %></td>
+          <td><%= f.text_field 'supplier[value]', class: "w-100 form-control" %></td>
+          <%= hidden_field_tag 'supplier[origin_type]', 'Human' %>
+          <td><%= f.submit 'Pridať', class: 'btn btn-primary' %></td>
+        <% end %>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+    <div class="col-md-12">
+    <h5>Harmonogram</h5>
+    <h6>Predpokladaný harmonogram</h6>
+    <table class="table">
+      <thead>
+      <tr>
+        <th>Názov</th>
+        <th>Popis</th>
+        <th>Dátum</th>
+        <th>Akcia</th>
+      </tr>
+      </thead>
+      <tbody>
+      <% @assumption_events.each do |event| %>
+        <tr>
+          <td><%= event.name %></td>
+          <td><%= event.value %></td>
+          <td><%= event.date.in_time_zone('Europe/Bratislava').strftime('%d.%m.%Y') %></td>
+          <td>
+            <%= link_to 'Odstrániť', admin_metais_project_project_origin_remove_event_path(project_id: @project.id, project_origin_id: @project_origin.id, event_id: event.id), method: :delete, data: { confirm: 'Naozaj chcete aktivitu odstrániť?' } %>
+          </td>
+        </tr>
+      <% end %>
+      <tr>
+        <%= form_with(url: admin_metais_project_project_origin_add_event_path(project_id: @project.id, project_origin_id: @project_origin.id), method: :post, local: true) do |f| %>
+          <td><%= f.text_field 'event[name]', class: "w-100 form-control" %></td>
+          <td><%= f.text_field 'event[value]', class: "w-100 form-control" %></td>
+          <td><%= f.date_field 'event[date]' %></td>
+          <%= hidden_field_tag 'event[origin_type]', 'Human' %>
+          <%= hidden_field_tag 'event[event_type]', 'Predpoklad' %>
+          <td><%= f.submit 'Pridať', class: 'btn btn-primary' %></td>
+        <% end %>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+    <div class="col-md-12">
+      <h6>Reálný harmonogram</h6>
+      <table class="table">
+        <thead>
+        <tr>
+          <th>Názov</th>
+          <th>Popis</th>
+          <th>Dátum</th>
+          <th>Akcia</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% @real_events.each do |event| %>
+          <tr>
+            <td><%= event.name %></td>
+            <td><%= event.value %></td>
+            <td><%= event.date.in_time_zone('Europe/Bratislava').strftime('%d.%m.%Y') %></td>
+            <td>
+              <%= link_to 'Odstrániť', admin_metais_project_project_origin_remove_event_path(project_id: @project.id, project_origin_id: @project_origin.id, event_id: event.id), method: :delete, data: { confirm: 'Naozaj chcete aktivitu odstrániť?' } %>
+            </td>
+          </tr>
+        <% end %>
+        <tr>
+          <%= form_with(url: admin_metais_project_project_origin_add_event_path(project_id: @project.id, project_origin_id: @project_origin.id), method: :post, local: true) do |f| %>
+            <td><%= f.text_field 'event[name]', class: "w-100" %></td>
+            <td><%= f.text_field 'event[value]', class: "w-100" %></td>
+            <td><%= f.date_field 'event[date]' %></td>
+            <%= hidden_field_tag 'event[origin_type]', 'Human' %>
+            <%= hidden_field_tag 'event[event_type]', 'Realita' %>
+            <td><%= f.submit 'Pridať', class: 'btn btn-primary' %></td>
+          <% end %>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

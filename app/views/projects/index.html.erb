@@ -1,55 +1,131 @@
-<div id="projects-index" class="container pt-5">
+<div id="projects-index" class="container pt-2">
   <h1 class="mt-5 mb-3">Zoznam hodnotených projektov</h1>
   <p class="lead"><strong>Chýba Vám tu nejaký projekt? Nezdá sa Vám hodnotenie?</strong> Toto hodnotenie je možné <%= link_to 'dopĺňať a upravovať', contribute_path %>.</p>
 
-  <div class="sort-selector text-right mb-4 d-flex justify-content-end">
-    <%= form_with url: projects_path, method: :get, local: true, id: "sort-form" do |form| %>
-      <% form.label :sort %>
-      <%= form.select :sort, options_for_select([
-                                                  ['Usporiadať', '', {disabled: true, selected: true}],
-                                                  ['Abecedne (A-Z)', 'alpha'],
-                                                  ['Abecedne (Z-A)', 'alpha_reverse'],
-                                                  ['Podľa dátumu (od najnovších)', 'newest'],
-                                                  ['Podľa dátumu (od najstarších)', 'oldest'],
-                                                  ['Hodnotenie prípravy (vzostupne)', 'preparation_lowest'],
-                                                  ['Hodnotenie prípravy (zostupne)', 'preparation_highest'],
-                                                  ['Hodnotenie produktu (vzostupne)', 'product_lowest'],
-                                                  ['Hodnotenie produktu (zostupne)', 'product_highest'],
-                                                ], params[:sort]), {}, { class: 'bg-primary pl-2 py-2 rounded border-0 text-white', onchange: "this.form.submit();" } %>
+  <div class="mt-4">
+    <%= form_with url: projects_path, method: :get, class: 'form my-2 my-lg-0', local: true do |form| %>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <%= text_field_tag :title, params[:title], class: 'form-control' %>
+          </div>
+        </div>
+        <div class="col-md-6 d-flex justify-content-end">
+          <div class="form-group d-flex flex-row align-items-center">
+            <% sort_options = {
+              '' => 'Odporúčané',
+              'alpha' => 'Abecedne',
+              'date' => 'Podľa dátumu',
+              'price' => 'Podľa ceny'} %>
+
+            <% current_sort = params[:sort] || '' %>
+            <% current_sort_label = sort_options[current_sort] %>
+
+            <div class="dropdown mr-2">
+              <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton11" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="width: 200px;">
+                <%= current_sort_label %>
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton11">
+                <%= form_with(url: request.fullpath, method: :get, local: true) do |form| %>
+                  <%= form.hidden_field :sort, id: "sort_field" %>
+
+                  <% sort_options.each do |value, label| %>
+                    <a class="dropdown-item" href="#" onclick="document.getElementById('sort_field').value='<%= value %>'; this.closest('form').submit();">
+                      <%= label %>
+                    </a>
+                  <% end %>
+                <% end %>
+              </div>
+            </div>
+            <button class="btn tag-tooltip bg-transparent border-0 d-flex justify-content-center align-items-center" title="Zoradenie vzostupne alebo zostupne">
+              <svg height="20px" width="20px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <path style="fill:rgba(100,100,100,0.4);" d="M123.177,505.18c0.545,0.543,1.117,1.058,1.713,1.547c0.264,0.219,0.546,0.408,0.818,0.613 c0.334,0.251,0.661,0.51,1.008,0.742c0.33,0.222,0.675,0.413,1.013,0.616c0.312,0.186,0.616,0.383,0.937,0.554 c0.349,0.186,0.704,0.343,1.06,0.51c0.334,0.158,0.662,0.324,1.004,0.467c0.346,0.143,0.697,0.258,1.049,0.383 c0.366,0.132,0.728,0.272,1.1,0.385c0.352,0.105,0.706,0.185,1.061,0.273c0.382,0.098,0.76,0.203,1.15,0.281 c0.408,0.081,0.816,0.129,1.227,0.188c0.341,0.048,0.678,0.113,1.022,0.147c0.765,0.074,1.531,0.115,2.298,0.115 s1.533-0.04,2.296-0.116c0.346-0.034,0.681-0.099,1.022-0.147c0.411-0.059,0.819-0.107,1.227-0.188 c0.389-0.078,0.768-0.185,1.15-0.281c0.355-0.088,0.709-0.166,1.061-0.273c0.372-0.113,0.734-0.253,1.1-0.385 c0.352-0.126,0.703-0.24,1.049-0.383c0.343-0.143,0.672-0.309,1.004-0.467c0.355-0.166,0.711-0.324,1.06-0.51 c0.321-0.172,0.625-0.368,0.937-0.554c0.34-0.203,0.683-0.394,1.013-0.616c0.349-0.233,0.676-0.492,1.008-0.742 c0.273-0.205,0.554-0.394,0.818-0.613c0.596-0.489,1.168-1.004,1.713-1.547l116.359-116.361c9.089-9.087,9.089-23.824,0-32.912 c-9.087-9.089-23.824-9.089-32.912,0l-76.632,76.637V23.273C162.91,10.42,152.49,0,139.637,0s-23.273,10.42-23.273,23.273v409.27 l-76.636-76.634c-9.087-9.089-23.824-9.089-32.912,0c-9.089,9.087-9.089,23.823,0,32.912L123.177,505.18z"></path> <path style="fill:rgb(56,94,255);" d="M387.113,5.274c-0.261-0.216-0.538-0.402-0.807-0.604c-0.34-0.254-0.67-0.515-1.021-0.751 c-0.327-0.219-0.667-0.408-1.002-0.608c-0.316-0.189-0.625-0.388-0.953-0.562c-0.343-0.183-0.694-0.338-1.046-0.504 c-0.338-0.16-0.67-0.329-1.016-0.472c-0.341-0.141-0.689-0.256-1.035-0.379c-0.369-0.133-0.737-0.276-1.116-0.389 c-0.346-0.104-0.694-0.18-1.043-0.268c-0.388-0.098-0.771-0.206-1.167-0.285c-0.399-0.079-0.802-0.126-1.202-0.183 c-0.349-0.051-0.694-0.116-1.049-0.152c-0.74-0.073-1.482-0.11-2.225-0.112C372.409,0.003,372.389,0,372.364,0 s-0.045,0.003-0.07,0.003c-0.743,0.003-1.485,0.039-2.225,0.112c-0.355,0.036-0.7,0.101-1.049,0.152 c-0.402,0.057-0.805,0.104-1.202,0.183c-0.396,0.078-0.779,0.186-1.167,0.285c-0.349,0.088-0.697,0.164-1.043,0.268 c-0.379,0.115-0.745,0.256-1.116,0.389c-0.346,0.124-0.694,0.237-1.035,0.379c-0.348,0.143-0.68,0.312-1.016,0.472 c-0.352,0.164-0.703,0.32-1.046,0.504c-0.327,0.174-0.636,0.372-0.953,0.562c-0.335,0.2-0.675,0.389-1.002,0.608 c-0.352,0.236-0.681,0.496-1.021,0.751c-0.268,0.202-0.546,0.388-0.807,0.604c-0.596,0.489-1.168,1.004-1.713,1.547 L239.542,123.179c-9.089,9.087-9.089,23.824,0,32.912c9.087,9.089,23.824,9.089,32.912,0l76.637-76.632v409.268 c0,12.853,10.42,23.273,23.273,23.273s23.273-10.42,23.273-23.273V79.459l76.636,76.634c4.543,4.544,10.499,6.816,16.455,6.816 c5.956,0,11.913-2.271,16.455-6.817c9.089-9.087,9.089-23.824,0-32.912L388.826,6.82C388.281,6.277,387.709,5.762,387.113,5.274z"></path> </g> </g></svg>
+            </button>
+          </div>
+        </div>
+      </div>
     <% end %>
-    <%= link_to "Reset", projects_path, class: 'btn btn-link' %>
   </div>
 
-  <table class="table">
+  <table class="table mt-4" style="border-collapse: collapse;">
     <thead>
-    <tr style="background-color: #f4f4f4">
-      <th colspan="4">Projekt</th>
+    <tr class="table-price" style="background-color: #f4f4f4">
+      <th colspan="8">Projekt</th>
       <th colspan="2" class="text-center">Hodnotenie prípravy</th>
       <th colspan="2" class="text-center">Hodnotenie produktu</th>
-      <th colspan="2" class="text-center">Posledná aktualizácia</th>
-      <th colspan="2" class="text-center tag-tooltip" title="Rozbalťe pre detailné hodnotenia jednotlivých fáz">Detail</th>
-    </tr>
+   </tr>
     </thead>
     <tbody>
     <% @projects.each do |project| %>
       <tr>
-        <td style="width: 12rem;" colspan="4">
-          <% if project.has_published_phases? %>
-            <% latest_published_revision = project.phases.select { |phase| phase.published_revision.present? }&.max_by { |phase| phase.published_revision.published_at }&.published_revision %>
-            <%= latest_published_revision&.title %>
-            <% latest_stage = latest_published_revision&.stage %>
-            <% if latest_stage %>
-              <div class="mt-1">
-                <span class="badge badge-secondary" title="Prebiehajúca fáza"><%= latest_stage %></span>
+        <td style="width: 30rem;" colspan="8">
+          <div class="d-flex flex-column">
+            <% if project.has_published_phases? %>
+              <% latest_published_revision = project.phases.select { |phase| phase.published_revision.present? }&.max_by { |phase| phase.published_revision.published_at }&.published_revision %>
+              <% if project.combined_projects.present? %>
+                <%= link_to latest_published_revision&.title, metais_project_path(id: project.combined_projects.first.metais_project.id), class: 'table-title-item' %>
+              <% else %>
+                <%= content_tag(:p, latest_published_revision&.title, class: "table-price") %>
+              <% end %>
+              <div class="d-flex flex-row">
+                <p class="mr-2 mb-0 tag-tooltip" title="Dátum poslednej aktualizácie hodnotenia"><small>Dátum poslednej aktualizácie:</small></p>
+                <%=
+                  content_tag(:p) do
+                    latest_revision_date = project.phases.map { |phase| phase.published_revision&.published_at }.compact.max
+                    if latest_revision_date.present?
+                      content_tag(:small, l(latest_revision_date.in_time_zone('Europe/Bratislava'), format: "%d.%m.%Y"), class: "font-italic")
+                    else
+                      content_tag(:small, "Neuvedený", style: "color: grey;", class: "font-italic tag-tooltip", title: "Dátum poslednej aktualizácie projektu nie je známy")
+                    end
+                  end
+                %>
+              </div>
+              <div class="d-flex flex-row justify-content-between">
+                <div class="d-flex flex-row align-items-center">
+                  <p class="font-weight-bold mr-2 mb-0 tag-tooltip" title="Stav, v ktorom sa projekt nachádza">Stav:</p>
+                  <%
+                    latest_stage = latest_published_revision&.stage
+                    status_class = case latest_stage&.name
+                                   when 'Príprava projektu'
+                                     'status-1'
+                                   when 'Obstarávanie'
+                                     'status-2'
+                                   when 'Zrušený projekt'
+                                     'status-3'
+                                   when 'Zastavený projekt'
+                                     'status-4'
+                                   when 'Vrátený na dopracovanie'
+                                     'status-5'
+                                   when 'Schválený'
+                                     'status-6'
+                                   when 'Zrušený'
+                                     'status-7'
+                                   else
+                                     ''
+                                   end
+                  %>
+                  <%=
+                    if latest_stage.present?
+                      content_tag(:span, latest_stage, class: "state-badge #{status_class}")
+                    else
+                      content_tag(:span, "Neuvedený", style: "color: grey;", class: "font-italic tag-tooltip", title: "Stav a fáza projektu nie sú známe")
+                    end
+                  %>
+                </div>
+
+                <div class="d-flex flex-row align-items-center">
+                  <p class="font-weight-bold mr-2 mb-0 tag-tooltip" title="Detailné hodnotenie projektu">Detailné zobrazenie:</p>
+                  <button class="btn btn-lg btn-link p-0 accordion collapsed text-dark" data-toggle="collapse" data-target="#collapse-<%= project.id %>" aria-expanded="false" aria-controls="collapse-<%= project.id %>">
+                  </button>
+                </div>
               </div>
             <% end %>
-          <% end %>
+          </div>
         </td>
 
         <% prep_revision = project.phases.select { |phase| phase.phase_type.name == 'Prípravná fáza' && phase.published_revision.present? }.first %>
         <% prep_revision = prep_revision&.published_revision %>
         <% prep_page = prep_revision&.revision&.page %>
-        <td class="align-middle text-center" colspan="2">
+        <td class="text-center align-middle" colspan="2">
           <% if prep_page.nil? %>
           -
           <% elsif prep_revision.redflags_count > 0 %>
@@ -76,7 +152,7 @@
         <% prod_revision = project.phases.select { |phase| phase.phase_type.name == 'Fáza produkt' && phase.published_revision.present? }.first %>
         <% prod_revision = prod_revision&.published_revision %>
         <% prod_page = prod_revision&.revision&.page%>
-        <td class="align-middle text-center" colspan="2">
+        <td class="text-center align-middle" colspan="2">
           <% if prod_page.nil? %>
           -
           <% elsif prod_revision&.redflags_count > 0 %>
@@ -99,18 +175,9 @@
             </div>
           <% end %>
         </td>
-
-        <td class="align-middle text-center" colspan="2">
-          <% latest_revision_date = project.phases.map { |phase| phase.published_revision&.published_at }.compact.max %>
-          <%= latest_revision_date.strftime('%d.%m.%Y') if latest_revision_date.present? %>
-        </td>
-
-        <td class="align-middle text-center" colspan="2">
-          <button class="btn btn-lg btn-link p-0 accordion collapsed text-dark" data-toggle="collapse" data-target="#collapse-<%= project.id %>" aria-expanded="false" aria-controls="collapse-<%= project.id %>">
-          </button>
-        </td>
       </tr>
-      <tr class="hidden">
+
+      <tr class="hidden table-price">
         <td colspan="12" class="p-0">
           <div class="collapse p-0" id="collapse-<%= project.id %>">
             <table class="table m-0">

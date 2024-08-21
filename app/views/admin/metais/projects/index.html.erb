@@ -1,0 +1,110 @@
+<h1>Admin</h1>
+
+<div class="d-flex flex-row flex-wrap">
+  <h5>MetaIS projekty</h5>
+</div>
+
+<button class="btn btn-outline-primary" type="button" data-toggle="collapse" data-target="#filterForm" aria-expanded="false" aria-controls="filterForm">
+  Filter
+</button>
+
+<div class="collapse mt-4 bg-light p-4 rounded" id="filterForm">
+  <%= form_with url: admin_metais_projects_path, method: :get, class: 'form my-2 my-lg-0', local: true do %>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <%= label_tag :title, 'Názov:' %>
+          <%= text_field_tag :title, params[:title], class: 'form-control' %>
+        </div>
+        <div class="form-group">
+          <%= label_tag :status, 'Status projektu:', class: 'mr-2' %>
+          <%= select_tag :status, options_for_select(Metais::ProjectOrigin.pluck(:status).reject(&:blank?).uniq, params[:status]), include_blank: true, class: 'form-control mr-2' %>
+        </div>
+        <div class="form-group">
+          <%= label_tag :min_price, 'Cena investície od:', class: 'mr-2' %>
+          <%= number_field_tag :min_price, params[:min_price], in: 0..9999999999, step: 1000, class: 'form-control mr-2' %>
+        </div>
+        <div class="form-group">
+          <%= label_tag :change_date, 'Dátum poslednej zmeny:', class: 'mr-2' %>
+          <%= select_tag :change_date, options_for_select([
+                                                            ['Najnovšie', 'latest'],
+                                                            ['Najstaršie', 'oldest']
+                                                          ], params[:change_date]), include_blank: 'Vyberte usporiadanie...', class: 'form-control mr-2' %>
+        </div>
+      </div>
+
+      <!-- Second column -->
+      <div class="col-md-6">
+        <div class="form-group">
+          <%= label_tag :guarantor, 'Gestor:', class: 'mr-2' %>
+          <%= select_tag :guarantor, options_for_select(Metais::ProjectOrigin.pluck(:guarantor).reject(&:blank?).uniq, params[:guarantor]), include_blank: true, class: 'form-control' %>
+        </div>
+        <div class="form-group">
+          <%= label_tag :code, 'MetaIS Kód:', class: 'mr-2' %>
+          <%= text_field_tag :code, params[:code], class: 'form-control mr-2' %>
+        </div>
+        <div class="form-group">
+          <%= label_tag :max_price, 'Cena investície do:', class: 'mr-2' %>
+          <%= number_field_tag :max_price, params[:max_price], in: 0..999999999999, step: 1000, class: 'form-control mr-2' %>
+        </div>
+        <div class="form-group">
+          <%= label_tag :has_evaluation, 'Redflag hodnotenie?', class: 'mr-2' %>
+          <%= check_box_tag :has_evaluation, '1', params[:has_evaluation].present?, class: 'mr-2' %>
+        </div>
+      </div>
+    </div> <!-- end of div class="row" -->
+
+    <div class="row">
+      <div class="form-group col-12 text-center mt-3">
+        <%= submit_tag 'Filter', class: 'btn btn-primary mr-2' %>
+        <%= link_to 'Reset', admin_metais_projects_path, class: 'btn btn-secondary' %>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<table class="table table-striped table-sm mt-4">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th colspan="10">Názov</th>
+      <th class="text-center">Origins</th>
+      <th class="text-center">Dokumenty</th>
+      <th class="text-center">Dodávatelia</th>
+      <th class="text-center">Aktivity</th>
+      <th class="text-center">Linky</th>
+      <th class="text-center">Akcie</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @projects.each do |project| %>
+      <tr id="<%= dom_id project %>">
+        <td><%= project.id %></td>
+        <td class="w-50" colspan="10">
+          <%= link_to project.project_origins.first.title, admin_metais_project_path(project) %>
+        </td>
+        <td class="text-center">
+          <%= project.project_origins.count %>
+        </td>
+        <td class="text-center">
+          <%= project.project_origins.joins(:documents).count %>
+        </td>
+        <td class="text-center">
+          <%= project.project_origins.joins(:suppliers).count %>
+        </td>
+        <td class="text-center">
+          <%= project.project_origins.joins(:events).count %>
+        </td>
+        <td class="text-center">
+          <%= project.project_origins.joins(:links).count %>
+        </td>
+        <td class="text-center">
+          <%= link_to 'Upraviť', create_human_origin_admin_metais_project_path(project), method: :post, class: 'btn btn-secondary btn-sm' %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<div>
+  <%= paginate @projects %>
+</div>

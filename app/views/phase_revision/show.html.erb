@@ -74,6 +74,17 @@
     </div>
   </div>
 
+  <% if @combined_project.present? %>
+    <div class="row mb-4">
+      <div class="col-md-12">
+        <h5>Viac o projekte</h5>
+        <% if @combined_project&.metais_project.present? %>
+          <%= link_to @combined_project.metais_project.get_project_origin_info.title, metais_project_path(@combined_project.metais_project) %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
   <div class="mt-5">
     <div class="row">
       <div class="col">

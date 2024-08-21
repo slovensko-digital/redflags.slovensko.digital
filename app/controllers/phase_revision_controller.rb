@@ -2,6 +2,7 @@ class PhaseRevisionController < ApplicationController
   def show
     @project = Project.find_by!(id: params[:project_id])
     @phase_revision = PhaseRevision.find_published_revision(@project.id, params[:revision_type])
+    @combined_project = CombinedProject.find_by(evaluation_id: @project.id)
 
     if @phase_revision
       @revision = @phase_revision.revision

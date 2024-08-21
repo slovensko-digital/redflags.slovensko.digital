@@ -46,110 +46,13 @@
   </head>
 
   <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light" role="navigation">
-      <div class="container">
-        <a class="navbar-brand" href="<%= root_path %>">
-          <%= image_tag 'temp_logo.svg', width: '200' %>
-        </a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-nav" aria-controls="navbar-nav" aria-expanded="false" aria-label="Ukázať/skryť navigáciu">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbar-nav">
-          <ul class="navbar-nav ml-auto pt-1">
-            <li class="nav-item <%= "active" if current_page?(projects_path) %>">
-              <%= link_to 'Projekty', projects_path, class: 'nav-link' %>
-            </li>
-            <li class="nav-item <%= "active" if current_page?(stats_path) %>">
-              <%= link_to 'Štátne IT v číslach', stats_path, class: 'nav-link' %>
-            </li>
-            <li class="nav-item <%= "active" if current_page?(about_path) %>">
-              <%= link_to 'Čo je Red Flags', about_path, class: 'nav-link' %>
-            </li>
-            <li class="nav-item <%= "active" if current_page?(contribute_path) %>">
-              <%= link_to 'Ako sa zapojiť', contribute_path, class: 'nav-link' %>
-            </li>
-            <li class="nav-item <%= "active" if current_page?(about_rating_path) %>">
-              <%= link_to 'Ako hodnotíme', about_rating_path, class: 'nav-link' %>
-            </li>
-          </ul>
+    <%= render 'components/navbar' %>
+    <% flash.each do |message_type, message| %>
+        <div class="container alert alert-success" role="alert">
+          <%= message %>
         </div>
-      </div>
-    </nav>
-    <hr class="mt-0">
+    <% end %>
     <%= yield %>
-    <footer class="footer py-5 mt-5">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-4">
-            <address>
-              <a href="https://slovensko.digital/"><strong>Slovensko.Digital</strong></a><br>
-              Staré grunty 18<br>
-              841 04 Bratislava<br>
-            </address>
-            <p><a href="mailto:kontakt@slovensko.digital">kontakt@slovensko.digital</a></p>
-            <br>
-            <p><a href="https://slovensko.digital/ochrana-osobnych-udajov">Ochrana osobných údajov</a></p>
-            <p><%= link_to 'Časté otázky', faq_path %></p>
-          </div>
-
-          <div class="col-md-6">
-            <ul class="list-unstyled">
-              <li>
-                <strong>Projekt finančne podporili:</strong>
-              </li>
-              <li><a href="http://www.nadaciapontis.sk/">Fond pre transparentné Slovensko v Nadácii Pontis</a></li>
-              <li><a href="https://sk.usembassy.gov/sk/">Veľvyslanectvo USA na Slovensku</a></li>
-              <li><a href="https://acfslovakia.sk/">Active Citizens Fund - Slovakia</a></li>
-            </ul>
-            <div class="mb-5 mt-md-3 newsletter">
-              <label for="subscribe-email"><strong>Novinky mailom</strong></label><br>
-              <form id="newsletter-form" role="form" action="https://my.sendinblue.com/users/subscribe/js_id/29wti/id/3" data-action="https://my.sendinblue.com/users/subscribeembed/js_id/29wti/id/3" method="post">
-                <div class="row">
-                  <div class="col-md-8">
-                    <div class="form-group">
-                      <input type="hidden" name="js_id" id="js_id" value="29wti">
-                      <input type="hidden" name="listid" id="listid" value="23">
-                      <input type="hidden" name="from_url" id="from_url" value="yes">
-                      <input type="hidden" name="hdn_email_txt" id="hdn_email_txt" value="">
-                      <input type="email" required="" name="email" placeholder="Zadajte emailovú adresu" class="subscribe-email form-control" id="subscribe-email">
-                    </div>
-                  </div>
-                  <div class="col-md-3 pl-md-0">
-                    <button type="submit" class="btn btn-primary btn-block">Prihlásiť</button>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-11 legal mt-2">
-                    Prihlásením dávam dobrovoľný súhlas OZ Slovensko.Digital na zasielanie bezplatného newslettera na mnou zadaný e-mail. Tento súhlas môžem kedykoľvek odvolať na <a href="mailto:kontakt@slovensko.digital">kontakt@slovensko.digital</a>. Oboznámil(a) som sa s informáciami v sekcii <a href="https://slovensko.digital/ochrana-osobnych-udajov" target="_blank">Ochrana osobných údajov</a>.
-                  </div>
-                </div>
-              </form>
-              <div id="newsletter-success" class="d-none">
-                <p>
-                  <strong>Ďakujeme za Váš záujem.</strong>
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-2">
-            <p class="float-md-right icons">
-              <a href="https://www.facebook.com/slovensko.digital/" target="_blank">
-                <span class="fa-stack fa-lg">
-                  <i class="fa fa-circle fa-stack-2x"></i>
-                  <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
-                </span>
-              </a>
-              <a href="https://github.com/slovensko-digital/redflags.slovensko.digital" target="_blank">
-                <span class="fa-stack fa-lg">
-                  <i class="fa fa-circle fa-stack-2x"></i>
-                  <i class="fa fa-github fa-stack-1x fa-inverse"></i>
-                </span>
-              </a>
-            </p>
-          </div>
-        </div>
-      </div>
-    </footer>
+    <%= render 'components/footer' %>
   </body>
 </html>
