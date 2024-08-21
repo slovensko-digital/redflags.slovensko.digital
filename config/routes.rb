@@ -32,9 +32,12 @@ Rails.application.routes.draw do
         resources :project_origins, only: [:edit, :update, :create] do
           delete 'remove_event/:event_id', to: 'project_origins#remove_event', as: 'remove_event'
           delete 'remove_supplier/:supplier_id', to: 'project_origins#remove_supplier', as: 'remove_supplier'
+          delete 'remove_link/:link_id', to: 'project_origins#remove_link', as: 'remove_link'
+          delete 'remove_document/:document_id', to: 'project_origins#remove_document', as: 'remove_document'
 
           post 'add_event', to: 'project_origins#add_event', as: 'add_event'
           post 'add_supplier', to: 'project_origins#add_supplier', as: 'add_supplier'
+          post 'add_link', to: 'project_origins#add_link', as: 'add_link'
         end
       end
     end

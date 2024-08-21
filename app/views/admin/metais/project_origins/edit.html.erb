@@ -87,8 +87,10 @@
     <div class="row mb-4">
       <div class="col-md-12">
         <h5>Dodávateľ projektu</h5>
-        <h6><%= form.label :supplier, "Dodávateľ" %></h6>
+        <h6 class="m-0"><%= form.label :supplier, "Dodávateľ" %></h6>
         <%= form.text_field :supplier, value: @project_info.supplier, class: "form-control"  %>
+        <h6 class="m-0 mt-3"><%= form.label :supplier, "IČO" %></h6>
+        <%= form.text_field :supplier_cin, value: @project_info.supplier_cin, class: "form-control", pattern: "^\d{6,8}$" %>
       </div>
     </div>
     <div class="form-group col-md-12 d-flex justify-content-end">
@@ -99,37 +101,6 @@
 
 <div class="container main">
   <div class="row mb-4">
-    <div class="col-md-12">
-    <h5>VO, CRZ, NFP</h5>
-    <table class="table w-100">
-      <thead>
-      <tr>
-        <th>Typ</th>
-        <th>Link</th>
-        <th>Akcia</th>
-      </tr>
-      </thead>
-      <tbody>
-      <% @all_suppliers.each do |supplier| %>
-        <tr>
-          <td><b><%= supplier.supplier_type.name if supplier.supplier_type.present? %></b></td>
-          <td><%= link_to supplier.name, supplier.value, class: "w-100" %></td>
-          <td>
-            <%= link_to 'Odstrániť', admin_metais_project_project_origin_remove_supplier_path(project_id: @project.id, project_origin_id: @project_origin.id, supplier_id: supplier.id), method: :delete, data: { confirm: 'Naozaj chcete item odstrániť?' } %>
-          </td>
-        </tr>
-      <% end %>
-      <tr>
-        <%= form_with(url: admin_metais_project_project_origin_add_supplier_path(project_id: @project.id, project_origin_id: @project_origin.id), method: :post, local: true) do |f| %>
-          <td><%= f.select 'supplier[supplier_type]', Metais::SupplierType.pluck(:name, :id), {}, {class: 'form-control'} %></td>
-          <td><%= f.text_field 'supplier[value]', class: "w-100 form-control" %></td>
-          <%= hidden_field_tag 'supplier[origin_type]', 'Human' %>
-          <td><%= f.submit 'Pridať', class: 'btn btn-primary' %></td>
-        <% end %>
-      </tr>
-      </tbody>
-    </table>
-  </div>
     <div class="col-md-12">
     <h5>Harmonogram</h5>
     <h6>Predpokladaný harmonogram</h6>
@@ -157,7 +128,7 @@
         <%= form_with(url: admin_metais_project_project_origin_add_event_path(project_id: @project.id, project_origin_id: @project_origin.id), method: :post, local: true) do |f| %>
           <td><%= f.text_field 'event[name]', class: "w-100 form-control" %></td>
           <td><%= f.text_field 'event[value]', class: "w-100 form-control" %></td>
-          <td><%= f.date_field 'event[date]' %></td>
+          <td><%= f.date_field 'event[date]', class: "form-control" %></td>
           <%= hidden_field_tag 'event[origin_type]', 'Human' %>
           <%= hidden_field_tag 'event[event_type]', 'Predpoklad' %>
           <td><%= f.submit 'Pridať', class: 'btn btn-primary' %></td>
@@ -190,9 +161,9 @@
         <% end %>
         <tr>
           <%= form_with(url: admin_metais_project_project_origin_add_event_path(project_id: @project.id, project_origin_id: @project_origin.id), method: :post, local: true) do |f| %>
-            <td><%= f.text_field 'event[name]', class: "w-100" %></td>
-            <td><%= f.text_field 'event[value]', class: "w-100" %></td>
-            <td><%= f.date_field 'event[date]' %></td>
+            <td><%= f.text_field 'event[name]', class: "w-100 form-control" %></td>
+            <td><%= f.text_field 'event[value]', class: "w-100 form-control" %></td>
+            <td><%= f.date_field 'event[date]', class: "form-control" %></td>
             <%= hidden_field_tag 'event[origin_type]', 'Human' %>
             <%= hidden_field_tag 'event[event_type]', 'Realita' %>
             <td><%= f.submit 'Pridať', class: 'btn btn-primary' %></td>
@@ -201,5 +172,90 @@
         </tbody>
       </table>
     </div>
+  </div>
+  <div class="col-md-12">
+    <h5>VO, CRZ, NFP</h5>
+    <table class="table w-100">
+      <thead>
+      <tr>
+        <th>Typ</th>
+        <th>Link</th>
+        <th>Akcia</th>
+      </tr>
+      </thead>
+      <tbody>
+      <% @all_suppliers.each do |supplier| %>
+        <tr>
+          <td><b><%= supplier.supplier_type.name if supplier.supplier_type.present? %></b></td>
+          <td><%= link_to supplier.name, supplier.value, class: "w-100" %></td>
+          <td>
+            <%= link_to 'Odstrániť', admin_metais_project_project_origin_remove_supplier_path(project_id: @project.id, project_origin_id: @project_origin.id, supplier_id: supplier.id), method: :delete, data: { confirm: 'Naozaj chcete item odstrániť?' } %>
+          </td>
+        </tr>
+      <% end %>
+      <tr>
+        <%= form_with(url: admin_metais_project_project_origin_add_supplier_path(project_id: @project.id, project_origin_id: @project_origin.id), method: :post, local: true) do |f| %>
+          <td><%= f.select 'supplier[supplier_type]', Metais::SupplierType.pluck(:name, :id), {}, {class: 'form-control'} %></td>
+          <td><%= f.text_field 'supplier[value]', class: "w-100 form-control" %></td>
+          <%= hidden_field_tag 'supplier[origin_type]', 'Human' %>
+          <td><%= f.submit 'Pridať', class: 'btn btn-primary' %></td>
+        <% end %>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="col-md-12 mt-5">
+    <h5>Dokumenty</h5>
+    <table class="table w-100">
+      <thead>
+      <tr>
+        <th>Názov</th>
+        <th>Link</th>
+        <th>Akcia</th>
+      </tr>
+      </thead>
+      <tbody>
+      <% @all_documents.each do |document| %>
+        <tr>
+          <td><b><%= document.name %></b></td>
+          <td><%= link_to document.value, document.value %></td>
+          <td>
+            <%= link_to 'Odstrániť', admin_metais_project_project_origin_remove_document_path(project_id: @project.id, project_origin_id: @project_origin.id, document_id: document.id), method: :delete, data: { confirm: 'Naozaj chcete item odstrániť?' } %>
+          </td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+  <div class="col-md-12 mt-5">
+    <h5>Linky</h5>
+    <table class="table w-100">
+      <thead>
+      <tr>
+        <th>Názov</th>
+        <th>Link</th>
+        <th>Akcia</th>
+      </tr>
+      </thead>
+      <tbody>
+      <% @all_links.each do |link| %>
+        <tr>
+          <td><b><%= link.name %></b></td>
+          <td><%= link_to link.value, link.value %></td>
+          <td>
+            <%= link_to 'Odstrániť', admin_metais_project_project_origin_remove_link_path(project_id: @project.id, project_origin_id: @project_origin.id, link_id: link.id), method: :delete, data: { confirm: 'Naozaj chcete item odstrániť?' } %>
+          </td>
+        </tr>
+      <% end %>
+      <tr>
+        <%= form_with(url: admin_metais_project_project_origin_add_link_path(project_id: @project.id, project_origin_id: @project_origin.id), method: :post, local: true) do |f| %>
+          <td><%= f.text_field 'link[name]', class: "w-100 form-control" %></td>
+          <td><%= f.text_field 'link[value]', class: "w-100 form-control" %></td>
+          <%= hidden_field_tag 'link[origin_type]', 'Human' %>
+          <td><%= f.submit 'Pridať', class: 'btn btn-primary' %></td>
+        <% end %>
+      </tr>
+      </tbody>
+    </table>
   </div>
 </div>

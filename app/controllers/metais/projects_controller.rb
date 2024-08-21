@@ -84,7 +84,7 @@ class Metais::ProjectsController < ApplicationController
     @project_origins.each do |project_origin|
       @all_suppliers.concat(project_origin.suppliers)
     end
-    @all_suppliers.sort_by! { |event| event.date || DateTime::Infinity.new }
+    @all_suppliers.sort_by! { |event| event.date || Time.zone.parse('2999-12-31')}
 
     @project_origin = @project.project_origins.first
     @project_origin = Metais::ProjectOrigin.includes(:documents, :suppliers).find(@project_origin.id)

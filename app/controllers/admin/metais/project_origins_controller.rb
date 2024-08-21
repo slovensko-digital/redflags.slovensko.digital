@@ -29,7 +29,17 @@ class Admin::Metais::ProjectOriginsController < ApplicationController
     @project_origins.each do |project_origin|
       @all_suppliers.concat(project_origin.suppliers)
     end
-    @all_suppliers.sort_by! { |event| event.date || DateTime::Infinity.new }
+    @all_suppliers.sort_by! { |event| event.date || Time.zone.parse('2999-12-31') }
+
+    @all_links = []
+    @project_origins.each do |project_origin|
+      @all_links.concat(project_origin.links)
+    end
+
+    @all_documents = []
+    @project_origins.each do |project_origin|
+      @all_documents.concat(project_origin.documents)
+    end
 
     @project_origin = Metais::ProjectOrigin.includes(:documents, :suppliers).find(@project_origin.id)
   end
@@ -87,6 +97,22 @@ class Admin::Metais::ProjectOriginsController < ApplicationController
     end
   end
 
+  def add_link
+    @project = Metais::Project.find(params[:project_id])
+    @project_origin = Metais::ProjectOrigin.find(params[:project_origin_id])
+
+    origin_type = Metais::OriginType.find_by(name: params[:link][:origin_type])
+
+    link_params = params.require(:link).permit(:name, :value).merge(origin_type: origin_type)
+    @link = @project_origin.links.create(link_params)
+
+    if @link.save
+      redirect_to edit_admin_metais_project_project_origin_path(project_id: @project.id, id: @project_origin.id), notice: 'Link bol úspešné pridaný.'
+    else
+      redirect_to edit_admin_metais_project_project_origin_path(project_id: @project.id, id: @project_origin.id), alert: 'Error encountered while creating an link: ' + @event.errors.full_messages.to_sentence
+    end
+  end
+
   def remove_event
     @project = Metais::Project.find(params[:project_id])
     @project_origin = Metais::ProjectOrigin.find(params[:project_origin_id])
@@ -103,9 +129,25 @@ class Admin::Metais::ProjectOriginsController < ApplicationController
     redirect_to edit_admin_metais_project_project_origin_path(project_id: @project.id, id: @project_origin.id), notice: 'Supplier bol úspešne odstránený.'
   end
 
+  def remove_link
+    @project = Metais::Project.find(params[:project_id])
+    @project_origin = Metais::ProjectOrigin.find(params[:project_origin_id])
+    @project_link = Metais::ProjectLink.find(params[:link_id])
+    @project_link.destroy
+    redirect_to edit_admin_metais_project_project_origin_path(project_id: @project.id, id: @project_origin.id), notice: 'Link bol úspešne odstránený.'
+  end
+
+  def remove_document
+    @project = Metais::Project.find(params[:project_id])
+    @project_origin = Metais::ProjectOrigin.find(params[:project_origin_id])
+    @project_document = Metais::ProjectDocument.find(params[:document_id])
+    @project_document.destroy
+    redirect_to edit_admin_metais_project_project_origin_path(project_id: @project.id, id: @project_origin.id), notice: 'Dokument bol úspešne odstránený.'
+  end
+
   private
 
   def project_origin_params
-    params.require(:metais_project_origin).permit(:title, :description, :guarantor, :project_manager, :start_date, :end_date, :status, :phase, :finance_source, :investment, :operation, :approved_investment, :approved_operation, :supplier, :targets_text, :documents_text, :links_text, project_events: [:name, :value, :date])
+    params.require(:metais_project_origin).permit(:title, :description, :guarantor, :project_manager, :start_date, :end_date, :status, :phase, :finance_source, :investment, :operation, :approved_investment, :approved_operation, :supplier, :supplier_cin, :targets_text, :documents_text, :links_text, project_events: [:name, :value, :date])
   end
 end

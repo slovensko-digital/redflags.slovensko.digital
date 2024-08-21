@@ -14,6 +14,7 @@ class Metais::SyncProjectJob < ApplicationJob
       project_origin.metais_created_at = metais_project.latest_version.metais_created_at
       project_origin.start_date = metais_project.latest_version.datum_zacatia
       project_origin.end_date = metais_project.latest_version.termin_ukoncenia
+      project_origin.status_change_date = metais_project.latest_version.zmena_stavu
 
       project_origin.finance_source = Datahub::Metais::CodelistProgram.find_by(uuid: metais_project.latest_version.program)&.nazov || metais_project.latest_version.program
       project_origin.investment = metais_project.latest_version.suma_vydavkov

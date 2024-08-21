@@ -216,7 +216,9 @@ CREATE TABLE metais.project_origins (
     phase character varying,
     approved_investment numeric(15,2),
     approved_operation numeric(15,2),
-    metais_created_at timestamp without time zone
+    metais_created_at timestamp without time zone,
+    status_change_date timestamp without time zone,
+    supplier_cin bigint
 );
 
 
@@ -604,6 +606,38 @@ CREATE TABLE public.projects (
 
 
 --
+-- Name: projects2; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.projects2 (
+    id bigint NOT NULL,
+    metais_project_id bigint NOT NULL,
+    evaluation_id bigint,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: projects2_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.projects2_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: projects2_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.projects2_id_seq OWNED BY public.projects2.id;
+
+
+--
 -- Name: projects_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -628,7 +662,7 @@ ALTER SEQUENCE public.projects_id_seq OWNED BY public.projects.id;
 
 CREATE TABLE public.que_jobs (
     priority smallint DEFAULT 100 NOT NULL,
-    run_at timestamp without time zone DEFAULT now() NOT NULL,
+    run_at timestamp with time zone DEFAULT now() NOT NULL,
     job_id bigint NOT NULL,
     job_class text NOT NULL,
     args json DEFAULT '[]'::json NOT NULL,
@@ -859,6 +893,13 @@ ALTER TABLE ONLY public.projects ALTER COLUMN id SET DEFAULT nextval('public.pro
 
 
 --
+-- Name: projects2 id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.projects2 ALTER COLUMN id SET DEFAULT nextval('public.projects2_id_seq'::regclass);
+
+
+--
 -- Name: que_jobs job_id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -1013,6 +1054,14 @@ ALTER TABLE ONLY public.phases
 
 ALTER TABLE ONLY public.project_stages
     ADD CONSTRAINT project_stages_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: projects2 projects2_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.projects2
+    ADD CONSTRAINT projects2_pkey PRIMARY KEY (id);
 
 
 --
@@ -1210,6 +1259,20 @@ CREATE INDEX index_phases_on_project_id ON public.phases USING btree (project_id
 
 
 --
+-- Name: index_projects2_on_evaluation_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_projects2_on_evaluation_id ON public.projects2 USING btree (evaluation_id);
+
+
+--
+-- Name: index_projects2_on_metais_project_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_projects2_on_metais_project_id ON public.projects2 USING btree (metais_project_id);
+
+
+--
 -- Name: index_revisions_on_page_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1335,19 +1398,19 @@ ALTER TABLE ONLY public.combined_projects
 
 
 --
+-- Name: projects2 fk_rails_167b3161dd; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.projects2
+    ADD CONSTRAINT fk_rails_167b3161dd FOREIGN KEY (evaluation_id) REFERENCES public.projects(id);
+
+
+--
 -- Name: combined_projects fk_rails_18e52e7275; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.combined_projects
     ADD CONSTRAINT fk_rails_18e52e7275 FOREIGN KEY (metais_project_id) REFERENCES metais.projects(id);
-
-
---
--- Name: phase_revisions fk_rails_290d0a047c; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.phase_revisions
-    ADD CONSTRAINT fk_rails_290d0a047c FOREIGN KEY (revision_id) REFERENCES public.revisions(id);
 
 
 --
@@ -1359,6 +1422,22 @@ ALTER TABLE ONLY public.phases
 
 
 --
+-- Name: phase_revision_ratings fk_rails_89f94d4743; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.phase_revision_ratings
+    ADD CONSTRAINT fk_rails_89f94d4743 FOREIGN KEY (phase_revision_id) REFERENCES public.phase_revisions(id);
+
+
+--
+-- Name: phase_revision_ratings fk_rails_8f89f5f94e; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.phase_revision_ratings
+    ADD CONSTRAINT fk_rails_8f89f5f94e FOREIGN KEY (rating_type_id) REFERENCES public.rating_types(id);
+
+
+--
 -- Name: pages fk_rails_9214ad0f21; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1367,11 +1446,19 @@ ALTER TABLE ONLY public.pages
 
 
 --
--- Name: phase_revision_ratings fk_rails_9a5c0eae42; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: phase_revisions fk_rails_9b7644f642; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.phase_revision_ratings
-    ADD CONSTRAINT fk_rails_9a5c0eae42 FOREIGN KEY (phase_revision_id) REFERENCES public.phase_revisions(id);
+ALTER TABLE ONLY public.phase_revisions
+    ADD CONSTRAINT fk_rails_9b7644f642 FOREIGN KEY (stage_id) REFERENCES public.project_stages(id);
+
+
+--
+-- Name: phase_revisions fk_rails_9bbd5a8be5; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.phase_revisions
+    ADD CONSTRAINT fk_rails_9bbd5a8be5 FOREIGN KEY (revision_id) REFERENCES public.revisions(id);
 
 
 --
@@ -1399,27 +1486,11 @@ ALTER TABLE ONLY public.revisions
 
 
 --
--- Name: phase_revision_ratings fk_rails_df4b31c2b5; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.phase_revision_ratings
-    ADD CONSTRAINT fk_rails_df4b31c2b5 FOREIGN KEY (rating_type_id) REFERENCES public.rating_types(id);
-
-
---
 -- Name: pages fk_rails_ee4b1c338f; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.pages
     ADD CONSTRAINT fk_rails_ee4b1c338f FOREIGN KEY (latest_revision_id) REFERENCES public.revisions(id);
-
-
---
--- Name: phase_revisions fk_rails_fb290ef702; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.phase_revisions
-    ADD CONSTRAINT fk_rails_fb290ef702 FOREIGN KEY (stage_id) REFERENCES public.project_stages(id);
 
 
 --
@@ -1481,8 +1552,11 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20240724072736'),
 ('20240730180654'),
 ('20240731124741'),
+('20240801081124'),
 ('20240820080110'),
 ('20240820080303'),
-('20240820193320');
+('20240820193320'),
+('20240821210736'),
+('20240821212620');
 
 

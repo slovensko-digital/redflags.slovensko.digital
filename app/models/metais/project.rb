@@ -16,7 +16,7 @@ class Metais::Project < ApplicationRecord
   def get_project_origin_info
     fields = %w[title status description guarantor project_manager start_date end_date
                 finance_source investment operation approved_investment approved_operation
-                supplier targets_text events_text documents_text links_text]
+                supplier supplier_cin targets_text events_text documents_text links_text]
 
     origins = self.project_origins.sort_by { |origin| -origin.origin_type_id }
 

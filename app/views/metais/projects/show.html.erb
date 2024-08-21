@@ -194,7 +194,7 @@
     <div class="col-md-12">
       <h5>Dodávateľ projektu</h5>
       <% if @project_info.supplier.present? %>
-        <p><b>Dodávateľ:</b> <a href="https://www.finstat.sk/00166197"><%= @project_info.supplier %></a> <%= image_tag origin_type_logo(@project_info.supplier.origin), style: "width: 16px; height: 16px; margin-left: 6px;" %></p>
+        <p><b>Dodávateľ:</b> <a href="https://www.finstat.sk/<%= @project_info.supplier_cin %>"><%= @project_info.supplier %></a> <%= image_tag origin_type_logo(@project_info.supplier.origin), style: "width: 16px; height: 16px; margin-left: 6px;" %></p>
       <% end %>
       <ul>
         <% @all_suppliers.each do |supplier| %>
