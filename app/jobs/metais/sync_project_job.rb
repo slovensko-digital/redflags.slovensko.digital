@@ -24,6 +24,7 @@ class Metais::SyncProjectJob < ApplicationJob
 
       project_origin.save!
 
+      Metais::ProjectDataExtractionJob.set(wait: 5.minutes).perform_later(metais_project.uuid)
       Metais::SyncProjectSuppliersJob.perform_later(project_origin, metais_project)
       Metais::SyncProjectDocumentsJob.perform_later(project_origin, metais_project)
       Metais::SyncProjectEventsJob.perform_later(project_origin, metais_project)

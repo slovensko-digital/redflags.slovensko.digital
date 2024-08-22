@@ -11,8 +11,8 @@ class Metais::SyncProjectEventsJob < ApplicationJob
         event_date = change.created_at
         event_name = Datahub::Metais::CodelistProjectState.find_by(code: change.new_value)&.nazov || change.new_value
         event_value = "Stav projektu bol zmenený z
-        #{Datahub::Metais::CodelistProjectState.find_by(code: change.old_value)&.nazov || change.new_value} na
-        #{Datahub::Metais::CodelistProjectState.find_by(code: change.new_value)&.nazov || change.new_value}"
+        #{Datahub::Metais::CodelistProjectState.find_by(code: change.old_value)&.nazov.downcase || change.new_value.downcase} na
+        #{Datahub::Metais::CodelistProjectState.find_by(code: change.new_value)&.nazov.downcase || change.new_value.downcase}"
 
         project_event = Metais::ProjectEvent.find_or_initialize_by(project_origin: project_origin,
                                                                    origin_type: origin_type,
@@ -26,8 +26,8 @@ class Metais::SyncProjectEventsJob < ApplicationJob
         event_date = change.created_at
         event_name = Datahub::Metais::CodelistProjectPhase.find_by(code: change.new_value)&.nazov || change.new_value
         event_value = "Fáza projektu bola zmenená z
-        #{Datahub::Metais::CodelistProjectPhase.find_by(code: change.old_value)&.nazov || change.old_value} na
-        #{Datahub::Metais::CodelistProjectPhase.find_by(code: change.new_value)&.nazov || change.new_value}"
+        #{Datahub::Metais::CodelistProjectPhase.find_by(code: change.old_value)&.nazov.downcase || change.old_value.downcase} na
+        #{Datahub::Metais::CodelistProjectPhase.find_by(code: change.new_value)&.nazov.downcase || change.new_value.downcase}"
 
         project_event = Metais::ProjectEvent.find_or_initialize_by(project_origin: project_origin,
                                                                    origin_type: origin_type,

@@ -10,7 +10,7 @@ class Metais::SyncProjectDocumentsJob < ApplicationJob
       project_document.name = document.latest_version.nazov
       project_document.filename = document.latest_version.filename
       project_document.value = 'https://metais.vicepremier.gov.sk/dms/file/' + document.uuid
-
+      project_document.description = "MetaIS"
       project_document.save!
     end
   end
