@@ -186,8 +186,8 @@
   <table class="table mt-4">
     <thead>
     <tr style="background-color: #f4f4f4">
-      <th colspan="8" class="table-price">Projekt</th>
-      <th class="table-price text-center tag-tooltip d-none d-md-table-cell" title="Investičná cena projektu">Cena</th>
+      <th colspan="8">Projekt</th>
+      <th class="text-center tag-tooltip d-none d-md-table-cell" title="Investičná cena projektu">Cena</th>
     </tr>
     </thead>
     <tbody>
@@ -195,7 +195,7 @@
       <tr>
         <td style="width: 22rem;" colspan="8">
           <div class="d-flex flex-column">
-            <%= link_to project.project_origins.first.title, metais_project_path(project), class: 'table-title-item'%>
+            <%= link_to project.project_origins.first.title, metais_project_path(project), class: 'table-title-item hover:text-primary' %>
             <div class="d-flex flex-row">
               <p class="mr-2 mb-0 tag-tooltip" title="Dátum poslednej zmeny projektu"><small>Dátum poslednej zmeny:</small></p>
               <%=
@@ -210,18 +210,16 @@
             </div>
             <div class="d-flex flex-column flex-md-row">
               <div class="col-12 col-md-7 d-flex flex-row align-items-center pl-0">
-                <p class="font-weight-bold mr-2 mb-0 tag-tooltip" title="Gestor štátného IT projektu">Gestor:</p>
                 <%=
                   if project.get_project_origin_info.guarantor.present?
-                    project.get_project_origin_info.guarantor
+                    content_tag(:span, project.get_project_origin_info.guarantor, class: "tag-tooltip", title: "Gestor štátného IT projektu")
                   else
-                    content_tag(:span, "Neuvedený", style: "color: grey;", class: "font-italic tag-tooltip", title: "Gestor projektu nie je známy")
+                    content_tag(:span, "Gestor neuvedený", style: "color: grey;", class: "font-italic tag-tooltip", title: "Gestor projektu nie je známy")
                   end
                 %>
               </div>
 
               <div class="col-12 col-md-5 d-flex flex-row align-items-center pl-0">
-                <p class="font-weight-bold mr-2 mb-0 tag-tooltip" title="Stav, v ktorom sa projekt nachádza">Stav:</p>
                 <%
                   status = project.get_project_origin_info.status&.strip
                   status_class = case status
@@ -257,9 +255,9 @@
                 %>
                   <%=
                     if status.present?
-                      content_tag(:span, status, class: "state-badge #{status_class}")
+                      content_tag(:span, status, class: "state-badge #{status_class} tag-tooltip", title: "Stav, v ktorom sa projekt nachádza")
                     else
-                      content_tag(:span, "Neuvedený", style: "color: grey;", class: "font-italic tag-tooltip", title: "Stav a fáza projektu nie sú známe")
+                      content_tag(:span, "Stav neuvedený", style: "color: grey;", class: "font-italic tag-tooltip", title: "Stav a fáza projektu nie sú známe")
                     end
                   %>
               </div>
@@ -278,7 +276,7 @@
             </div>
           </div>
         </td>
-        <td colspan="4" class="table-price text-center align-middle d-none d-md-table-cell">
+        <td colspan="4" class="text-center align-middle d-none d-md-table-cell">
           <%=
             if project.get_project_origin_info.approved_investment.present? && project.get_project_origin_info.approved_investment > 0
               number_to_currency(project.get_project_origin_info.approved_investment, unit: "€", separator: ",", delimiter: " ", format: "%n %u")

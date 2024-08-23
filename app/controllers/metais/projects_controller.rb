@@ -86,6 +86,14 @@ class Metais::ProjectsController < ApplicationController
     end
     @all_suppliers.sort_by! { |event| event.date || Time.zone.parse('2999-12-31')}
 
+    @all_links = []
+    @project_origins.each do |project_origin|
+      @all_links.concat(project_origin.links)
+    end
+
+    @all_documents = @project_origins.flat_map(&:documents)
+    @documents_grouped_by_description = @all_documents.group_by(&:description)
+
     @project_origin = @project.project_origins.first
     @project_origin = Metais::ProjectOrigin.includes(:documents, :suppliers).find(@project_origin.id)
   end

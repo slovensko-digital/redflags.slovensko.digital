@@ -211,6 +211,7 @@
       <tr>
         <th>Názov</th>
         <th>Link</th>
+        <th>Popis</th>
         <th>Akcia</th>
       </tr>
       </thead>
@@ -219,11 +220,21 @@
         <tr>
           <td><b><%= document.name %></b></td>
           <td><%= link_to document.value, document.value %></td>
+          <td><%= document.description %></td>
           <td>
             <%= link_to 'Odstrániť', admin_metais_project_project_origin_remove_document_path(project_id: @project.id, project_origin_id: @project_origin.id, document_id: document.id), method: :delete, data: { confirm: 'Naozaj chcete item odstrániť?' } %>
           </td>
         </tr>
       <% end %>
+      <tr>
+        <%= form_with(url: admin_metais_project_project_origin_add_document_path(project_id: @project.id, project_origin_id: @project_origin.id), method: :post, local: true) do |f| %>
+          <td><%= f.text_field 'document[name]', class: "form-control" %></td>
+          <td><%= f.text_field 'document[value]', class: "form-control" %></td>
+          <td><%= f.text_field 'document[description]', class: "form-control" %></td>
+          <%= hidden_field_tag 'document[origin_type]', 'Human' %>
+          <td><%= f.submit 'Pridať', class: 'btn btn-primary' %></td>
+        <% end %>
+      </tr>
       </tbody>
     </table>
   </div>

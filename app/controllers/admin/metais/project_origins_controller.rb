@@ -113,6 +113,22 @@ class Admin::Metais::ProjectOriginsController < ApplicationController
     end
   end
 
+  def add_document
+    @project = Metais::Project.find(params[:project_id])
+    @project_origin = Metais::ProjectOrigin.find(params[:project_origin_id])
+
+    origin_type = Metais::OriginType.find_by(name: params[:document][:origin_type])
+
+    document_params = params.require(:document).permit(:name, :value, :description).merge(origin_type: origin_type)
+    @document = @project_origin.documents.create(document_params)
+
+    if @document.save
+      redirect_to edit_admin_metais_project_project_origin_path(project_id: @project.id, id: @project_origin.id), notice: 'Dokument bol úspešné pridaný.'
+    else
+      redirect_to edit_admin_metais_project_project_origin_path(project_id: @project.id, id: @project_origin.id), alert: 'Error encountered while creating an document: ' + @event.errors.full_messages.to_sentence
+    end
+  end
+
   def remove_event
     @project = Metais::Project.find(params[:project_id])
     @project_origin = Metais::ProjectOrigin.find(params[:project_origin_id])

@@ -24,6 +24,8 @@ h1, h2, h3, h4, h5, h6 {
 
 .table-title-item, .table-price {
   font-family: $headings-font-family;
+  text-decoration: underline;
+  color: $black;
 }
 
 #filterForm.collapsing {

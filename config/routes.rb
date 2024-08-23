@@ -38,6 +38,7 @@ Rails.application.routes.draw do
           post 'add_event', to: 'project_origins#add_event', as: 'add_event'
           post 'add_supplier', to: 'project_origins#add_supplier', as: 'add_supplier'
           post 'add_link', to: 'project_origins#add_link', as: 'add_link'
+          post 'add_document', to: 'project_origins#add_document', as: 'add_document'
         end
       end
     end

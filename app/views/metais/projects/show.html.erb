@@ -214,16 +214,20 @@
       <% if @project_info.documents_text.present? %>
         <p><%= @project_info.documents_text %></p>
       <% end %>
-      <ul>
-        <% @project_origin.documents.each do |doc| %>
-          <li>
-            <%= image_tag origin_type_logo(doc.origin_type), style: "width: 12px; height: 12px;" if doc.origin_type.present? %>
-            <%= link_to doc.name, doc.value %>
-          </li>
-        <% end %>
-      </ul>
+      <% @documents_grouped_by_description.each do |description, documents| %>
+        <p class="mb-0"><%= description %></p>
+        <ul>
+          <% documents.each do |doc| %>
+            <li>
+              <%= image_tag origin_type_logo(doc.origin_type), style: "width: 12px; height: 12px;" if doc.origin_type.present? %>
+              <%= link_to doc.name, doc.value %>
+            </li>
+          <% end %>
+        </ul>
+      <% end %>
     </div>
   </div>
+
 
   <div class="row mb-4">
     <div class="col-md-12">
@@ -232,7 +236,7 @@
         <p><%= @project_info.links_text %></p>
       <% end %>
       <ul>
-        <% @project_origin.links.each do |link| %>
+        <% @all_links.each do |link| %>
           <li>
             <%= image_tag origin_type_logo(link.origin_type), style: "width: 12px; height: 12px;" if link.origin_type.present? %>
             <%= link_to link.name, link.value %>
