@@ -30,9 +30,12 @@ class SyncAllTopicsJob < ApplicationJob
     product_document_id = row[indices["ID draft produktu"]]
     product_page_id = row[indices["ID produktu"]]
 
-    project = Project.find_by(id: project_id)
-    project.metais_code = project_metais_code
-    project.save!
+
+    if project_metais_code.present?
+      project = Project.find_by(id: project_id)
+      project.metais_code = project_metais_code
+      project.save!
+    end
 
     if sync_all
       process_row_for_sync_all(project_name, project_id, platform_link, preparation_document_id, preparation_page_id, product_document_id, product_page_id)

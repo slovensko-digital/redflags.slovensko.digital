@@ -7,8 +7,6 @@ class Metais::SyncProjectSuppliersJob < ApplicationJob
   ORIGIN_TYPE = Metais::OriginType.find_by(name: 'MetaIS')
 
   def perform(project_origin, metais_project)
-    puts "Start"
-
     if metais_project.latest_version.link_nfp.present?
       supplier_type = Metais::SupplierType.find_by(name: "NFP")
 
