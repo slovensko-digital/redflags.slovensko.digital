@@ -2,15 +2,13 @@ class LinkMetaisProjectsAndEvaluationsJob < ApplicationJob
   queue_as :default
 
   def perform
-    Metais::Project.find_each do |metais_project|
-      code = metais_project.code
+    Project.find_each do |project|
+      code = project.metais_code
+      metais_project = Metais::Project.find_by(code: code)
 
-      evaluation = Project.find_by(metais_code: code)
-
-      CombinedProject.create!(
-        evaluation: evaluation,
-        metais_project: metais_project
-      )
+      if metais_project.present?
+        project.metais_projects << metais_project
+      end
     end
   end
 end

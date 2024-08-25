@@ -35,13 +35,14 @@ class Metais::ProjectsController < ApplicationController
     end
 
     if params[:has_evaluation].present?
-      @projects = @projects.joins(:combined_projects)
-
-      if params[:has_evaluation] == 'yes'
-        @projects = @projects.where.not(combined_projects: { evaluation_id: nil })
-      elsif params[:has_evaluation] == 'no'
-        @projects = @projects.where(combined_projects: { evaluation_id: nil })
-      end
+      @projects = Metais::Project.where(id: @projects.select { |project|
+        evaluations = project.evaluations
+        if params[:has_evaluation] == 'yes'
+          evaluations.exists?
+        else
+          evaluations.empty?
+        end
+      }.map(&:id))
     end
 
     case params[:sort]
@@ -67,7 +68,6 @@ class Metais::ProjectsController < ApplicationController
 
   def show
     @project = Metais::Project.find(params[:id])
-    @combined_project = CombinedProject.find_by(metais_project_id: @project.id)
     @project_info = @project.get_project_origin_info
     @project_origins = @project.project_origins
 

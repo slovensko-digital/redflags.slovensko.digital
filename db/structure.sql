@@ -355,38 +355,6 @@ CREATE TABLE public.ar_internal_metadata (
 
 
 --
--- Name: combined_projects; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.combined_projects (
-    id bigint NOT NULL,
-    metais_project_id bigint NOT NULL,
-    evaluation_id bigint,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
-);
-
-
---
--- Name: combined_projects_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.combined_projects_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: combined_projects_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.combined_projects_id_seq OWNED BY public.combined_projects.id;
-
-
---
 -- Name: pages; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -659,6 +627,16 @@ ALTER SEQUENCE public.projects_id_seq OWNED BY public.projects.id;
 
 
 --
+-- Name: projects_metais_projects; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.projects_metais_projects (
+    project_id bigint,
+    metais_project_id bigint
+);
+
+
+--
 -- Name: que_jobs; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -839,13 +817,6 @@ ALTER TABLE ONLY metais.supplier_types ALTER COLUMN id SET DEFAULT nextval('meta
 
 
 --
--- Name: combined_projects id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.combined_projects ALTER COLUMN id SET DEFAULT nextval('public.combined_projects_id_seq'::regclass);
-
-
---
 -- Name: pages id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -1000,14 +971,6 @@ ALTER TABLE ONLY metais.supplier_types
 
 ALTER TABLE ONLY public.ar_internal_metadata
     ADD CONSTRAINT ar_internal_metadata_pkey PRIMARY KEY (key);
-
-
---
--- Name: combined_projects combined_projects_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.combined_projects
-    ADD CONSTRAINT combined_projects_pkey PRIMARY KEY (id);
 
 
 --
@@ -1191,20 +1154,6 @@ CREATE INDEX "index_metais.project_suppliers_on_supplier_type_id" ON metais.proj
 
 
 --
--- Name: index_combined_projects_on_evaluation_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_combined_projects_on_evaluation_id ON public.combined_projects USING btree (evaluation_id);
-
-
---
--- Name: index_combined_projects_on_metais_project_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_combined_projects_on_metais_project_id ON public.combined_projects USING btree (metais_project_id);
-
-
---
 -- Name: index_pages_on_phase_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1272,6 +1221,20 @@ CREATE INDEX index_projects2_on_evaluation_id ON public.projects2 USING btree (e
 --
 
 CREATE INDEX index_projects2_on_metais_project_id ON public.projects2 USING btree (metais_project_id);
+
+
+--
+-- Name: index_projects_metais_projects_on_metais_project_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_projects_metais_projects_on_metais_project_id ON public.projects_metais_projects USING btree (metais_project_id);
+
+
+--
+-- Name: index_projects_metais_projects_on_project_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_projects_metais_projects_on_project_id ON public.projects_metais_projects USING btree (project_id);
 
 
 --
@@ -1392,14 +1355,6 @@ ALTER TABLE ONLY metais.project_events
 
 
 --
--- Name: combined_projects fk_rails_0d08d8ab66; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.combined_projects
-    ADD CONSTRAINT fk_rails_0d08d8ab66 FOREIGN KEY (evaluation_id) REFERENCES public.projects(id);
-
-
---
 -- Name: projects2 fk_rails_167b3161dd; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1408,11 +1363,11 @@ ALTER TABLE ONLY public.projects2
 
 
 --
--- Name: combined_projects fk_rails_18e52e7275; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: projects_metais_projects fk_rails_747f5e41f3; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.combined_projects
-    ADD CONSTRAINT fk_rails_18e52e7275 FOREIGN KEY (metais_project_id) REFERENCES metais.projects(id);
+ALTER TABLE ONLY public.projects_metais_projects
+    ADD CONSTRAINT fk_rails_747f5e41f3 FOREIGN KEY (project_id) REFERENCES public.projects(id);
 
 
 --
@@ -1421,6 +1376,14 @@ ALTER TABLE ONLY public.combined_projects
 
 ALTER TABLE ONLY public.phases
     ADD CONSTRAINT fk_rails_7768cfc98c FOREIGN KEY (phase_type_id) REFERENCES public.phase_types(id);
+
+
+--
+-- Name: projects_metais_projects fk_rails_7d4b01aec6; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.projects_metais_projects
+    ADD CONSTRAINT fk_rails_7d4b01aec6 FOREIGN KEY (metais_project_id) REFERENCES metais.projects(id);
 
 
 --
@@ -1557,11 +1520,9 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20240801081124'),
 ('20240820080110'),
 ('20240820080303'),
-('20240820193320'),
 ('20240821210736'),
 ('20240821212620'),
 ('20240822112026'),
 ('20240822143116'),
-('20240823082322');
-
-
+('20240823082322'),
+('20240825111806');

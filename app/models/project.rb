@@ -9,7 +9,10 @@
 
 class Project < ApplicationRecord
   has_many :phases
-  has_many :combined_projects, class_name: 'CombinedProject', foreign_key: 'evaluation_id'
+  has_and_belongs_to_many :metais_projects, class_name: 'Metais::Project',
+                                                             join_table: 'public.projects_metais_projects',
+                                                             foreign_key: 'project_id',
+                                                             association_foreign_key: 'metais_project_id'
 
   def has_published_phases?
     phases.any? { |phase| phase.published_revision.present? }

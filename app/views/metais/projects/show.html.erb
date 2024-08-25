@@ -80,36 +80,40 @@
     </div>
   </div>
 
-  <% if @combined_project&.evaluation&.phases.present? %>
-    <% @combined_project.evaluation.phases.each do |phase| %>
-      <% if phase.published_revision.present? %>
-        <hr class="mt-0 mb-4">
-        <% if phase.phase_type.name == 'Prípravná fáza' %>
-          <h5><%= link_to 'Hodnotenie prípravnej fázy', project_show_revision_type_path(phase.project.id, 'hodnotenie-pripravy')%></h5>
-        <% else %>
-          <h5><%= link_to 'Hodnotenie fázy produkt', project_show_revision_type_path(phase.project.id, 'hodnotenie-produkt')%></h5>
-        <% end %>
-        <div class="row mb-4">
-          <div class="col-md-12">
-            <% if phase.published_revision.summary.present? %>
-              <div class="row mb-3">
-                <div class="col">
-                  <h5>Zhrnutie hodnotenia Red Flags</h5>
-                  <p class="mb-4"><%= phase.published_revision.summary %></p>
-                </div>
-              </div>
+  <% if @project.evaluations.present? %>
+    <% @project.evaluations.each do |evaluation| %>
+      <% if evaluation.phases.present? %>
+        <% evaluation.phases.each do |phase| %>
+          <% if phase.published_revision.present? %>
+            <hr class="mt-0 mb-4">
+            <% if phase.phase_type.name == 'Prípravná fáza' %>
+              <h5><%= link_to 'Hodnotenie prípravnej fázy', project_show_revision_type_path(phase.project.id, 'hodnotenie-pripravy')%></h5>
+            <% else %>
+              <h5><%= link_to 'Hodnotenie fázy produkt', project_show_revision_type_path(phase.project.id, 'hodnotenie-produkt')%></h5>
             <% end %>
+            <div class="row mb-4">
+              <div class="col-md-12">
+                <% if phase.published_revision.summary.present? %>
+                  <div class="row mb-3">
+                    <div class="col">
+                      <h5>Zhrnutie hodnotenia Red Flags</h5>
+                      <p class="mb-4"><%= phase.published_revision.summary %></p>
+                    </div>
+                  </div>
+                <% end %>
 
-            <% if phase.published_revision.recommendation.present? %>
-              <div class="card mb-4 text-white <%= phase.published_revision.redflags_count.zero? ? 'bg-secondary' : 'bg-danger' %>">
-                <div class="card-body">
-                  <h5 class="card-title">Stanovisko Slovensko.Digital</h5>
-                  <p class="card-text"><%= phase.published_revision.recommendation %></p>
-                </div>
+                <% if phase.published_revision.recommendation.present? %>
+                  <div class="card mb-4 text-white <%= phase.published_revision.redflags_count.zero? ? 'bg-secondary' : 'bg-danger' %>">
+                    <div class="card-body">
+                      <h5 class="card-title">Stanovisko Slovensko.Digital</h5>
+                      <p class="card-text"><%= phase.published_revision.recommendation %></p>
+                    </div>
+                  </div>
+                <% end %>
               </div>
-            <% end %>
-          </div>
-        </div>
+            </div>
+          <% end %>
+        <% end %>
       <% end %>
     <% end %>
   <% end %>

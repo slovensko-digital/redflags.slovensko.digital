@@ -159,22 +159,22 @@
                 <%= 'Hodnotenie?' %>
               </button>
               <div class="dropdown-menu" aria-labelledby="dropdownMenuButton5" style="width: 250px;">
-                  <% yes_count = Metais::Project.joins(:combined_projects).where.not(combined_projects: { evaluation_id: nil }).distinct.count %>
-                  <a class="dropdown-item d-flex flex-column" href="#" onclick="document.getElementById('has_evaluation').value='yes'; document.getElementById('form').submit();">
-                    <strong>Áno</strong>
-                    <span class="text-muted"><%= "#{yes_count} projektov" %></span>
-                  </a>
-                 <% no_count = Metais::Project.joins(:combined_projects).where(combined_projects: { evaluation_id: nil }).distinct.count %>
-                  <a class="dropdown-item d-flex flex-column" href="#" onclick="document.getElementById('has_evaluation').value='no'; document.getElementById('form').submit();">
-                    <strong>Nie</strong>
-                    <span class="text-muted"><%= "#{no_count} projektov" %></span>
-                  </a>
+                <% yes_count = Metais::Project.all.select { |proj| proj.evaluations.any? }.count %>
+                <a class="dropdown-item d-flex flex-column" href="#" onclick="document.getElementById('has_evaluation').value='yes'; document.getElementById('form').submit();">
+                  <strong>Áno</strong>
+                  <span class="text-muted"><%= "#{yes_count} projektov" %></span>
+                </a>
+                <% no_count = Metais::Project.all.select { |proj| proj.evaluations.empty? }.count %>
+                <a class="dropdown-item d-flex flex-column" href="#" onclick="document.getElementById('has_evaluation').value='no'; document.getElementById('form').submit();">
+                  <strong>Nie</strong>
+                  <span class="text-muted"><%= "#{no_count} projektov" %></span>
+                </a>
 
-                  <div class="dropdown-divider my-2"></div>
+                <div class="dropdown-divider my-2"></div>
 
-                  <a class="dropdown-item d-flex flex-column" href="#" onclick="document.getElementById('has_evaluation').value=''; document.getElementById('form').submit();">
-                    <strong>Všetky projekty</strong>
-                  </a>
+                <a class="dropdown-item d-flex flex-column" href="#" onclick="document.getElementById('has_evaluation').value=''; document.getElementById('form').submit();">
+                  <strong>Všetky projekty</strong>
+                </a>
               </div>
             </div>
           </div>

@@ -10,8 +10,16 @@
 class Metais::Project < ApplicationRecord
   self.table_name = "metais.projects"
 
-  has_many :combined_projects, class_name: 'CombinedProject', foreign_key: 'metais_project_id'
   has_many :project_origins, :class_name => 'Metais::ProjectOrigin'
+  has_and_belongs_to_many :projects, class_name: 'Project',
+                                                      join_table: 'public.projects_metais_projects',
+                                                      foreign_key: 'metais_project_id',
+                                                      association_foreign_key: 'project_id'
+
+  def evaluations
+    ::Project.joins(:metais_projects)
+           .where('projects_metais_projects.metais_project_id = ?', self.id)
+  end
 
   def get_project_origin_info
     fields = %w[title status description guarantor project_manager start_date end_date

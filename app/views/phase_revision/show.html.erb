@@ -74,15 +74,15 @@
     </div>
   </div>
 
-  <% if @combined_project.present? %>
-    <div class="row mb-4">
-      <div class="col-md-12">
-        <h5>Viac o projekte</h5>
-        <% if @combined_project&.metais_project.present? %>
-          <%= link_to @combined_project.metais_project.get_project_origin_info.title, metais_project_path(@combined_project.metais_project) %>
-        <% end %>
+  <% if @project.metais_projects.present? %>
+    <% @project.metais_projects.each do |metais_project| %>
+      <div class="row mb-4">
+        <div class="col-md-12">
+          <h5>Viac o projekte</h5>
+          <%= link_to metais_project.get_project_origin_info.title, metais_project_path(metais_project) %>
+        </div>
       </div>
-    </div>
+    <% end %>
   <% end %>
 
   <div class="mt-5">

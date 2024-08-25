@@ -15,15 +15,6 @@ ActiveRecord::Schema.define(version: 20240820193320) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "combined_projects", force: :cascade do |t|
-    t.bigint "metais_project_id", null: false
-    t.bigint "evaluation_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["evaluation_id"], name: "index_combined_projects_on_evaluation_id"
-    t.index ["metais_project_id"], name: "index_combined_projects_on_metais_project_id"
-  end
-
   create_table "pages", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -127,8 +118,6 @@ ActiveRecord::Schema.define(version: 20240820193320) do
     t.index ["tags"], name: "index_revisions_on_tags", using: :gin
   end
 
-  add_foreign_key "combined_projects", "metais.projects", column: "metais_project_id"
-  add_foreign_key "combined_projects", "projects", column: "evaluation_id"
   add_foreign_key "pages", "phases"
   add_foreign_key "pages", "revisions", column: "latest_revision_id"
   add_foreign_key "pages", "revisions", column: "published_revision_id"
