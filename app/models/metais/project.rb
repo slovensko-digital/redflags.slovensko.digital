@@ -8,8 +8,6 @@
 #  updated_at            :datetime         not null
 
 class Metais::Project < ApplicationRecord
-  self.table_name = "metais.projects"
-
   has_many :project_origins, :class_name => 'Metais::ProjectOrigin'
   has_and_belongs_to_many :projects, class_name: 'Project',
                                                       join_table: 'public.projects_metais_projects',

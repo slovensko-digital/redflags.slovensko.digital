@@ -8,5 +8,4 @@
 #  updated_at            :datetime         not null
 
 class Metais::SupplierType < ApplicationRecord
-  self.table_name = "metais.supplier_types"
 end

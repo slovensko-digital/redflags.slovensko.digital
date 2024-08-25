@@ -8,5 +8,4 @@
 #  updated_at            :datetime         not null
 
 class Metais::OriginType < ApplicationRecord
-  self.table_name = "metais.origin_types"
 end

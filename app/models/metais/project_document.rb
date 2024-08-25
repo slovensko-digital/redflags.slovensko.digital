@@ -9,8 +9,6 @@
 #  updated_at            :datetime         not null
 
 class Metais::ProjectDocument < ApplicationRecord
-  self.table_name = "metais.project_documents"
-
   belongs_to :project_origin, class_name: 'Metais::ProjectOrigin'
   belongs_to :origin_type, class_name: 'Metais::OriginType'
 end

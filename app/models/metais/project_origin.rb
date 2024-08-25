@@ -39,8 +39,6 @@
 #  fk_metais_project_origins_origin_type_id   (origin_type_id => metais.origin_types.id)
 
 class Metais::ProjectOrigin < ApplicationRecord
-  self.table_name = "metais.project_origins"
-
   belongs_to :project, :class_name => 'Metais::Project'
   belongs_to :origin_type, :class_name => 'Metais::OriginType'
 
