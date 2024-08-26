@@ -74,6 +74,13 @@ class Admin::Metais::ProjectsController < AdminController
     redirect_to edit_admin_metais_project_project_origin_path(@project, human_origin)
   end
 
+  def run_ai_extraction
+    @project = Metais::Project.find(params[:id])
+    Metais::ProjectDataExtractionJob.perform_later(@project.uuid)
+
+    redirect_to admin_metais_project_path @project
+  end
+
   private
 
   def filtering_params_present?

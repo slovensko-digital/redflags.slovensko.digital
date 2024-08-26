@@ -18,6 +18,9 @@
     <%= button_to 'Create Human Origin', create_human_origin_admin_metais_project_path(@project), method: :post, class: 'btn btn-primary' %>
   <% end %>
 </div>
+<div class="d-flex justify-content-start mb-4">
+  <%= button_to 'Perform AI Extraction', run_ai_extraction_admin_metais_project_path(@project), method: :post, class: 'btn btn-secondary', data: { confirm: 'Naozaj chcete dať dokument spracovať AI? Ak ste už pred chvíľou raz spustili spracovanie, počkajte na výsledok, nespúšťajte ďalší pokus.' } %>
+</div>
 
 <table class="table table-striped table-sm">
   <thead>

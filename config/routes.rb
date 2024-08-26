@@ -31,6 +31,7 @@ Rails.application.routes.draw do
     namespace :metais do
       resources :projects do
         post :create_human_origin, on: :member
+        post :run_ai_extraction, on: :member
 
         resources :project_origins, only: [:edit, :update, :create] do
           delete 'remove_event/:event_id', to: 'project_origins#remove_event', as: 'remove_event'
