@@ -5,6 +5,9 @@ Que::Web.use(Rack::Auth::Basic) do |username, password|
 end
 
 Rails.application.routes.draw do
+  get 'projekty/:id', to: redirect('/hodnotenia/%{id}/hodnotenie-pripravy')
+  get 'projekty/:id/hodnotenie-pripravy', to: redirect('/hodnotenia/%{id}/hodnotenie-pripravy')
+
   resources :projects, path: 'hodnotenia' do
     get ':revision_type/verzia/:version', to: 'phase_revision#show_history', as: 'show_history'
     get ':revision_type', to: 'phase_revision#show', as: 'show_revision_type'
