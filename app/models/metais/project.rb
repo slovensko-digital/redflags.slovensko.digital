@@ -15,12 +15,14 @@ class Metais::Project < ApplicationRecord
                                                       association_foreign_key: 'project_id'
 
   def evaluations
-    ::Project.joins(:metais_projects)
-           .where('projects_metais_projects.metais_project_id = ?', self.id)
+    ::Project.joins('''
+    INNER JOIN "public"."projects_metais_projects" ON "public"."projects_metais_projects"."project_id" = "projects"."id"
+    INNER JOIN "metais"."projects" AS "metais_projects" ON "metais_projects"."id" = "public"."projects_metais_projects"."metais_project_id"
+    ''').where('projects_metais_projects.metais_project_id = ?', self.id)
   end
 
   def get_project_origin_info
-    fields = %w[title status description guarantor project_manager start_date end_date
+    fields = %w[title status phase description guarantor project_manager start_date end_date
                 finance_source investment operation approved_investment approved_operation
                 supplier supplier_cin targets_text events_text documents_text links_text]
 

@@ -27,7 +27,7 @@ staging:
 
 staging_datahub:
   <<: *default
-  database: <%= ENV['DATAHUB_DATABASE_URL'] %>
+  url: <%= ENV['DATAHUB_DATABASE_URL'] %>
   replica: true
 
 production:
@@ -36,5 +36,5 @@ production:
 
 production_datahub:
   <<: *default
-  database: <%= ENV['DATAHUB_DATABASE_URL'] %>
+  url: <%= ENV['DATAHUB_DATABASE_URL'] %>
   replica: true

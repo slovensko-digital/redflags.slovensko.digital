@@ -109,12 +109,12 @@ img.emoji {
 }
 
 .accordion:after {
-  color: $blue;
+  color: $black;
   font-size: medium;
   text-decoration: underline;
-  content: "Schovať";
+  content: "Schovať hodnotené kritériá";
 }
 
 .accordion.collapsed:after {
-  content: "Zobraziť";
+  content: "Zobraziť hodnotené kritériá";
 }

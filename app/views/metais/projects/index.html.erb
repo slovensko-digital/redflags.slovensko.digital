@@ -185,7 +185,7 @@
 
   <table class="table mt-4">
     <thead>
-    <tr style="background-color: #f4f4f4">
+    <tr>
       <th colspan="8">Projekt</th>
       <th class="text-center tag-tooltip d-none d-md-table-cell" title="Investičná cena projektu">Cena</th>
     </tr>
@@ -195,19 +195,18 @@
       <tr>
         <td style="width: 22rem;" colspan="8">
           <div class="d-flex flex-column">
-            <%= link_to project.project_origins.first.title, metais_project_path(project), class: 'table-title-item hover:text-primary' %>
-            <div class="d-flex flex-row">
-              <p class="mr-2 mb-0 tag-tooltip" title="Dátum poslednej zmeny projektu"><small>Dátum poslednej zmeny:</small></p>
-              <%=
-                content_tag(:p) do
-                  if project.updated_at.present?
-                    content_tag(:small, l(project.updated_at.in_time_zone('Europe/Bratislava'), format: "%d.%m.%Y"), class: "font-italic")
-                  else
-                    content_tag(:small, "Neuvedená", style: "color: grey;", class: "font-italic tag-tooltip", title: "Dátum poslednej zmeny projektu nie je známy")
-                  end
-                end
-              %>
-            </div>
+            <%= link_to project.project_origins.first.title, metais_project_path(project), class: 'table-title-item mb-4 hover:text-primary' %>
+              <div class="col-12 col-md-7 mb-4 d-flex flex-row align-items-center pl-0">
+                <p class="mr-2 mb-0 tag-tooltip" title="Dátum poslednej zmeny projektu"><small>Dátum poslednej zmeny:</small>
+                  <%=
+                    if project.updated_at.present?
+                      content_tag(:small, l(project.updated_at.in_time_zone('Europe/Bratislava'), format: "%d.%m.%Y"), class: "font-italic")
+                    else
+                      content_tag(:small, "Neuvedená", style: "color: grey;", class: "font-italic tag-tooltip", title: "Dátum poslednej zmeny projektu nie je známy")
+                    end
+                  %>
+                </p>
+              </div>
             <div class="d-flex flex-column flex-md-row">
               <div class="col-12 col-md-7 d-flex flex-row align-items-center pl-0">
                 <%=
@@ -276,7 +275,7 @@
             </div>
           </div>
         </td>
-        <td colspan="4" class="text-center align-middle d-none d-md-table-cell">
+        <td colspan="4" class="text-center align-middle table-price d-none d-md-table-cell">
           <%=
             if project.get_project_origin_info.approved_investment.present? && project.get_project_origin_info.approved_investment > 0
               number_to_currency(project.get_project_origin_info.approved_investment, unit: "€", separator: ",", delimiter: " ", format: "%n %u")

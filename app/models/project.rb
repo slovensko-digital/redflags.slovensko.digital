@@ -21,11 +21,6 @@ class Project < ApplicationRecord
   def self.filtered_projects(selected_tag, sort_param)
 
     case sort_param
-    when 'newest'
-      projects = Project.joins(phases: :published_revision)
-                         .select('projects.*, MAX(phase_revisions.published_at) AS newest_published_at')
-                         .group('projects.id')
-                         .order('newest_published_at DESC')
     when 'oldest'
       projects = Project.joins(phases: :published_revision)
                          .select('projects.*, MIN(phase_revisions.published_at) AS oldest_published_at')
@@ -70,18 +65,11 @@ class Project < ApplicationRecord
         phase_prep ? (phase_prep.published_revision.aggregated_rating) : 0
       end
     else
+    # when 'newest'
       projects = Project.joins(phases: :published_revision)
-                        .distinct
-
-      if ProjectsHelper::ALLOWED_TAGS.keys.include?(selected_tag)
-        projects = Project.joins(phases: :published_revision)
-                          .where(phase_revisions: { tags: selected_tag })
-      end
-
-      projects = projects.sort_by do |project|
-        max_rating = project.phases.map { |p| p.published_revision&.aggregated_rating }.compact.max
-        max_rating
-      end
+                         .select('projects.*, MAX(phase_revisions.published_at) AS newest_published_at')
+                         .group('projects.id')
+                         .order('newest_published_at DESC')
     end
 
     projects
