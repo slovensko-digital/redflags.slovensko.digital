@@ -12,7 +12,7 @@ class Metais::ProjectDataExtractionResultJob < ApplicationJob
     handle_response_errors(response)
 
     body = parse_json(response.body)
-    return unless body['status'] == 'Done'
+    raise RuntimeError.new('Result status is not "Done"') unless body['status'] == 'Done'
 
     result = body['result']
     metais_project = find_metais_project(project_uuid)
