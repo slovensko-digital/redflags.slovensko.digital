@@ -13,11 +13,13 @@
         <div class="col-md-6 d-flex justify-content-end">
           <div class="form-group d-flex flex-row align-items-center">
             <% sort_options = {
+              '' => 'Odporúčané',
               'alpha' => 'Abecedne',
               'date' => 'Podľa dátumu',
-              'price' => 'Podľa ceny'} %>
+              'preparation' => 'Hodnotenie prípravy',
+              'product' => 'Hodnotenie produktu'} %>
 
-            <% current_sort = params[:sort] || 'date' %>
+            <% current_sort = params[:sort] || '' %>
             <% current_sort_label = sort_options[current_sort] %>
 
             <div class="dropdown mr-2">
@@ -63,7 +65,7 @@
               <% if project.metais_projects.present? %>
                 <%= link_to latest_published_revision&.title, metais_project_path(id: project.metais_projects.first.id), class: 'table-title-item' %>
               <% else %>
-                <%= content_tag(:p, latest_published_revision&.title, class: "table-price") %>
+                <%= content_tag(:p, latest_published_revision&.title, class: "table-title-item mb-0") %>
               <% end %>
               <div class="d-flex flex-row">
                 <p class="mr-2 mb-0 tag-tooltip" title="Dátum poslednej aktualizácie hodnotenia"><small>Dátum poslednej aktualizácie:</small></p>
@@ -78,9 +80,9 @@
                   end
                 %>
               </div>
-              <div class="d-flex flex-row justify-content-between">
-                <div class="d-flex flex-row align-items-center">
-                  <p class="tag-tooltip" title="Stav, v ktorom sa projekt nachádza">
+              <div class="d-flex flex-row justify-content-between align-items-end">
+                <div class="d-flex flex-row align-items-end">
+                  <p class="tag-tooltip mb-0" title="Stav, v ktorom sa projekt nachádza">
                   <%
                     latest_stage = latest_published_revision&.stage
                     status_class = case latest_stage&.name
@@ -129,8 +131,8 @@
           -
           <% elsif prep_revision.redflags_count > 0 %>
             <div class="d-flex flex-column justify-content-center align-items-center">
-              <strong class="text-danger">
-                <%= prep_revision.redflags_count %> &times; <%= fa_icon('flag', class: 'text-danger') %>
+              <strong class="text-danger table-price">
+                <%= prep_revision.redflags_count %>&times;<%= fa_icon('flag', class: 'text-danger') %>
               </strong>
               <% if prep_page.latest_revision %>
                 <%= link_to 'Zobraziť', project_show_revision_type_path(project.id, 'hodnotenie-pripravy') %>
@@ -138,7 +140,7 @@
             </div>
           <% else %>
             <div class="d-flex flex-column justify-content-center align-items-center">
-              <strong>
+              <strong class="table-price">
                 <%= number_to_percentage(prep_revision.total_score_percentage, precision: 0) %>
               </strong>
               <% if prep_page.latest_revision %>
@@ -156,8 +158,8 @@
           -
           <% elsif prod_revision&.redflags_count > 0 %>
             <div class="d-flex flex-column justify-content-center align-items-center">
-              <strong class="text-danger">
-                <%= prod_revision.redflags_count %> &times; <%= fa_icon('flag', class: 'text-danger') %>
+              <strong class="text-danger table-price">
+                <%= prod_revision.redflags_count %>&times;<%= fa_icon('flag', class: 'text-danger') %>
               </strong>
               <% if prod_page.latest_revision %>
                 <%= link_to 'Zobraziť', project_show_revision_type_path(project.id, 'hodnotenie-produktu') %>
@@ -165,7 +167,7 @@
             </div>
           <% else %>
             <div class="d-flex flex-column justify-content-center align-items-center">
-              <strong>
+              <strong class="table-price">
                 <%= number_to_percentage(prod_revision.total_score_percentage, precision: 0) %>
               </strong>
               <% if prod_page.latest_revision %>
@@ -176,7 +178,7 @@
         </td>
       </tr>
 
-      <tr class="hidden table-price">
+      <tr class="hidden">
         <td colspan="12" class="p-0">
           <div class="collapse p-0" id="collapse-<%= project.id %>">
             <table class="table m-0">
@@ -189,7 +191,7 @@
               <tbody>
               <% project.phases.select { |phase| phase.published_revision.present? }.sort_by { |phase| phase.phase_type }.each do |phase| %>
                 <tr class="p-0">
-                  <td colspan="4"><%= link_to phase.phase_type_label, project_show_revision_type_path(project.id, PhaseRevision.map_phase_type_to_route(phase.phase_type.name)) %></td>
+                  <td colspan="4" class="table-title-item"><%= link_to phase.phase_type_label, project_show_revision_type_path(project.id, PhaseRevision.map_phase_type_to_route(phase.phase_type.name)) %></td>
                   <% ratings = phase.published_revision&.ratings&.group_by(&:score) %>
                   <% 4.downto(0).each do |index| rt = ratings[index] %>
                     <td class="align-middle text-center">

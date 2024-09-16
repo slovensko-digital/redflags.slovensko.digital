@@ -81,7 +81,7 @@
       <tr id="<%= dom_id project %>">
         <td><%= project.id %></td>
         <td class="w-50" colspan="10">
-          <%= link_to project.project_origins.first.title, admin_metais_project_path(project) %>
+          <%= link_to project.project_origins.first.title, metais_project_path(project) %>
         </td>
         <td class="text-center">
           <%= project.project_origins.count %>

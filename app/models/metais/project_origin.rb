@@ -46,4 +46,18 @@ class Metais::ProjectOrigin < ApplicationRecord
   has_many :suppliers, class_name: 'Metais::ProjectSupplier', foreign_key: 'project_origin_id'
   has_many :events, class_name: 'Metais::ProjectEvent', foreign_key: 'project_origin_id'
   has_many :links, class_name: 'Metais::ProjectLink', foreign_key: 'project_origin_id'
+  
+  def self.guarantor_data
+    {
+      counts: self.group(:guarantor).count,
+      unique_guarantors: self.pluck(:guarantor).reject(&:blank?).uniq
+    }
+  end
+  
+  def self.status_data
+    {
+      counts: self.group(:status).count,
+      unique_statuses: self.pluck(:status).reject(&:blank?).uniq
+    }
+  end
 end

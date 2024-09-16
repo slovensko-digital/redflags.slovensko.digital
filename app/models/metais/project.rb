@@ -10,9 +10,9 @@
 class Metais::Project < ApplicationRecord
   has_many :project_origins, :class_name => 'Metais::ProjectOrigin'
   has_and_belongs_to_many :projects, class_name: 'Project',
-                                                      join_table: 'public.projects_metais_projects',
-                                                      foreign_key: 'metais_project_id',
-                                                      association_foreign_key: 'project_id'
+                                     join_table: 'public.projects_metais_projects',
+                                     foreign_key: 'metais_project_id',
+                                     association_foreign_key: 'project_id'
 
   def evaluations
     ::Project.joins('''
@@ -38,5 +38,16 @@ class Metais::Project < ApplicationRecord
     end
 
     project_info
+  end
+  
+  def self.evaluation_counts
+    total_count = Metais::Project.count
+    yes_count = Metais::Project
+      .joins('INNER JOIN public.projects_metais_projects ON public.projects_metais_projects.metais_project_id = metais.projects.id')
+      .distinct
+      .count('metais.projects.id')
+    no_count = total_count - yes_count
+  
+    { yes: yes_count, no: no_count }
   end
 end

@@ -1,14 +1,34 @@
 class Metais::ProjectsController < ApplicationController
   def index
+    @guarantor_data = Metais::ProjectOrigin.guarantor_data
+    @status_data = Metais::ProjectOrigin.status_data
+    @evaluation_counts = Metais::Project.evaluation_counts
+        
     per_page = 25
     page = params[:page] || 1
 
-    @projects = Metais::Project.all
-
-    if params[:guarantor].present? || params[:title].present? || params[:status].present? || params[:code].present? || params[:min_price].present? || params[:max_price].present? || params[:sort].present?
-      @projects = @projects.joins(:project_origins)
-    end
-
+    
+    distinct_projects_subquery = Metais::Project
+                                    .joins(:project_origins)
+                                    .joins("JOIN (SELECT project_id, MAX(origin_type_id) AS max_origin_type_id 
+                                                  FROM metais.project_origins 
+                                                  GROUP BY project_id) 
+                                            po_max 
+                                            ON metais.projects.id = po_max.project_id 
+                                            AND metais.project_origins.origin_type_id = po_max.max_origin_type_id")
+                                    .select('DISTINCT metais.projects.id')
+    
+      @projects = Metais::Project
+                   .joins(:project_origins)
+                   .joins("JOIN (SELECT project_id, MAX(origin_type_id) AS max_origin_type_id 
+                                 FROM metais.project_origins 
+                                 GROUP BY project_id) 
+                           po_max 
+                           ON metais.projects.id = po_max.project_id 
+                           AND metais.project_origins.origin_type_id = po_max.max_origin_type_id")
+                   .where(id: distinct_projects_subquery)
+                   .select('metais.projects.*, project_origins.approved_investment, project_origins.investment')
+    
     if params[:guarantor].present?
       @projects = @projects.where('project_origins.guarantor = ?', params[:guarantor])
     end
@@ -23,15 +43,21 @@ class Metais::ProjectsController < ApplicationController
     end
 
     if params[:code].present?
-      @projects = @projects.where('code = ?', params[:code])
+      @projects = @projects.where('code ILIKE ?', "%#{params[:code]}%")
     end
 
     if params[:min_price].present?
-      @projects = @projects.where('project_origins.investment >= ?', params[:min_price])
+      min_price = params[:min_price].to_f
+      @projects = @projects.where(
+        'COALESCE(NULLIF(metais.project_origins.approved_investment, 0), metais.project_origins.investment, 0) >= ?', min_price
+      )
     end
-
+    
     if params[:max_price].present?
-      @projects = @projects.where('project_origins.investment <= ?', params[:max_price])
+      max_price = params[:max_price].to_f
+      @projects = @projects.where(
+        'COALESCE(NULLIF(metais.project_origins.approved_investment, 0), metais.project_origins.investment, 0) <= ?', max_price
+      )
     end
 
     if params[:has_evaluation].present?
@@ -45,22 +71,40 @@ class Metais::ProjectsController < ApplicationController
       }.map(&:id))
     end
 
-    case params[:sort]
-    when 'alpha'
-      @projects = @projects.order('project_origins.title ASC')
-      @projects = @projects.distinct.select("metais.projects.*, project_origins.title")
-    when 'date'
-      @projects = @projects.order('project_origins.metais_created_at ASC')
-      @projects = @projects.distinct.select("metais.projects.*, project_origins.metais_created_at")
+    if params[:sort].present?
+      case params[:sort]
+      when 'alpha'
+        if params[:sort_direction].present?
+          sort_direction = params[:sort_direction].upcase == 'ASC' ? 'ASC' : 'DESC'
+        else
+          sort_direction = 'DESC'
+        end
+        @projects = @projects.order("metais.project_origins.title #{sort_direction}")
+      when 'date'
+        if params[:sort_direction].present?
+          sort_direction = params[:sort_direction].upcase == 'ASC' ? 'ASC' : 'DESC'
+        else
+          sort_direction = 'DESC'
+        end
+        @projects = @projects.order("metais.project_origins.metais_created_at #{sort_direction}")
+      when 'price'
+        if params[:sort_direction].present?
+          sort_direction = params[:sort_direction].upcase == 'ASC' ? 'ASC' : 'DESC'
+        else
+          sort_direction = 'DESC'
+        end
+        @projects = @projects.order("COALESCE(NULLIF(metais.project_origins.approved_investment, 0), 
+                                            NULLIF(metais.project_origins.investment, 0), 
+                                            0) #{sort_direction} NULLS FIRST")
 
-    when 'price'
-      @projects = @projects.order('project_origins.investment ASC')
-      @projects = @projects.distinct.select("metais.projects.*, project_origins.investment")
-
-    else
-      @projects = @projects.order(updated_at: :desc)
-      @projects = @projects.distinct.select("metais.projects.*")
-
+      else
+        if params[:sort_direction].present?
+          sort_direction = params[:sort_direction].upcase == 'ASC' ? 'ASC' : 'DESC'
+        else
+          sort_direction = 'DESC'
+        end
+        @projects = @projects.select("distinct on (updated_at) projects.*").order("updated_at #{sort_direction}")
+      end
     end
 
     @projects = @projects.page(page).per(per_page)
