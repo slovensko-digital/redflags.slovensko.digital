@@ -24,7 +24,7 @@ class Metais::Project < ApplicationRecord
   def get_project_origin_info
     fields = %w[title status phase description guarantor project_manager start_date end_date
                 finance_source investment operation approved_investment approved_operation
-                supplier supplier_cin targets_text events_text documents_text links_text]
+                supplier supplier_cin targets_text events_text documents_text links_text updated_at]
 
     origins = self.project_origins.sort_by { |origin| -origin.origin_type_id }
 
@@ -49,5 +49,53 @@ class Metais::Project < ApplicationRecord
     no_count = total_count - yes_count
   
     { yes: yes_count, no: no_count }
+  end
+  
+  def self.filtered_and_sorted_projects(params)
+    per_page = 25
+    page = params[:page] || 1
+
+    ordered_project_origins = Metais::ProjectOrigin
+      .select('project_id,
+                COALESCE(NULLIF(max(approved_investment) FILTER (WHERE approved_investment IS NOT NULL), 0), 
+                        NULLIF(max(investment) FILTER (WHERE investment IS NOT NULL), 0)) AS final_investment,
+                max(title) FILTER (WHERE title IS NOT NULL) AS final_title,
+                max(status) FILTER (WHERE status IS NOT NULL) AS final_status,
+                max(guarantor) FILTER (WHERE guarantor IS NOT NULL) AS final_guarantor')
+      .group('project_id')
+
+    projects = Metais::Project.joins("INNER JOIN (#{ordered_project_origins.to_sql}) project_origins ON metais.projects.id = project_origins.project_id")
+
+    projects = projects.where('project_origins.final_guarantor = ?', params[:guarantor]) if params[:guarantor].present?
+    projects = projects.where('project_origins.final_status = ?', params[:status]) if params[:status].present?
+    projects = projects.where('code ILIKE ?', "%#{params[:code]}%") if params[:code].present?
+    projects = projects.where('project_origins.final_title ILIKE ?', "%#{params[:title]}%") if params[:title].present?
+    projects = projects.where('project_origins.final_investment >= ?', params[:min_price].to_f) if params[:min_price].present?
+    projects = projects.where('project_origins.final_investment <= ?', params[:max_price].to_f) if params[:max_price].present?
+
+    if params[:has_evaluation].present?
+      projects = projects.select { |project|
+        params[:has_evaluation] == 'yes' ? project.evaluations.exists? : project.evaluations.empty?
+      }
+      projects = projects.map(&:id)
+      projects = Metais::Project.where(id: projects)
+    end
+
+    if params[:sort].present?
+      sort_direction = params[:sort_direction]&.upcase == 'ASC' ? 'ASC' : 'DESC'
+
+      projects = case params[:sort]
+                  when 'alpha'
+                    projects.order("project_origins.final_title #{sort_direction}")
+                  when 'date'
+                    projects.order("metais.projects.updated_at #{sort_direction}")
+                  when 'price'
+                    projects.order("project_origins.final_investment #{sort_direction} NULLS #{sort_direction == 'ASC' ? 'FIRST' : 'LAST'}")
+                  else
+                    projects.order("metais.projects.updated_at #{sort_direction}")
+                  end
+    end
+
+    projects.page(page).per(per_page)
   end
 end

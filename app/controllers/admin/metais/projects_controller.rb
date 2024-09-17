@@ -1,49 +1,13 @@
 class Admin::Metais::ProjectsController < AdminController
   def index
-    per_page = 25
-    page = params[:page] || 1
-
-    @projects = Metais::Project.all
-
-    if filtering_params_present?
-      @projects = @projects.joins(:project_origins)
-    end
-
-    if params[:guarantor].present?
-      @projects = @projects.where('project_origins.guarantor = ?', params[:guarantor])
-    end
-
-    if params[:title].present?
-      @projects = @projects.where('project_origins.title ILIKE ?', "%#{params[:title]}%")
-    end
-
-    if params[:status].present?
-      @projects = @projects.where('project_origins.status = ?', params[:status])
-    end
-
-    if params[:code].present?
-      @projects = @projects.where('metais.projects.code = ?', params[:code])
-    end
-
-    if params[:min_price].present?
-      @projects = @projects.where('COALESCE(project_origins.investment, 0) >= ?', params[:min_price])
-    end
-
-    if params[:max_price].present?
-      @projects = @projects.where('COALESCE(project_origins.investment, 0) <= ?', params[:max_price])
-    end
-
-    case params[:change_date]
-    when 'latest'
-      @projects = @projects.order(updated_at: :desc)
-    when 'oldest'
-      @projects = @projects.order(updated_at: :asc)
-    end
-
-    @projects = @projects.distinct
-    @projects = @projects.page(page).per(per_page)
+    @guarantor_counts = Metais::ProjectOrigin.guarantor_counts
+    @unique_guarantors = Metais::ProjectOrigin.unique_guarantors
+    @status_counts = Metais::ProjectOrigin.status_counts
+    @unique_statuses = Metais::ProjectOrigin.unique_statuses
+    @evaluation_counts = Metais::Project.evaluation_counts
+    
+    @projects = Metais::Project.filtered_and_sorted_projects(params)
   end
-
 
   def show
     @project = Metais::Project.find(params[:id])

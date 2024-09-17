@@ -65,8 +65,10 @@
         </div>
         <div class="col">
           <h5 class="d-flex align-items-center">Aktuálny stav
-            <% if @project_info.status.present? || @project_info.phase.present? %>
+            <% if @project_info.status.present? %>
               <%= image_tag origin_type_logo(@project_info.status.origin), style: "width: 16px; height: 16px; margin-left: 6px;" %>
+            <% elsif @project_info.phase.present? %>
+                <%= image_tag origin_type_logo(@project_info.phase.origin), style: "width: 16px; height: 16px; margin-left: 6px;" %>
             <% end %>
           </h5>
           <% if @project_info.finance_source.present? %>
@@ -201,141 +203,156 @@
 
   <hr class="mt-0 mb-4">
 
-  <div class="row mb-4">
-    <div class="col-md-12">
-        <h5 class="d-flex align-items-center">Ciele a merateľné ukazovatele
-          <% if @project_info.targets_text.present? %>
-            <%= image_tag origin_type_logo(@project_info.targets_text.origin), style: "width: 18px; height: 18px; margin-left: 6px;" %>
-        <% end %>
-        </h5>
-        <% if @project_info.targets_text.present? %>
-          <%= convert_to_list(@project_info.targets_text) %>
-        <% else %>
-          Žiadne ciele neboli nájdené.
-        <% end %>
-    </div>
-  </div>
-
-  <div class="row mb-4">
-    <div class="col-md-12">
-      <h5>Harmonogram</h5>
-      <div class="row d-flex justify-content-center">
-        <div class="col-md-6">
-          <div class="main-card mb-3 card mt-2" style="border: none;">
-            <p>Plánovaný priebeh projektu</p>
-            <div class="card-body">
-              <div class="vertical-timeline vertical-timeline--animate vertical-timeline--one-column">
-                <% @assumption_events.each do |event| %>
-                  <div class="vertical-timeline-item vertical-timeline-element">
-                      <div>
-                        <span class="vertical-timeline-element-icon bounce-in">
-                            <i class="badge badge-dot badge-dot-xl badge-danger"> </i>
-                        </span>
-                        <div class="vertical-timeline-element-content bounce-in">
-                          <h4 class="timeline-title">
-                            <%= event.name %> <%= image_tag origin_type_logo(event.origin_type), style: "width: 12px; height: 12px;", class: 'mr-2' if event.origin_type.present? %>
-                          </h4>
-                          <p><%= event.value %></p>
-                          <span class="vertical-timeline-element-date"><%= event.date.in_time_zone('Europe/Bratislava').strftime('%m/%Y') %></span>
-                        </div>
-                      </div>
-                    </div>
-                <% end %>
-              </div>
-            </div>
+      <% if @project_info.targets_text.present? %>
+        <div class="row mb-4">
+          <div class="col-md-12">
+            <h5 class="d-flex align-items-center">Ciele a merateľné ukazovatele
+              <%= image_tag origin_type_logo(@project_info.targets_text.origin), style: "width: 18px; height: 18px; margin-left: 6px;" %>
+            </h5>
+            <%= convert_to_list(@project_info.targets_text) %>
           </div>
         </div>
-        <div class="col-md-6">
-          <div class="main-card mb-3 mt-2 card" style="border: none;">
-            <p>Realný priebeh projektu</p>
-            <div class="card-body">
-              <div class="vertical-timeline vertical-timeline--animate vertical-timeline--one-column">
-                <% @real_events.each do |event| %>
-                  <div class="vertical-timeline-item vertical-timeline-element">
-                    <div>
-                        <span class="vertical-timeline-element-icon bounce-in">
-                            <i class="badge badge-dot badge-dot-xl badge-danger"> </i>
-                        </span>
-                      <div class="vertical-timeline-element-content bounce-in">
-                        <h4 class="timeline-title">
-                          <%= event.name %> <%= image_tag origin_type_logo(event.origin_type), style: "width: 12px; height: 12px;", class: 'mr-2' if event.origin_type.present? %>
-                        </h4>
-                        <p><%= event.value %></p>
-                        <span class="vertical-timeline-element-date"><%= event.date.in_time_zone('Europe/Bratislava').strftime('%m/%Y') %></span>
+      <% end %>
+      
+      <% if @assumption_events.any? || @real_events.any? %>
+        <div class="row mb-4">
+          <div class="col-md-12">
+            <h5>Harmonogram</h5>
+            <div class="row d-flex justify-content-center">
+              <% if @assumption_events.any? %>
+                <div class="col-md-6">
+                  <div class="main-card mb-3 card mt-2" style="border: none;">
+                    <p>Plánovaný priebeh projektu</p>
+                    <div class="card-body">
+                      <div class="vertical-timeline vertical-timeline--animate vertical-timeline--one-column">
+                        <% @assumption_events.each do |event| %>
+                          <div class="vertical-timeline-item vertical-timeline-element">
+                            <div>
+                              <span class="vertical-timeline-element-icon bounce-in">
+                                <i class="badge badge-dot badge-dot-xl badge-danger"></i>
+                              </span>
+                              <div class="vertical-timeline-element-content bounce-in">
+                                <h4 class="timeline-title">
+                                  <%= event.name %> <%= image_tag origin_type_logo(event.origin_type), style: "width: 12px; height: 12px;", class: 'mr-2' if event.origin_type.present? %>
+                                </h4>
+                                <p><%= event.value %></p>
+                                <span class="vertical-timeline-element-date"><%= event.date.in_time_zone('Europe/Bratislava').strftime('%m/%Y') %></span>
+                              </div>
+                            </div>
+                          </div>
+                        <% end %>
                       </div>
                     </div>
                   </div>
-                <% end %>
-              </div>
+                </div>
+              <% end %>
+      
+              <% if @real_events.any? %>
+                <div class="col-md-6">
+                  <div class="main-card mb-3 mt-2 card" style="border: none;">
+                    <p>Reálny priebeh projektu</p>
+                    <div class="card-body">
+                      <div class="vertical-timeline vertical-timeline--animate vertical-timeline--one-column">
+                        <% @real_events.each do |event| %>
+                          <div class="vertical-timeline-item vertical-timeline-element">
+                            <div>
+                              <span class="vertical-timeline-element-icon bounce-in">
+                                <i class="badge badge-dot badge-dot-xl badge-danger"></i>
+                              </span>
+                              <div class="vertical-timeline-element-content bounce-in">
+                                <h4 class="timeline-title">
+                                  <%= event.name %> <%= image_tag origin_type_logo(event.origin_type), style: "width: 12px; height: 12px;", class: 'mr-2' if event.origin_type.present? %>
+                                </h4>
+                                <p><%= event.value %></p>
+                                <span class="vertical-timeline-element-date"><%= event.date.in_time_zone('Europe/Bratislava').strftime('%m/%Y') %></span>
+                              </div>
+                            </div>
+                          </div>
+                        <% end %>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="row mb-4">
-    <div class="col-md-12">
-      <h5>Dodávateľ projektu</h5>
-      <% if @project_info.supplier.present? %>
-        <p><b>Dodávateľ:</b> <a href="https://www.finstat.sk/<%= @project_info.supplier_cin %>"><%= @project_info.supplier %></a> <%= image_tag origin_type_logo(@project_info.supplier.origin), style: "width: 16px; height: 16px; margin-left: 6px;" %></p>
       <% end %>
-      <ul>
-        <% @all_suppliers.each do |supplier| %>
-            <b><%= case supplier.supplier_type&.name
-                  when "CRZ"
-                    "Dodávateľská zmlúva"
-                  when "NFP"
-                    "Zmlúva o NFP"
-                  when "VO"
-                    "Verejné obstarávanie"
-                  else
-                    supplier.supplier_type&.name
-                  end %></b>
-          <li>
-            <%= image_tag origin_type_logo(supplier.origin_type), style: "width: 12px; height: 12px;" if supplier.origin_type.present? %>
-            <%= link_to supplier.name, supplier.value %>
-          </li>
-        <% end %>
-      </ul>
-    </div>
-  </div>
-
-  <div class="row mb-4">
-    <div class="col-md-12">
-      <h5>Dokumenty</h5>
-      <% if @project_info.documents_text.present? %>
-        <p><%= @project_info.documents_text %></p>
+      
+      <% if @project_info.supplier.present? || @all_suppliers.any? %>
+        <div class="row mb-4">
+          <div class="col-md-12">
+            <h5>Dodávateľ projektu</h5>
+            <% if @project_info.supplier.present? %>
+              <p><b>Dodávateľ:</b> <a href="https://www.finstat.sk/<%= @project_info.supplier_cin %>"><%= @project_info.supplier %></a> <%= image_tag origin_type_logo(@project_info.supplier.origin), style: "width: 16px; height: 16px; margin-left: 6px;" %></p>
+            <% end %>
+            <% if @all_suppliers.any? %>
+              <ul>
+                <% @all_suppliers.each do |supplier| %>
+                  <b><%= case supplier.supplier_type&.name
+                        when "CRZ"
+                          "Dodávateľská zmlúva"
+                        when "NFP"
+                          "Zmlúva o NFP"
+                        when "VO"
+                          "Verejné obstarávanie"
+                        else
+                          supplier.supplier_type&.name
+                        end %></b>
+                  <li>
+                    <%= image_tag origin_type_logo(supplier.origin_type), style: "width: 12px; height: 12px;" if supplier.origin_type.present? %>
+                    <%= link_to supplier.name, supplier.value %>
+                  </li>
+                <% end %>
+              </ul>
+            <% end %>
+          </div>
+        </div>
       <% end %>
-      <% @documents_grouped_by_description.each do |description, documents| %>
-        <p class="mb-0"><%= description %></p>
-        <ul>
-          <% documents.each do |doc| %>
-            <li>
-              <%= image_tag origin_type_logo(doc.origin_type), style: "width: 12px; height: 12px;" if doc.origin_type.present? %>
-              <%= link_to doc.name, doc.value %>
-            </li>
-          <% end %>
-        </ul>
+      
+      <% if @project_info.documents_text.present? || @documents_grouped_by_description.any? %>
+        <div class="row mb-4">
+          <div class="col-md-12">
+            <h5>Dokumenty</h5>
+            <% if @project_info.documents_text.present? %>
+              <p><%= @project_info.documents_text %></p>
+            <% end %>
+            <% if @documents_grouped_by_description.any? %>
+              <% @documents_grouped_by_description.each do |description, documents| %>
+                <p class="mb-0"><%= description %></p>
+                <ul>
+                  <% documents.each do |doc| %>
+                    <li>
+                      <%= image_tag origin_type_logo(doc.origin_type), style: "width: 12px; height: 12px;" if doc.origin_type.present? %>
+                      <%= link_to doc.name, doc.value %>
+                    </li>
+                  <% end %>
+                </ul>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
       <% end %>
-    </div>
-  </div>
-
-
-  <div class="row mb-4">
-    <div class="col-md-12">
-      <h5>Linky</h5>
-      <% if @project_info.links_text.present? %>
-        <p><%= @project_info.links_text %></p>
+      
+      <% if @project_info.links_text.present? || @all_links.any? %>
+        <div class="row mb-4">
+          <div class="col-md-12">
+            <h5>Linky</h5>
+            <% if @project_info.links_text.present? %>
+              <p><%= @project_info.links_text %></p>
+            <% end %>
+            <% if @all_links.any? %>
+              <ul>
+                <% @all_links.each do |link| %>
+                  <li>
+                    <%= image_tag origin_type_logo(link.origin_type), style: "width: 12px; height: 12px;" if link.origin_type.present? %>
+                    <%= link_to link.name, link.value %>
+                  </li>
+                <% end %>
+              </ul>
+            <% end %>
+          </div>
+        </div>
       <% end %>
-      <ul>
-        <% @all_links.each do |link| %>
-          <li>
-            <%= image_tag origin_type_logo(link.origin_type), style: "width: 12px; height: 12px;" if link.origin_type.present? %>
-            <%= link_to link.name, link.value %>
-          </li>
-        <% end %>
-      </ul>
-    </div>
-  </div>
+
 </div>
