@@ -22,6 +22,8 @@ class Metais::Project < ApplicationRecord
   end
 
   def get_project_origin_info
+    finance_source_mappings = {"Medzirezortný program 0EK Informačné technológie financované zo štátneho rozpočtu" => "Štátny rozpočet"}
+
     fields = %w[title status phase description guarantor project_manager start_date end_date
                 finance_source investment operation approved_investment approved_operation
                 supplier supplier_cin targets_text events_text documents_text links_text updated_at]
@@ -32,6 +34,10 @@ class Metais::Project < ApplicationRecord
     fields.each do |field|
       origin = origins.detect { |origin| !origin.send(field).nil? }
       value = origin&.send(field)
+      
+      if field == 'finance_source' && value
+        value = finance_source_mappings[value] || value
+      end
       if value
         project_info.send("#{field}=", Metais::ValueWithOrigin.new(value, origin.origin_type_id))
       end
@@ -91,9 +97,10 @@ class Metais::Project < ApplicationRecord
                     projects.order("metais.projects.updated_at #{sort_direction}")
                   when 'price'
                     projects.order("project_origins.final_investment #{sort_direction} NULLS #{sort_direction == 'ASC' ? 'FIRST' : 'LAST'}")
-                  else
-                    projects.order("metais.projects.updated_at #{sort_direction}")
                   end
+    else
+      sort_direction = params[:sort_direction]&.upcase == 'ASC' ? 'ASC' : 'DESC'
+      projects.order("metais.projects.updated_at #{sort_direction}")
     end
 
     projects.page(page).per(per_page)

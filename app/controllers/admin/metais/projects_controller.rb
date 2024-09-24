@@ -9,22 +9,6 @@ class Admin::Metais::ProjectsController < AdminController
     @projects = Metais::Project.filtered_and_sorted_projects(params)
   end
 
-  def show
-    @project = Metais::Project.find(params[:id])
-  end
-  def edit
-    @project = Metais::Project.find(params[:id])
-  end
-
-  def update
-    @project = Metais::Project.find(params[:id])
-    if @project.update(project_params)
-      redirect_to admin_metais_project_path(@project), notice: 'Project was successfully updated.'
-    else
-      render :edit
-    end
-  end
-
   def create_human_origin
     @project = Metais::Project.find(params[:id])
     origin_type = Metais::OriginType.find_by(name: 'Human')
@@ -43,20 +27,5 @@ class Admin::Metais::ProjectsController < AdminController
     Metais::ProjectDataExtractionJob.perform_later(@project.uuid)
 
     redirect_to admin_metais_project_path @project
-  end
-
-  private
-
-  def filtering_params_present?
-    params[:guarantor].present? ||
-      params[:title].present? ||
-      params[:status].present? ||
-      params[:code].present? ||
-      params[:min_price].present? ||
-      params[:max_price].present?
-  end
-
-  def project_params
-    params.require(:project).permit(:guarantor, :finance_source, :status)
   end
 end

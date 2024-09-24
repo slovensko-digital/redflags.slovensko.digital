@@ -13,8 +13,9 @@ class Admin::Metais::ProjectOriginsController < ApplicationController
   def edit
     @project = Metais::Project.find(params[:project_id])
     @project_info = @project.get_project_origin_info
-    @project_origin = Metais::ProjectOrigin.find(params[:id])
     @project_origins = @project.project_origins
+    @project_origin = Metais::ProjectOrigin.find(params[:id])
+    @ai_project_origin = @project_origins.joins(:origin_type).find_by(origin_types: { name: 'AI' })
 
     @assumption_events = []
     @real_events = []
@@ -47,17 +48,40 @@ class Admin::Metais::ProjectOriginsController < ApplicationController
   def update
     @project = Metais::Project.find(params[:project_id])
     @project_origin = Metais::ProjectOrigin.find(params[:id])
+    
+    finance_source_mappings = {"Medzirezortný program 0EK Informačné technológie financované zo štátneho rozpočtu" => "Štátny rozpočet"}
+  
+    current_project_info = @project.get_project_origin_info
+  
+    new_params = project_origin_params.to_h
+    changed_params = {}
+  
+    new_params.each do |field, new_value|
+      current_value = current_project_info.send(field)
 
-    if @project_origin.update(project_origin_params.except(:project_events))
-      if project_origin_params[:project_events]
-        event_params = project_origin_params[:project_events]
-        unless event_params.values.all?(&:blank?)
-          @project_origin.events.create!(name: event_params[:name], value: event_params[:value], date: event_params[:date], origin_type: Metais::OriginType.find_by(name: 'Human'))
+      if field == 'finance_source'
+        current_value_mapped = finance_source_mappings[current_value] || current_value
+        new_value_mapped = finance_source_mappings[new_value] || new_value
+        
+        if new_value.present? && new_value_mapped.to_s.strip != current_value_mapped.to_s.strip
+          changed_params[field] = new_value
+        end
+      else 
+        if field == 'end_date' || field == 'start_date'
+          new_value = new_value.present? ? Date.parse(new_value.to_s) : nil
+          current_value = current_value.present? ? current_value.to_date : nil
+        end
+  
+        if new_value.present? && new_value.to_s.strip != current_value.to_s.strip
+          changed_params[field] = new_value
         end
       end
+    end
+  
+    if changed_params.any? && @project_origin.update(changed_params)
       redirect_to edit_admin_metais_project_project_origin_path(@project, @project_origin), notice: 'Projekt bol úspešne aktualizovaný.'
     else
-      render :edit
+      redirect_to edit_admin_metais_project_project_origin_path(@project, @project_origin), notice: 'Žiadne nové informácie pre projekt.'
     end
   end
 

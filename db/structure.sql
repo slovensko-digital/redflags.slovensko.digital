@@ -576,38 +576,6 @@ CREATE TABLE public.projects (
 
 
 --
--- Name: projects2; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.projects2 (
-    id bigint NOT NULL,
-    metais_project_id bigint NOT NULL,
-    evaluation_id bigint,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
-);
-
-
---
--- Name: projects2_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.projects2_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: projects2_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.projects2_id_seq OWNED BY public.projects2.id;
-
-
---
 -- Name: projects_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -866,13 +834,6 @@ ALTER TABLE ONLY public.projects ALTER COLUMN id SET DEFAULT nextval('public.pro
 
 
 --
--- Name: projects2 id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.projects2 ALTER COLUMN id SET DEFAULT nextval('public.projects2_id_seq'::regclass);
-
-
---
 -- Name: que_jobs job_id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -1020,15 +981,7 @@ ALTER TABLE ONLY public.phases
 ALTER TABLE ONLY public.project_stages
     ADD CONSTRAINT project_stages_pkey PRIMARY KEY (id);
 
-
---
--- Name: projects2 projects2_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.projects2
-    ADD CONSTRAINT projects2_pkey PRIMARY KEY (id);
-
-
+    
 --
 -- Name: projects projects_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
@@ -1210,20 +1163,6 @@ CREATE INDEX index_phases_on_project_id ON public.phases USING btree (project_id
 
 
 --
--- Name: index_projects2_on_evaluation_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_projects2_on_evaluation_id ON public.projects2 USING btree (evaluation_id);
-
-
---
--- Name: index_projects2_on_metais_project_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_projects2_on_metais_project_id ON public.projects2 USING btree (metais_project_id);
-
-
---
 -- Name: index_projects_metais_projects_on_metais_project_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1352,14 +1291,6 @@ ALTER TABLE ONLY metais.project_suppliers
 
 ALTER TABLE ONLY metais.project_events
     ADD CONSTRAINT fk_rails_e243232959 FOREIGN KEY (project_origin_id) REFERENCES metais.project_origins(id);
-
-
---
--- Name: projects2 fk_rails_167b3161dd; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.projects2
-    ADD CONSTRAINT fk_rails_167b3161dd FOREIGN KEY (evaluation_id) REFERENCES public.projects(id);
 
 
 --
@@ -1525,4 +1456,5 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20240822112026'),
 ('20240822143116'),
 ('20240823082322'),
-('20240825111806');
+('20240825111806'),
+('20240825115911');

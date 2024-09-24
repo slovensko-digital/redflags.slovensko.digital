@@ -1,9 +1,8 @@
 <div id="project-show" class="container main">
-
   <div class="row mb-3">
     <div class="col-md-12">
       <h1 class="project-title"><%= @project_info.title %></h1>
-      <p class="lead text-muted mt-4"><%= @project_info.description %></p>
+      <div class="text-justify text-muted mt-4"><%= simple_format(@project_info.description) %></div>
     </div>
   </div>
   
@@ -283,9 +282,17 @@
         <div class="row mb-4">
           <div class="col-md-12">
             <h5>Dodávateľ projektu</h5>
-            <% if @project_info.supplier.present? %>
-              <p><b>Dodávateľ:</b> <a href="https://www.finstat.sk/<%= @project_info.supplier_cin %>"><%= @project_info.supplier %></a> <%= image_tag origin_type_logo(@project_info.supplier.origin), style: "width: 16px; height: 16px; margin-left: 6px;" %></p>
-            <% end %>
+            <p><b>Dodávateľ:</b>
+                <% if @project_info.supplier.present? && @project_info.supplier_cin.present? %>
+                    <a href="https://www.finstat.sk/<%= @project_info.supplier_cin %>">
+                        <%= @project_info.supplier %>
+                    </a>
+                    <%= image_tag origin_type_logo(@project_info.supplier&.origin), style: "width: 16px; height: 16px; margin-left: 6px;" %>
+                <% else %>
+                    <span class="font-italic text-secondary">Neznámy</span>
+                <% end %>
+            </p>
+
             <% if @all_suppliers.any? %>
               <ul>
                 <% @all_suppliers.each do |supplier| %>
@@ -301,7 +308,12 @@
                         end %></b>
                   <li>
                     <%= image_tag origin_type_logo(supplier.origin_type), style: "width: 12px; height: 12px;" if supplier.origin_type.present? %>
-                    <%= link_to supplier.name, supplier.value %>
+                    
+                    <% if supplier.value.present? && supplier.value =~ /\Ahttps?:\/\/[\S]+\z/ %>
+                        <%= link_to supplier.name, supplier.value %>
+                    <% else %>
+                        <%= supplier.name %>
+                    <% end %>
                   </li>
                 <% end %>
               </ul>
