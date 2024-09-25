@@ -41,6 +41,9 @@ class Admin::Metais::ProjectOriginsController < ApplicationController
     @project_origins.each do |project_origin|
       @all_documents.concat(project_origin.documents)
     end
+    
+    @grouped_documents = @all_documents.group_by(&:description)
+    @grouped_documents = @grouped_documents.sort_by { |description, docs| docs.first.group_order || Float::INFINITY }
 
     @project_origin = Metais::ProjectOrigin.includes(:documents, :suppliers).find(@project_origin.id)
   end
@@ -183,6 +186,19 @@ class Admin::Metais::ProjectOriginsController < ApplicationController
     @project_document = Metais::ProjectDocument.find(params[:document_id])
     @project_document.destroy
     redirect_to edit_admin_metais_project_project_origin_path(project_id: @project.id, id: @project_origin.id), notice: 'Dokument bol úspešne odstránený.'
+  end
+  
+  def update_group_order
+    @project = Metais::Project.find(params[:project_id])
+    @project_origin = Metais::ProjectOrigin.find(params[:project_origin_id])
+    
+    description = params[:description]
+    group_order = params[:group_order].to_i
+
+    Metais::ProjectDocument.where(description: description).update_all(group_order: group_order)
+
+    flash[:notice] = "Group order updated successfully."
+    redirect_to edit_admin_metais_project_project_origin_path(project_id: @project.id, id: @project_origin.id)
   end
 
   private

@@ -65,7 +65,8 @@ CREATE TABLE metais.project_documents (
     updated_at timestamp without time zone NOT NULL,
     filename character varying,
     uuid character varying,
-    description character varying
+    description character varying,
+    group_order integer
 );
 
 
@@ -1457,4 +1458,5 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20240822143116'),
 ('20240823082322'),
 ('20240825111806'),
-('20240825115911');
+('20240825115911'),
+('20240924210648');

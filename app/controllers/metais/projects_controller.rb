@@ -36,7 +36,8 @@ class Metais::ProjectsController < ApplicationController
     end
 
     @all_documents = @project_origins.flat_map(&:documents)
-    @documents_grouped_by_description = @all_documents.group_by(&:description)
+    @grouped_documents = @all_documents.group_by(&:description)
+    @grouped_documents = @grouped_documents.sort_by { |description, docs| docs.first.group_order || Float::INFINITY }
 
     @project_origin = @project.project_origins.first
     @project_origin = Metais::ProjectOrigin.includes(:documents, :suppliers).find(@project_origin.id)

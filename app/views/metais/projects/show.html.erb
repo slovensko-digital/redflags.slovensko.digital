@@ -322,15 +322,17 @@
         </div>
       <% end %>
       
-      <% if @project_info.documents_text.present? || @documents_grouped_by_description.any? %>
+      <% if @project_info.documents_text.present? || @grouped_documents.any? %>
         <div class="row mb-4">
           <div class="col-md-12">
             <h5>Dokumenty</h5>
+            
             <% if @project_info.documents_text.present? %>
               <p><%= @project_info.documents_text %></p>
             <% end %>
-            <% if @documents_grouped_by_description.any? %>
-              <% @documents_grouped_by_description.each do |description, documents| %>
+      
+            <% if @grouped_documents.any? %>
+              <% @grouped_documents.each do |description, documents| %>
                 <p class="mb-0"><%= description %></p>
                 <ul>
                   <% documents.each do |doc| %>
@@ -342,10 +344,12 @@
                 </ul>
               <% end %>
             <% end %>
+      
+      
           </div>
         </div>
       <% end %>
-      
+
       <% if @project_info.links_text.present? || @all_links.any? %>
         <div class="row mb-4">
           <div class="col-md-12">

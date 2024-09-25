@@ -178,13 +178,13 @@
             document.getElementById('supplier-input').value = '';
           });
     
-          const form = document.querySelector('form'); 
+          var form = document.querySelector('form'); 
     
           form.addEventListener('submit', function(event) {
-            const supplier = document.getElementById('supplier-input').value.trim();
-            const supplierCin = document.getElementById('supplier-cin-input').value.trim();
+            var supplier = document.getElementById('supplier-input').value.trim();
+            var supplierCin = document.getElementById('supplier-cin-input').value.trim();
     
-            const cinPattern = /^\d{6,8}$/;
+            var cinPattern = /^\d{6,8}$/;
             
             if (!cinPattern.test(supplierCin) || !supplier) {
               event.preventDefault();
@@ -325,7 +325,28 @@
   <div class="container main">
     <div class="col-md-12 mt-5">
       <h5>Dokumenty</h5>
-      <table class="table w-100">
+      <table class="table w-100 mt-5">
+        <thead>
+        <tr>
+          <th>Názov skupiny</th>
+          <th>Priorita</th>
+          <th class="text-center">Akcia</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% @grouped_documents.each do |description, documents| %>
+            <%= form_with(url: admin_metais_project_project_origin_update_group_order_path(project_id: @project.id, project_origin_id: @project_origin.id, description: description), method: :patch, local: true) do |f| %>
+                <tr>
+                    <td><h6><%= description %></h6></td>
+                    <td><%= f.number_field 'group_order', value: documents.first.group_order, class: "form-control", min: 1 %></td>
+                    <td class="text-center"><%= f.submit 'Aktualizovať poradie', class: 'btn btn-primary' %></td>
+                </tr>
+            <% end %>
+        <% end %>
+        </tbody>
+      </table>
+      
+      <table class="table w-100 mt-5">
         <thead>
         <tr>
           <th>Názov</th>

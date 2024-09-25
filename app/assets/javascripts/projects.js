@@ -15,12 +15,12 @@ document.addEventListener("turbolinks:before-render", function() {
 });
 
 document.addEventListener('DOMContentLoaded', function() {
-    let sortDirectionField = document.getElementById('sort_direction');
-    let sortButton = document.getElementById('ascdesctoggle');
-    let upIcon = document.getElementById('up-icon');
-    let downIcon = document.getElementById('down-icon');
+    var sortDirectionField = document.getElementById('sort_direction');
+    var sortButton = document.getElementById('ascdesctoggle');
+    var upIcon = document.getElementById('up-icon');
+    var downIcon = document.getElementById('down-icon');
 
-    let toggleState = sortDirectionField.value || 'desc';
+    var toggleState = sortDirectionField.value || 'desc';
 
     if (toggleState === 'desc') {
         upIcon.style.fill = 'rgb(100, 100, 100, 0.4)';

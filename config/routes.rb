@@ -43,6 +43,7 @@ Rails.application.routes.draw do
           post 'add_supplier', to: 'project_origins#add_supplier', as: 'add_supplier'
           post 'add_link', to: 'project_origins#add_link', as: 'add_link'
           post 'add_document', to: 'project_origins#add_document', as: 'add_document'
+          patch 'update_group_order', to: 'project_origins#update_group_order', as: 'update_group_order'
         end
       end
     end
