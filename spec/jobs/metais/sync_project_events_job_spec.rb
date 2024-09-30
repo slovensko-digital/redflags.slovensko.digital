@@ -11,8 +11,8 @@ RSpec.describe Metais::SyncProjectEventsJob, type: :job do
   let(:latest_version) { double('LatestVersion', kod_metais: 'code1') }
   let(:datahub_project) { instance_double(Datahub::Metais::Project, uuid: 'uuid1', latest_version: latest_version) }
 
-  let(:status_change) { instance_double(Datahub::Metais::ProjectChange, field: 'status', created_at: Time.now, new_value: 'new_status', old_value: 'old_status') }
-  let(:phase_change) { instance_double(Datahub::Metais::ProjectChange, field: 'faza_projektu', created_at: Time.now, new_value: 'new_phase', old_value: 'old_phase') }
+  let(:status_change) { double(Datahub::Metais::ProjectChange, field: 'status', created_at: Time.now, new_value: 'new_status', old_value: 'old_status') }
+  let(:phase_change) { double(Datahub::Metais::ProjectChange, field: 'faza_projektu', created_at: Time.now, new_value: 'new_phase', old_value: 'old_phase') }
 
   let(:codelist_project_state_old) { instance_double(Datahub::Metais::CodelistProjectState, nazov: 'Old Status') }
   let(:codelist_project_state_new) { instance_double(Datahub::Metais::CodelistProjectState, nazov: 'New Status') }
