@@ -4,9 +4,9 @@ require 'nokogiri'
 class Metais::SyncProjectSuppliersJob < ApplicationJob
   queue_as :metais
 
-  ORIGIN_TYPE = Metais::OriginType.find_by(name: 'MetaIS')
-
   def perform(project_origin, metais_project)
+    origin_type = Metais::OriginType.find_by(name: 'MetaIS')
+
     if metais_project.latest_version.link_nfp.present?
       supplier_type = Metais::SupplierType.find_by(name: "NFP")
 
@@ -20,7 +20,7 @@ class Metais::SyncProjectSuppliersJob < ApplicationJob
             value: url,
             date: metais_project.latest_version.datum_nfp,
             project_origin: project_origin,
-            origin_type: ORIGIN_TYPE,
+            origin_type: origin_type,
             supplier_type: supplier_type)
 
           project_supplier.save!
@@ -41,7 +41,7 @@ class Metais::SyncProjectSuppliersJob < ApplicationJob
             value: url,
             date: metais_project.latest_version.vyhlasenie_vo,
             project_origin: project_origin,
-            origin_type: ORIGIN_TYPE,
+            origin_type: origin_type,
             supplier_type: supplier_type)
 
           project_supplier.save!
@@ -54,24 +54,13 @@ class Metais::SyncProjectSuppliersJob < ApplicationJob
 
       link = metais_project.latest_version.zmluva_o_dielo_crz
 
-      document = Nokogiri::HTML(open(link))
+      document = Nokogiri::HTML(open(link).read.force_encoding('UTF-8'))
+      crz_data = parse_crz_document(document)
 
-      li_elements = document.css('li.py-2.border-top')
-
-      li_elements.each_with_index do |li_element, i|
-        supplier_label = li_element.at_css('strong.col-sm-3.text-sm-end')&.text&.strip
-        if supplier_label == 'Dodávateľ:'
-          supplier_info = li_element.at_css('span.col-sm-9')&.text&.strip
-          cin_label = li_elements[i + 1].at_css('strong.col-sm-3.text-sm-end')&.text&.strip
-          if cin_label == 'IČO:'
-            cin = li_elements[i + 1].at_css('span.col-sm-9')&.text&.strip
-            if supplier_info && cin
-              project_origin.supplier = supplier_info
-              project_origin.supplier_cin = cin
-              project_origin.save!
-            end
-          end
-        end
+      if crz_data[:supplier] && crz_data[:cin]
+        project_origin.supplier = crz_data[:supplier]
+        project_origin.supplier_cin = crz_data[:cin]
+        project_origin.save!
       end
 
       links = extract_links(link)
@@ -82,7 +71,7 @@ class Metais::SyncProjectSuppliersJob < ApplicationJob
             value: url,
             date: metais_project.latest_version.zmluva_o_dielo,
             project_origin: project_origin,
-            origin_type: ORIGIN_TYPE,
+            origin_type: origin_type,
             supplier_type: supplier_type)
 
           project_supplier.save!
@@ -102,6 +91,27 @@ class Metais::SyncProjectSuppliersJob < ApplicationJob
   end
 
   def extract_links(str)
-    str.to_s.scan(URI.regexp(['http','https']))
+    uri_regexp = /\b(?:https?|ftp):\/\/\S+\b/
+    str.to_s.scan(uri_regexp)
+  end
+
+  def parse_crz_document(document)
+    li_elements = document.css('li.py-2.border-top')
+    supplier_info = nil
+    cin = nil
+
+    li_elements.each_with_index do |li_element, i|
+      supplier_label = li_element.at_css('strong.col-sm-3.text-sm-end')&.text&.strip
+      if supplier_label == 'Dodávateľ:'
+        supplier_info = li_element.at_css('span.col-sm-9')&.text&.strip
+        cin_label = li_elements[i + 1].at_css('strong.col-sm-3.text-sm-end')&.text&.strip
+        if cin_label == 'IČO:'
+          cin = li_elements[i + 1].at_css('span.col-sm-9')&.text&.strip
+          break if supplier_info && cin
+        end
+      end
+    end
+
+    { supplier: supplier_info, cin: cin }
   end
 end

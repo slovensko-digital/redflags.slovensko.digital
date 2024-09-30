@@ -21,7 +21,7 @@ RSpec.describe Metais::SyncProjectJob, type: :job do
            schvalene_rocne_naklady: 25_000)
   end
 
-  let(:metais_project) { double(Datahub::Metais::Project, latest_version: latest_version, uuid: 'uuid1') }
+  let(:datahub_project) { double(Datahub::Metais::Project, latest_version: latest_version, uuid: 'uuid1') }
   let(:project) { double(Metais::Project) }
   let(:project_origin) { instance_double(Metais::ProjectOrigin, save!: true) }
 
@@ -60,17 +60,13 @@ RSpec.describe Metais::SyncProjectJob, type: :job do
   end
 
   it 'updates or creates a ProjectOrigin and enqueues subsequent jobs' do
-    Metais::SyncProjectJob.perform_now(project, metais_project)
+    Metais::SyncProjectJob.perform_now(project, datahub_project)
 
-    expect(enqueued_jobs).to include(
-                               a_hash_including(
-                                 job: Metais::ProjectDataExtractionJob,
-                                 args: [metais_project.uuid],
-                                 queue: 'metais_data_extraction'
-                               )
-                             )
-    expect(Metais::SyncProjectSuppliersJob).to have_received(:perform_later).with(project_origin, metais_project)
-    expect(Metais::SyncProjectDocumentsJob).to have_received(:perform_later).with(project_origin, metais_project)
-    expect(Metais::SyncProjectEventsJob).to have_received(:perform_later).with(project_origin, metais_project)
+    expect(enqueued_jobs).to include(a_hash_including(job: Metais::ProjectDataExtractionJob,
+                                                      args: [datahub_project.uuid],
+                                                      queue: 'metais_data_extraction'))
+    expect(Metais::SyncProjectSuppliersJob).to have_received(:perform_later).with(project_origin, datahub_project)
+    expect(Metais::SyncProjectDocumentsJob).to have_received(:perform_later).with(project_origin, datahub_project)
+    expect(Metais::SyncProjectEventsJob).to have_received(:perform_later).with(project_origin, datahub_project)
   end
 end

@@ -4,9 +4,12 @@ RSpec.describe Metais::SyncProjectEventsJob, type: :job do
   include ActiveJob::TestHelper
 
   let(:project_origin) { instance_double('Metais::ProjectOrigin') }
-  let(:metais_project) { instance_double('Metais::Project', latest_version: 'v1') }
+
   let(:origin_type) { instance_double('Metais::OriginType') }
   let(:event_type) { instance_double('Metais::ProjectEventType') }
+
+  let(:latest_version) { double('LatestVersion', kod_metais: 'code1') }
+  let(:datahub_project) { instance_double(Datahub::Metais::Project, uuid: 'uuid1', latest_version: latest_version) }
 
   let(:status_change) do
     instance_double('Datahub::Metais::ProjectChange',
@@ -33,7 +36,7 @@ RSpec.describe Metais::SyncProjectEventsJob, type: :job do
     allow(Metais::OriginType).to receive(:find_by).with(name: 'MetaIS').and_return(origin_type)
     allow(Metais::ProjectEventType).to receive(:find_by).with(name: 'Realita').and_return(event_type)
 
-    allow(Datahub::Metais::ProjectChange).to receive(:where).with(project_version: metais_project.latest_version).and_return([status_change, phase_change])
+    allow(Datahub::Metais::ProjectChange).to receive(:where).with(project_version: datahub_project.latest_version).and_return([status_change, phase_change])
 
     allow(Datahub::Metais::CodelistProjectState).to receive(:find_by).with(code: 'old_status').and_return(codelist_project_state_old)
     allow(Datahub::Metais::CodelistProjectState).to receive(:find_by).with(code: 'new_status').and_return(codelist_project_state_new)
@@ -47,7 +50,7 @@ RSpec.describe Metais::SyncProjectEventsJob, type: :job do
 
   describe '#perform' do
     it 'processes all changes and creates events correctly' do
-      described_class.perform_now(project_origin, metais_project)
+      described_class.perform_now(project_origin, datahub_project)
 
       expect(Metais::ProjectEvent).to have_received(:find_or_initialize_by).with(
         project_origin: project_origin,
