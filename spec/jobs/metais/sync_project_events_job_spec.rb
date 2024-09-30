@@ -14,10 +14,10 @@ RSpec.describe Metais::SyncProjectEventsJob, type: :job do
   let(:status_change) { double(Datahub::Metais::ProjectChange, field: 'status', created_at: Time.now, new_value: 'new_status', old_value: 'old_status') }
   let(:phase_change) { double(Datahub::Metais::ProjectChange, field: 'faza_projektu', created_at: Time.now, new_value: 'new_phase', old_value: 'old_phase') }
 
-  let(:codelist_project_state_old) { instance_double(Datahub::Metais::CodelistProjectState, nazov: 'Old Status') }
-  let(:codelist_project_state_new) { instance_double(Datahub::Metais::CodelistProjectState, nazov: 'New Status') }
-  let(:codelist_project_phase_old) { instance_double(Datahub::Metais::CodelistProjectPhase, nazov: 'Old Phase') }
-  let(:codelist_project_phase_new) { instance_double(Datahub::Metais::CodelistProjectPhase, nazov: 'New Phase') }
+  let(:codelist_project_state_old) { double(Datahub::Metais::CodelistProjectState, nazov: 'Old Status') }
+  let(:codelist_project_state_new) { double(Datahub::Metais::CodelistProjectState, nazov: 'New Status') }
+  let(:codelist_project_phase_old) { double(Datahub::Metais::CodelistProjectPhase, nazov: 'Old Phase') }
+  let(:codelist_project_phase_new) { double(Datahub::Metais::CodelistProjectPhase, nazov: 'New Phase') }
 
   before do
     allow(Metais::OriginType).to receive(:find_by).with(name: 'MetaIS').and_return(origin_type)
