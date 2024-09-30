@@ -29,7 +29,7 @@ jobs:
           bundler-cache: true
 
       - run: bundle exec rails db:create db:structure:load --trace
-      - run: RAILS_ENV=test_datahub bundle exec rails db:create
+      - run: RAILS_ENV=test_datahub bundle exec rails db:create db:structure:load DB_STRUCTURE=db/datahub_structure.sql --trace
       - run: bundle exec rspec
 
   gitlab-push:
