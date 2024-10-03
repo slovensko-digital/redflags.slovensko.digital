@@ -15,31 +15,13 @@ class Metais::ProjectsController < ApplicationController
     @project_info = @project.get_project_origin_info
     @project_origins = @project.project_origins
 
-    @assumption_events = []
-    @real_events = []
-    @project_origins.each do |project_origin|
-      @assumption_events.concat(project_origin.events.where(event_type: Metais::ProjectEventType.find_by(name: 'Predpoklad')))
-      @real_events.concat(project_origin.events.where(event_type: Metais::ProjectEventType.find_by(name: 'Realita')))
-    end
-    @assumption_events.sort_by! { |event| event.date }
-    @real_events.sort_by! { |event| event.date }
+    @assumption_events = @project_origins.flat_map { |project_origin| project_origin.events.assumpted }
+    @real_events = @project_origins.flat_map { |project_origin| project_origin.events.real }
 
-    @all_suppliers = []
-    @project_origins.each do |project_origin|
-      @all_suppliers.concat(project_origin.suppliers)
-    end
-    @all_suppliers.sort_by! { |event| event.date || Time.zone.parse('2999-12-31')}
+    @combined_suppliers = @project_origins.flat_map(&:suppliers).sort_by { |supplier| supplier.date || Time.zone.parse('2999-12-31') }
+    @combined_links = @project_origins.flat_map(&:links)
+    @combined_documents = @project_origins.flat_map(&:documents)
 
-    @all_links = []
-    @project_origins.each do |project_origin|
-      @all_links.concat(project_origin.links)
-    end
-
-    @all_documents = @project_origins.flat_map(&:documents)
-    @grouped_documents = @all_documents.group_by(&:description)
-    @grouped_documents = @grouped_documents.sort_by { |description, docs| docs.first.group_order || Float::INFINITY }
-
-    @project_origin = @project.project_origins.first
-    @project_origin = Metais::ProjectOrigin.includes(:documents, :suppliers).find(@project_origin.id)
+    @grouped_documents = @combined_documents.group_by(&:description).sort_by { |description, docs| docs.first.group_order || Float::INFINITY }
   end
 end

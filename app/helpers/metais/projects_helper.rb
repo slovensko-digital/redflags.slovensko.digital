@@ -1,25 +1,25 @@
 module Metais::ProjectsHelper
   def origin_type_logo(origin_type)
-    if origin_type.is_a?(Integer)
-      case origin_type
-      when 3
-        'icons/sd_logo.png'
-      when 2
-        'icons/ai_logo.png'
-      else
-        'icons/metais_logo.png'
-      end
+  if origin_type.is_a?(Integer)
+    case origin_type
+    when 3
+      ['icons/sd_logo.png', 'Slovensko.Digital']
+    when 2
+      ['icons/ai_logo.png', 'Umelá inteligencia']
     else
-      case origin_type.name
-      when 'Human'
-        'icons/sd_logo.png'
-      when 'AI'
-        'icons/ai_logo.png'
-      else
-        'icons/metais_logo.png'
-      end
+      ['icons/metais_logo.png', 'MetaIS']
+    end
+  else
+    case origin_type.name
+    when 'Human'
+      ['icons/sd_logo.png', 'Slovensko.Digital']
+    when 'AI'
+      ['icons/ai_logo.png', 'Umelá inteligencia']
+    else
+      ['icons/metais_logo.png', 'MetaIS']
     end
   end
+end
 
   def convert_to_list(text)
     items = text.split('\n')

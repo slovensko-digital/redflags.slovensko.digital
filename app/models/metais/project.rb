@@ -22,6 +22,8 @@ class Metais::Project < ApplicationRecord
   end
 
   def get_project_origin_info
+    return @project_origin_info if defined?(@project_origin_info)
+
     finance_source_mappings = {"Medzirezortný program 0EK Informačné technológie financované zo štátneho rozpočtu" => "Štátny rozpočet"}
 
     fields = %w[title status phase description guarantor project_manager start_date end_date
@@ -43,7 +45,7 @@ class Metais::Project < ApplicationRecord
       end
     end
 
-    project_info
+    @project_origin_info = project_info
   end
   
   def self.evaluation_counts

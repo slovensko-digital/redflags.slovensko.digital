@@ -14,7 +14,8 @@
       <div class="col-md-12 mb-3">
         <h5><%= form.label :title, "Názov projektu" %>
         <% if @project_info.title.present? %>
-            <%= image_tag origin_type_logo(@project_info.title.origin), style: "width: 16px; height: 16px;" %>
+            <% logo_path, tooltip_text = origin_type_logo(@project_info.title.origin) %>
+            <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 16px; height: 16px;", class:"tag-tooltip" %>
         <% end %>
         </h5>
         <%= form.text_field :title, value: @project_info.title, class: "form-control"  %>
@@ -22,7 +23,8 @@
       <div class="col-md-12">
         <h5><%= form.label :description, "Popis" %>
         <% if @project_info.description.present? %>
-            <%= image_tag origin_type_logo(@project_info.description.origin), style: "width: 16px; height: 16px;" %>
+            <% logo_path, tooltip_text = origin_type_logo(@project_info.description.origin) %>
+            <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 16px; height: 16px;", class:"tag-tooltip" %>
         <% end %>
         </h5>
         <%= form.text_area :description, value: @project_info.description, class: "form-control", rows: 12 %>
@@ -33,7 +35,8 @@
           <div class="col-md-6">
             <h6 class="m-0"><%= form.label :guarantor, "Garant" %>
             <% if @project_info.guarantor.present? %>
-                <%= image_tag origin_type_logo(@project_info.guarantor.origin), style: "width: 16px; height: 16px;" %>
+                <% logo_path, tooltip_text = origin_type_logo(@project_info.guarantor.origin) %>
+                <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 16px; height: 16px;", class:"tag-tooltip" %>
             <% end %>
             </h6>
             <%= form.text_field :guarantor, value: @project_info.guarantor, class: "form-control"  %>
@@ -41,7 +44,8 @@
           <div class="col-md-6">
             <h6 class="m-0"><%= form.label :project_manager, "Projektový manažér" %>
             <% if @project_info.project_manager.present? %>
-                <%= image_tag origin_type_logo(@project_info.project_manager.origin), style: "width: 16px; height: 16px;" %>
+                <% logo_path, tooltip_text = origin_type_logo(@project_info.project_manager.origin) %>
+                <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 16px; height: 16px;", class:"tag-tooltip" %>
             <% end %>
             </h6>
             <%= form.text_field :project_manager, value: @project_info.project_manager, class: "form-control"  %>
@@ -50,7 +54,8 @@
           <div class="col-md-6 mt-3">
             <h6 class="m-0"><%= form.label :finance_source, "Zdroj financovania" %>
             <% if @project_info.finance_source.present? %>
-                <%= image_tag origin_type_logo(@project_info.finance_source.origin), style: "width: 16px; height: 16px;" %>
+                <% logo_path, tooltip_text = origin_type_logo(@project_info.finance_source.origin) %>
+                <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 16px; height: 16px;", class:"tag-tooltip" %>
             <% end %>
             </h6>
             <% finance_source_mappings = {"Medzirezortný program 0EK Informačné technológie financované zo štátneho rozpočtu" => "Štátny rozpočet"} %>
@@ -60,13 +65,15 @@
           <div class="col-md-6 mt-3">
             <h6 class="m-0"><%= form.label :status, "Stav" %>
             <% if @project_info.status.present? %>
-                <%= image_tag origin_type_logo(@project_info.status.origin), style: "width: 16px; height: 16px;" %>
+                <% logo_path, tooltip_text = origin_type_logo(@project_info.status.origin) %>
+                <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 16px; height: 16px;", class:"tag-tooltip" %>
             <% end %>
             </h6>
             <%= form.select :status, Metais::ProjectOrigin.pluck(:status).uniq.reject(&:blank?), { selected: @project_info.status }, { class: "form-control" }  %>
             <h6 class="m-0 mt-3"><%= form.label :phase, "Fáza" %>
             <% if @project_info.phase.present? %>
-                <%= image_tag origin_type_logo(@project_info.phase.origin), style: "width: 16px; height: 16px;" %>
+                <% logo_path, tooltip_text = origin_type_logo(@project_info.phase.origin) %>
+                <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 16px; height: 16px;", class:"tag-tooltip" %>
             <% end %>
             </h6>
             <%= form.select :phase, Metais::ProjectOrigin.pluck(:phase).uniq.reject(&:blank?), { selected: @project_info.phase }, { class: "form-control" }  %>
@@ -75,7 +82,8 @@
           <div class="col-md-6 mt-3">
             <h6 class="m-0"><%= form.label :start_date, "Dátum začiatku" %>
             <% if @project_info.start_date.present? %>
-                <%= image_tag origin_type_logo(@project_info.start_date.origin), style: "width: 16px; height: 16px;" %>
+                <% logo_path, tooltip_text = origin_type_logo(@project_info.start_date.origin) %>
+                <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 16px; height: 16px;", class:"tag-tooltip" %>
             <% end %>
             </h6>
             <%= form.date_field :start_date, 
@@ -85,7 +93,8 @@
           <div class="col-md-6 mt-3">
             <h6 class="m-0"><%= form.label :end_date, "Termín ukončenia " %>
             <% if @project_info.end_date.present? %>
-                <%= image_tag origin_type_logo(@project_info.end_date.origin), style: "width: 16px; height: 16px;" %>
+                <% logo_path, tooltip_text = origin_type_logo(@project_info.end_date.origin) %>
+                <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 16px; height: 16px;", class:"tag-tooltip" %>
             <% end %>
             </h6>
             <%= form.date_field :end_date, 
@@ -99,13 +108,15 @@
               <div class="col-md-6">
                 <h6 class="m-0"><%= form.label :investment, "Investícia" %>
                 <% if @project_info.investment.present? %>
-                    <%= image_tag origin_type_logo(@project_info.investment.origin), style: "width: 16px; height: 16px;" %>
+                    <% logo_path, tooltip_text = origin_type_logo(@project_info.investment.origin) %>
+                    <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 16px; height: 16px;", class:"tag-tooltip" %>
                 <% end %>
                 </h6>
                 <%= form.number_field :investment, value: @project_info.investment, step: 0.1, class: "form-control"  %>
                 <h6 class="m-0 mt-3"><%= form.label :operation, "Ročné náklady" %>
                 <% if @project_info.operation.present? %>
-                    <%= image_tag origin_type_logo(@project_info.operation.origin), style: "width: 16px; height: 16px;" %>
+                    <% logo_path, tooltip_text = origin_type_logo(@project_info.operation.origin) %>
+                    <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 16px; height: 16px;", class:"tag-tooltip" %>
                 <% end %>
                 </h6>
                 <%= form.number_field :operation, value: @project_info.operation, step: 0.1, class: "form-control"  %>
@@ -113,13 +124,15 @@
               <div class="col-md-6">
                 <h6 class="m-0"><%= form.label :approved_investment, "Schválená investícia" %>
                 <% if @project_info.approved_investment.present? %>
-                    <%= image_tag origin_type_logo(@project_info.approved_investment.origin), style: "width: 16px; height: 16px;" %>
+                    <% logo_path, tooltip_text = origin_type_logo(@project_info.approved_investment.origin) %>
+                    <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 16px; height: 16px;", class:"tag-tooltip" %>
                 <% end %>
                 </h6>
                 <%= form.number_field :approved_investment, value: @project_info.approved_investment, step: 0.1, class: "form-control"  %>
                 <h6 class="m-0 mt-3"><%= form.label :approved_operation, "Schválené ročné náklady" %>
                 <% if @project_info.approved_operation.present? %>
-                    <%= image_tag origin_type_logo(@project_info.approved_operation.origin), style: "width: 16px; height: 16px;" %>
+                    <% logo_path, tooltip_text = origin_type_logo(@project_info.approved_operation.origin) %>
+                    <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 16px; height: 16px;", class:"tag-tooltip" %>
                 <% end %>
                 </h6>
                 <%= form.number_field :approved_operation, value: @project_info.approved_operation, step: 0.1, class: "form-control"  %>
@@ -134,7 +147,8 @@
       <div class="col-md-12">
         <h5><%= form.label :targets_text, "Ciele a merateľné ukazovatele" %>
         <% if @project_info.targets_text.present? %>
-            <%= image_tag origin_type_logo(@project_info.targets_text.origin), style: "width: 16px; height: 16px;" %>
+            <% logo_path, tooltip_text = origin_type_logo(@project_info.targets_text.origin) %>
+            <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 16px; height: 16px;", class:"tag-tooltip" %>
         <% end %>
         </h5>
         <%= form.text_area :targets_text, value: @project_info.targets_text, class: "form-control", rows: 5 %>
@@ -145,7 +159,8 @@
       <div class="col-md-12">
         <h5><%= form.label :documents_text, "Dokumenty" %>
         <% if @project_info.documents_text.present? %>
-            <%= image_tag origin_type_logo(@project_info.documents_text.origin), style: "width: 16px; height: 16px;" %>
+            <% logo_path, tooltip_text = origin_type_logo(@project_info.documents_text.origin) %>
+            <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 16px; height: 16px;", class:"tag-tooltip" %>
         <% end %>
         </h5>
         <%= form.text_area :documents_text, value: @project_info.documents_text, class: "form-control", rows: 2 %>
@@ -156,7 +171,8 @@
       <div class="col-md-12">
         <h5><%= form.label :links_text, "Linky" %>
         <% if @project_info.links_text.present? %>
-            <%= image_tag origin_type_logo(@project_info.links_text.origin), style: "width: 16px; height: 16px;" %>
+            <% logo_path, tooltip_text = origin_type_logo(@project_info.links_text.origin) %>
+            <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 16px; height: 16px;", class:"tag-tooltip" %>
         <% end %>
         </h5>
         <%= form.text_area :links_text, value: @project_info.links_text, class: "form-control", rows: 2 %>
@@ -221,7 +237,8 @@
             <% @assumption_events.each do |event| %>
                 <tr>
                 <td>
-                    <%= image_tag origin_type_logo(event.origin_type), style: "width: 16px; height: 16px;" %>
+                    <% logo_path, tooltip_text = origin_type_logo(event.origin_type) %>
+                    <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 16px; height: 16px;", class:"tag-tooltip" %>
                     <%= event.name %>
                 </td>
                 <td><%= event.value %></td>
@@ -259,7 +276,8 @@
         <% @real_events.each do |event| %>
           <tr>
             <td>
-                <%= image_tag origin_type_logo(event.origin_type), style: "width: 16px; height: 16px;" %>
+                <% logo_path, tooltip_text = origin_type_logo(event.origin_type) %>
+                <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 16px; height: 16px;", class:"tag-tooltip" %>
                 <%= event.name %>
             </td>
             <td><%= event.value %></td>
@@ -297,10 +315,11 @@
         </tr>
         </thead>
         <tbody>
-        <% @all_suppliers.each do |supplier| %>
+        <% @combined_suppliers.each do |supplier| %>
           <tr>
             <td>              
-                <%= image_tag origin_type_logo(supplier.origin_type), style: "width: 16px; height: 16px;" %>
+                <% logo_path, tooltip_text = origin_type_logo(supplier.origin_type) %>
+                <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 16px; height: 16px;", class:"tag-tooltip" %>
                 <b><%= supplier.supplier_type.name if supplier.supplier_type.present? %></b>
             </td>
             <td><%= link_to supplier.name, supplier.value, class: "w-100" %></td>
@@ -356,10 +375,11 @@
         </tr>
         </thead>
         <tbody>
-        <% @all_documents.each do |document| %>
+        <% @combined_documents.each do |document| %>
           <tr>
             <td>
-                <%= image_tag origin_type_logo(document.origin_type), style: "width: 16px; height: 16px;" %>
+                <% logo_path, tooltip_text = origin_type_logo(document.origin_type) %>
+                <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 16px; height: 16px;", class:"tag-tooltip" %>
                 <b><%= document.name %></b>
             </td>
             <td><%= link_to document.value, document.value %></td>
@@ -395,10 +415,11 @@
         </tr>
         </thead>
         <tbody>
-        <% @all_links.each do |link| %>
+        <% @combined_links.each do |link| %>
           <tr>
             <td>
-                <%= image_tag origin_type_logo(link.origin_type), style: "width: 16px; height: 16px;" %>
+                <% logo_path, tooltip_text = origin_type_logo(link.origin_type) %>
+                <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 16px; height: 16px;", class:"tag-tooltip" %>
                 <b><%= link.name %></b>
             </td>
             <td><%= link_to link.value, link.value %></td>
