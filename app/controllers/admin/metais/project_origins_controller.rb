@@ -1,5 +1,5 @@
 class Admin::Metais::ProjectOriginsController < ApplicationController
-  before_action :get_project, only: [:craete, :edit, :update, :add_event, :add_supplier, :add_link, :add_document, :remove_event, :remove_supplier, :remove_link, :remove_document, :update_group_order]
+  before_action :set_project, only: [:craete, :edit, :update, :add_event, :add_supplier, :add_link, :add_document, :remove_event, :remove_supplier, :remove_link, :remove_document, :update_group_order]
 
   def create
     @project_origin = @project.project_origins.build(project_origin_params)
@@ -142,7 +142,7 @@ class Admin::Metais::ProjectOriginsController < ApplicationController
 
   private
 
-  def get_project
+  def set_project
     @project = Metais::Project.find(params[:project_id])
   end
 
@@ -173,7 +173,7 @@ class Admin::Metais::ProjectOriginsController < ApplicationController
   end
 
   def detect_changes(current_project_info, new_params)
-    finance_source_mappings = {"Medzirezortný program 0EK Informačné technológie financované zo štátneho rozpočtu" => "Štátny rozpočet"}
+    finance_source_mappings = Metais::Project::FINANCE_SOURCE_MAPPINGS
     changed_params = {}
 
     new_params.each do |field, new_value|

@@ -3,20 +3,20 @@ module Metais::ProjectsHelper
   if origin_type.is_a?(Integer)
     case origin_type
     when 3
-      ['icons/sd_logo.png', 'Slovensko.Digital']
+      ['icons/sd_logo.png', 'Ručne vyplnený údaj od Slovensko.Digital']
     when 2
-      ['icons/ai_logo.png', 'Umelá inteligencia']
+      ['icons/ai_logo.png', 'Údaj spracovaný našim AI extraktorom']
     else
-      ['icons/metais_logo.png', 'MetaIS']
+      ['icons/metais_logo.png', 'Údaj pochádzajúci z MetaIS portálu']
     end
   else
     case origin_type.name
     when 'Human'
-      ['icons/sd_logo.png', 'Slovensko.Digital']
+      ['icons/sd_logo.png', 'Ručne vyplnený údaj od Slovensko.Digital']
     when 'AI'
-      ['icons/ai_logo.png', 'Umelá inteligencia']
+      ['icons/ai_logo.png', 'Údaj spracovaný našim AI extraktorom']
     else
-      ['icons/metais_logo.png', 'MetaIS']
+      ['icons/metais_logo.png', 'Údaj pochádzajúci z MetaIS portálu']
     end
   end
 end

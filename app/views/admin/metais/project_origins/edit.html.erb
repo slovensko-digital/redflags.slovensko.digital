@@ -58,7 +58,7 @@
                 <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 16px; height: 16px;", class:"tag-tooltip" %>
             <% end %>
             </h6>
-            <% finance_source_mappings = {"Medzirezortný program 0EK Informačné technológie financované zo štátneho rozpočtu" => "Štátny rozpočet"} %>
+            <% finance_source_mappings = Metais::Project::FINANCE_SOURCE_MAPPINGS %>
             <%= form.select :finance_source, 
                   Metais::ProjectOrigin.pluck(:finance_source).uniq.reject(&:blank?).map { |fs| [finance_source_mappings[fs] || fs, fs] }, { selected: @project_info.finance_source }, class: "form-control" %>
           </div>

@@ -2,23 +2,26 @@
   <div class="row mb-3">
     <div class="col-md-12">
       <h1 class="project-title"><%= @project_info.title %></h1>
+      <a class="" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+        Legenda
+      </a>
+     <div class="collapse" id="collapseExample">
+        <div class="card card-body">
+          <ul class="list-inline d-flex flex-column justify-content-center align-items-center mb-0">
+            <% [['icons/sd_logo.png', 'Údaj bol <strong>manuálne zadaný</strong> členmi tímu Slovensko.Digital. Tento proces zaručuje <em>vysokú presnosť</em>, keďže experti starostlivo vyplnili údaje na základe overených informácií.'],
+                ['icons/ai_logo.png', 'Údaj bol <strong>automaticky získaný</strong> pomocou nášho AI nástroja na spracovanie dát. Nástroj prehľadáva <em>veľké množstvo dokumentov</em> a extrahuje z nich relevantné informácie.'],
+                ['icons/metais_logo.png', 'Údaj pochádza z <strong>verejne dostupného informačného systému MetaIS</strong>, ktorý zhromažďuje informácie o štátnych IT projektoch verejnej správy. Poskytuje <em>oficiálne informácie</em> o projekte.']].each_with_index do |(logo_path, tooltip_text), index| %>
+              <li class="list-inline-item d-flex align-items-center <%= 'mb-4' unless index == 2 %>">
+                <div class="border rounded p-2 mr-4 d-flex align-items-center">
+                  <%= image_tag logo_path, style:"height: 28px; width:28px;" %>
+                </div>
+                <span class="text-justify"><%= raw tooltip_text %></span>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
       <div class="text-justify text-muted mt-4"><%= simple_format(@project_info.description) %></div>
-    </div>
-  </div>
-
-  <hr class="mt-0 mb-4">
-
-<div class="row mb-3">
-    <div class="col-md-12">
-      <h6>Pôvod údajov o projekte</h6>
-      <ul class="list-inline d-flex flex-column flex-md-row justify-content-md-between">
-        <% [['icons/sd_logo.png', 'Ručne vyplnený údaj od Slovensko.Digital'], ['icons/ai_logo.png', 'Údaj spracovaný našim AI extraktorom'], ['icons/metais_logo.png', 'Údaj pochádzajúci z MetaIS portálu']].each do |logo_path, tooltip_text| %>
-          <li class="list-inline-item d-flex align-items-center mb-2 mb-md-0">
-            <%= image_tag logo_path, style: "width: 16px; height: 16px; margin-right: 8px;" %>
-            <span><%= tooltip_text %></span>
-          </li>
-        <% end %>
-      </ul>
     </div>
   </div>
 

@@ -14,6 +14,8 @@ class Metais::Project < ApplicationRecord
                                      foreign_key: 'metais_project_id',
                                      association_foreign_key: 'project_id'
 
+  FINANCE_SOURCE_MAPPINGS = { "Medzirezortný program 0EK Informačné technológie financované zo štátneho rozpočtu" => "Štátny rozpočet" }
+
   def evaluations
     ::Project.joins('''
     INNER JOIN "public"."projects_metais_projects" ON "public"."projects_metais_projects"."project_id" = "projects"."id"
@@ -22,30 +24,7 @@ class Metais::Project < ApplicationRecord
   end
 
   def get_project_origin_info
-    return @project_origin_info if defined?(@project_origin_info)
-
-    finance_source_mappings = {"Medzirezortný program 0EK Informačné technológie financované zo štátneho rozpočtu" => "Štátny rozpočet"}
-
-    fields = %w[title status phase description guarantor project_manager start_date end_date
-                finance_source investment operation approved_investment approved_operation
-                supplier supplier_cin targets_text events_text documents_text links_text updated_at]
-
-    origins = self.project_origins.sort_by { |origin| -origin.origin_type_id }
-
-    project_info = OpenStruct.new
-    fields.each do |field|
-      origin = origins.detect { |origin| !origin.send(field).nil? }
-      value = origin&.send(field)
-      
-      if field == 'finance_source' && value
-        value = finance_source_mappings[value] || value
-      end
-      if value
-        project_info.send("#{field}=", Metais::ValueWithOrigin.new(value, origin.origin_type_id))
-      end
-    end
-
-    @project_origin_info = project_info
+    @project_origin_info ||= load_project_origin_info
   end
   
   def self.evaluation_counts
@@ -106,5 +85,30 @@ class Metais::Project < ApplicationRecord
     end
 
     projects.page(page).per(per_page)
+  end
+
+  private
+
+  def load_project_origin_info
+    fields = %w[title status phase description guarantor project_manager start_date end_date
+                finance_source investment operation approved_investment approved_operation
+                supplier supplier_cin targets_text events_text documents_text links_text updated_at]
+
+    origins = self.project_origins.sort_by { |origin| -origin.origin_type_id }
+
+    project_info = OpenStruct.new
+    fields.each do |field|
+      origin = origins.detect { |origin| !origin.send(field).nil? }
+      value = origin&.send(field)
+      
+      if field == 'finance_source' && value
+        value = FINANCE_SOURCE_MAPPINGS[value] || value
+      end
+      if value
+        project_info.send("#{field}=", Metais::ValueWithOrigin.new(value, origin.origin_type_id))
+      end
+    end
+
+    project_info
   end
 end
