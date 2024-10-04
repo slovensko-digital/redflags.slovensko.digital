@@ -21,9 +21,9 @@ class SyncAllTopicsJob < ApplicationJob
   end
 
   def process_row(row, indices, sync_all)
-    project_metais_code = row[indices["MetaIS"]]
     project_name = row[indices["Projekt"]]
     project_id = row[indices["Projekt ID"]]
+    project_metais_code = row[indices["MetaIS"]]
     platform_link = row[indices["Platforma"]]
     preparation_document_id = row[indices["ID draft prípravy"]]
     preparation_page_id = row[indices["ID prípravy"]]
