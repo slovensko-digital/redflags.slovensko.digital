@@ -21,7 +21,7 @@ class Metais::ProjectDataExtractionResultJob < ApplicationJob
     update_project_origin(project_origin, result)
     process_harmonogram(result['harmonogram'], project_origin)
 
-    send_delete_request(URI(url))
+    Metais::ProjectDataExtractionDeleteJob.perform_later(project_uuid)
   end
 
   private
@@ -104,17 +104,5 @@ class Metais::ProjectDataExtractionResultJob < ApplicationJob
     Date.strptime(start_date, "%m/%Y")
   rescue ArgumentError => e
     raise RuntimeError, e
-  end
-
-  def send_delete_request(uri)
-    req = Net::HTTP::Delete.new(uri)
-    res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == 'https') do |http|
-      http.request(req)
-    end
-
-    unless res.is_a?(Net::HTTPSuccess)
-      error_message = "Failed to delete project: #{res.code}, body: #{res.body}"
-      raise RuntimeError, error_message
-    end
   end
 end

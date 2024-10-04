@@ -67,16 +67,12 @@ RSpec.describe Metais::ProjectDataExtractionResultJob, type: :job do
         allow(Metais::ProjectEventType).to receive(:find_by).with(name: 'Predpoklad').and_return(event_type)
 
         allow(Metais::ProjectEvent).to receive(:find_or_initialize_by).and_return(double('Metais::ProjectEvent', save!: true))
-
-        allow(Net::HTTP).to receive(:start).and_return(double('Net::HTTPResponse', is_a?: true, code: '200'))
       end
 
       it 'successfully processes the result and sends a delete request' do
         expect {
           described_class.perform_now(project_uuid, location_header)
-        }.not_to have_enqueued_job
-
-        expect(Net::HTTP).to have_received(:start)
+        }.to have_enqueued_job(Metais::ProjectDataExtractionDeleteJob).with(project_uuid)
       end
     end
 
