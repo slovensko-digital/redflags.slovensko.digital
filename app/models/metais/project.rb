@@ -26,7 +26,7 @@ class Metais::Project < ApplicationRecord
   def get_project_origin_info
     @project_origin_info ||= load_project_origin_info
   end
-  
+
   def self.evaluation_counts
     total_count = Metais::Project.count
     yes_count = Metais::Project
@@ -34,17 +34,17 @@ class Metais::Project < ApplicationRecord
       .distinct
       .count('metais.projects.id')
     no_count = total_count - yes_count
-  
+
     { yes: yes_count, no: no_count }
   end
-  
+
   def self.filtered_and_sorted_projects(params)
     per_page = 25
     page = params[:page] || 1
 
     ordered_project_origins = Metais::ProjectOrigin
       .select('project_id,
-                COALESCE(NULLIF(max(approved_investment) FILTER (WHERE approved_investment IS NOT NULL), 0), 
+                COALESCE(NULLIF(max(approved_investment) FILTER (WHERE approved_investment IS NOT NULL), 0),
                         NULLIF(max(investment) FILTER (WHERE investment IS NOT NULL), 0)) AS final_investment,
                 max(title) FILTER (WHERE title IS NOT NULL) AS final_title,
                 max(status) FILTER (WHERE status IS NOT NULL) AS final_status,
@@ -68,21 +68,16 @@ class Metais::Project < ApplicationRecord
       projects = Metais::Project.where(id: projects)
     end
 
-    if params[:sort].present?
-      sort_direction = params[:sort_direction]&.upcase == 'ASC' ? 'ASC' : 'DESC'
-
-      projects = case params[:sort]
-                  when 'alpha'
-                    projects.order("project_origins.final_title #{sort_direction}")
-                  when 'date'
-                    projects.order("metais.projects.updated_at #{sort_direction}")
-                  when 'price'
-                    projects.order("project_origins.final_investment #{sort_direction} NULLS #{sort_direction == 'ASC' ? 'FIRST' : 'LAST'}")
-                  end
-    else
-      sort_direction = params[:sort_direction]&.upcase == 'ASC' ? 'ASC' : 'DESC'
-      projects.order("metais.projects.updated_at #{sort_direction}")
-    end
+    params[:sort] = 'date' unless params[:sort].present?
+    sort_direction = params[:sort_direction]&.upcase == 'ASC' ? 'ASC' : 'DESC'
+    projects = case params[:sort]
+                when 'alpha'
+                  projects.order("project_origins.final_title #{sort_direction}")
+                when 'date'
+                  projects.order("metais.projects.updated_at #{sort_direction}")
+                when 'price'
+                  projects.order("project_origins.final_investment #{sort_direction} NULLS #{sort_direction == 'ASC' ? 'FIRST' : 'LAST'}")
+                end
 
     projects.page(page).per(per_page)
   end
@@ -100,7 +95,7 @@ class Metais::Project < ApplicationRecord
     fields.each do |field|
       origin = origins.detect { |origin| !origin.send(field).nil? }
       value = origin&.send(field)
-      
+
       if field == 'finance_source' && value
         value = FINANCE_SOURCE_MAPPINGS[value] || value
       end
