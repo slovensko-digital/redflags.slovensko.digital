@@ -5,7 +5,7 @@ module Metais::ProjectsHelper
     when 3
       ['icons/sd_logo.png', 'Ručne vyplnený údaj od Slovensko.Digital']
     when 2
-      ['icons/ai_logo.png', 'Údaj spracovaný našim AI extraktorom']
+      ['icons/ai_logo.png', 'Údaj spracovaný naším AI extraktorom']
     else
       ['icons/metais_logo.png', 'Údaj pochádzajúci z MetaIS portálu']
     end
@@ -14,7 +14,7 @@ module Metais::ProjectsHelper
     when 'Human'
       ['icons/sd_logo.png', 'Ručne vyplnený údaj od Slovensko.Digital']
     when 'AI'
-      ['icons/ai_logo.png', 'Údaj spracovaný našim AI extraktorom']
+      ['icons/ai_logo.png', 'Údaj spracovaný naším AI extraktorom']
     else
       ['icons/metais_logo.png', 'Údaj pochádzajúci z MetaIS portálu']
     end
