@@ -15,7 +15,7 @@ class Metais::ProjectDataExtractionResultJob < ApplicationJob
     raise RuntimeError.new('Result status is not "Done"') unless body['status'] == 'Done'
 
     result = body['result']
-    return if result['detail'] == 'No documents'
+    return if ['No documents', 'No documents for project plan'].include? result['detail']
 
     metais_project = find_metais_project(project_uuid)
     project_origin = find_or_initialize_project_origin(metais_project)
