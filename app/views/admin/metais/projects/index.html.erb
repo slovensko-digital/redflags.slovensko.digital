@@ -208,6 +208,7 @@
       <th class="text-center">Dodávatelia</th>
       <th class="text-center">Aktivity</th>
       <th class="text-center">Linky</th>
+      <th class="text-center">AI dátum</th>
       <th class="text-center">Akcie</th>
     </tr>
   </thead>
@@ -234,7 +235,11 @@
           <%= project.project_origins.joins(:links).count %>
         </td>
         <td class="text-center">
+          <%= project.get_ai_project_origin&.updated_at&.in_time_zone('Europe/Bratislava')&.strftime('%H:%M %d.%m.%Y') || '-' %>
+        </td>
+        <td class="text-center">
           <%= link_to 'Upraviť', create_human_origin_admin_metais_project_path(project), method: :post, class: 'btn btn-secondary btn-sm' %>
+          <%= link_to 'Spracovať AI', run_ai_extraction_admin_metais_project_path(project), method: :post, class: 'btn btn-priamry btn-sm' %>
         </td>
       </tr>
     <% end %>

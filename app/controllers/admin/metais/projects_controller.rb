@@ -5,7 +5,7 @@ class Admin::Metais::ProjectsController < AdminController
     @status_counts = Metais::ProjectOrigin.status_counts
     @unique_statuses = Metais::ProjectOrigin.unique_statuses
     @evaluation_counts = Metais::Project.evaluation_counts
-    
+
     @projects = Metais::Project.filtered_and_sorted_projects(params)
   end
 
@@ -26,6 +26,6 @@ class Admin::Metais::ProjectsController < AdminController
     @project = Metais::Project.find(params[:id])
     Metais::ProjectDataExtractionJob.perform_later(@project.uuid)
 
-    redirect_to admin_metais_project_path @project
+    redirect_to admin_metais_project_path @project, notice: 'Projekt bol zaradený na spracovanie.'
   end
 end

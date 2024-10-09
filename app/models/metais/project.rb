@@ -27,6 +27,10 @@ class Metais::Project < ApplicationRecord
     @project_origin_info ||= load_project_origin_info
   end
 
+  def get_ai_project_origin
+    @ai_project_origin ||= project_origins.joins(:origin_type).find_by(origin_types: { name: 'AI' })
+  end
+
   def self.evaluation_counts
     total_count = Metais::Project.count
     yes_count = Metais::Project

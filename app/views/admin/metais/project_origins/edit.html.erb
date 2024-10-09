@@ -3,7 +3,7 @@
     <div class="alert alert-secondary d-flex justify-content-between align-items-center" role="alert">
         <p class="mb-0">
             <span class="font-weight-bold">Projekt updatovaný v dátume:</span> <%= @project_info&.updated_at&.in_time_zone('Europe/Bratislava')&.strftime('%H:%M %d.%m.%Y') %>.
-            <span class="font-weight-bold">AI extrakcia v dátume:</span> <%= @ai_project_origin&.updated_at&.in_time_zone('Europe/Bratislava')&.strftime('%H:%M %d.%m.%Y') || '-' %>
+            <span class="font-weight-bold">AI extrakcia v dátume:</span> <%= @project.get_ai_project_origin&.updated_at&.in_time_zone('Europe/Bratislava')&.strftime('%H:%M %d.%m.%Y') || '-' %>
         </p>
         <div>
             <%= link_to 'Zobraziť', metais_project_path(@project), class: "btn btn-link", role: "button" %>
