@@ -26,6 +26,6 @@ class Admin::Metais::ProjectsController < AdminController
     @project = Metais::Project.find(params[:id])
     Metais::ProjectDataExtractionJob.perform_later(@project.uuid)
 
-    redirect_to admin_metais_project_path @project, notice: 'Projekt bol zaradený na spracovanie.'
+    redirect_to admin_metais_projects_path, notice: 'Projekt bol zaradený na spracovanie.'
   end
 end
