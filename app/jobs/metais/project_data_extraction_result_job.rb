@@ -15,13 +15,14 @@ class Metais::ProjectDataExtractionResultJob < ApplicationJob
     raise RuntimeError.new('Result status is not "Done"') unless body['status'] == 'Done'
 
     result = body['result']
-    return if ['No documents', 'No documents for project plan'].include? result['detail']
 
-    metais_project = find_metais_project(project_uuid)
-    project_origin = find_or_initialize_project_origin(metais_project)
+    unless ['No documents', 'No documents for project plan'].include? result['detail']
+      metais_project = find_metais_project(project_uuid)
+      project_origin = find_or_initialize_project_origin(metais_project)
 
-    update_project_origin(project_origin, result)
-    process_harmonogram(result['harmonogram'], project_origin)
+      update_project_origin(project_origin, result)
+      process_harmonogram(result['harmonogram'], project_origin)
+    end
 
     Metais::ProjectDataExtractionDeleteJob.perform_later(project_uuid)
   end
