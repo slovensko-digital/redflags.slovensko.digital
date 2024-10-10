@@ -73,7 +73,7 @@ class Metais::Project < ApplicationRecord
 
       projects = case params[:sort]
                   when 'alpha'
-                    projects.order("project_origins.final_title #{sort_direction}")
+                    projects.order("LOWER(project_origins.final_title) #{sort_direction}")
                   when 'date'
                     projects.order("metais.projects.updated_at #{sort_direction}")
                   when 'price'
