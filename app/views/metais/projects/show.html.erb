@@ -1,0 +1,420 @@
+<div id="project-show" class="container main">
+  <div class="row mb-3">
+    <div class="col-md-12">
+      <h1 class="project-title"><%= @project_info.title %></h1>
+      <a class="" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+        Legenda
+      </a>
+     <div class="collapse" id="collapseExample">
+        <div class="card card-body">
+          <ul class="list-inline d-flex flex-column justify-content-center align-items-center mb-0">
+            <% [['icons/sd_logo.png', 'Údaj bol <strong>manuálne zadaný</strong> členmi tímu Slovensko.Digital. Tento proces zaručuje <em>vysokú presnosť</em>, keďže experti starostlivo vyplnili údaje na základe overených informácií.'],
+                ['icons/ai_logo.png', 'Údaj bol <strong>automaticky získaný</strong> pomocou nášho AI nástroja na spracovanie dát. Nástroj prehľadáva <em>veľké množstvo dokumentov</em> a extrahuje z nich relevantné informácie.'],
+                ['icons/metais_logo.png', 'Údaj pochádza z <strong>verejne dostupného informačného systému MetaIS</strong>, ktorý zhromažďuje informácie o štátnych IT projektoch verejnej správy. Poskytuje <em>oficiálne informácie</em> o projekte.']].each_with_index do |(logo_path, tooltip_text), index| %>
+              <li class="list-inline-item d-flex align-items-center <%= 'mb-4' unless index == 2 %>">
+                <div class="border rounded p-2 mr-4 d-flex align-items-center">
+                  <%= image_tag logo_path, style:"height: 28px; width:28px;" %>
+                </div>
+                <span class="text-justify"><%= raw tooltip_text %></span>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+      <div class="text-justify text-muted mt-4"><%= simple_format(@project_info.description) %></div>
+    </div>
+  </div>
+
+  <hr class="mt-0 mb-4">
+
+  <div class="row mb-4">
+    <div class="col">
+      <div class="row">
+        <div class="col">
+          <h5 class="d-flex align-items-center">Garant
+            <% if @project_info.guarantor.present? %>
+              <% logo_path, tooltip_text = origin_type_logo(@project_info.guarantor.origin) %>
+              <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 16px; height: 16px; margin-left: 6px;", class:"tag-tooltip" %>
+            <% end %>
+          </h5>
+          <% if @project_info.guarantor.present? %>
+            <p><%= @project_info.guarantor %></p>
+          <% else %>
+            <p class="font-italic text-secondary">Neuvedený</p>
+          <% end %>
+        </div>
+        <div class="col">
+          <h5 class="d-flex align-items-center">Projektový manažér
+            <% if @project_info.project_manager.present? %>
+              <% logo_path, tooltip_text = origin_type_logo(@project_info.project_manager.origin) %>
+              <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 16px; height: 16px; margin-left: 6px;", class:"tag-tooltip" %>
+            <% end %>
+          </h5>
+          <% if @project_info.project_manager.present? %>
+            <p><%= @project_info.project_manager %></p>
+          <% else %>
+            <p class="font-italic text-secondary">Neuvedený</p>
+          <% end %>
+        </div>
+        <div class="col-md-5">
+          <h5 class="d-flex align-items-center">Investičné náklady
+            <% if @project_info.investment.present? %>
+              <% logo_path, tooltip_text = origin_type_logo(@project_info.investment.origin) %>
+              <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 16px; height: 16px; margin-left: 6px;", class:"tag-tooltip" %>
+            <% end %>
+          </h5>
+          <% if @project_info.investment.present? %>
+              <p><%= number_to_currency(@project_info.investment, :unit => "€",  :separator => ",", :delimiter => " ", :format => "%n %u")%></p>
+          <% else %>
+            <p class="font-italic text-secondary">Neuvedené</p>
+          <% end %>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <h5 class="d-flex align-items-center">Zdroj financovania
+            <% if @project_info.finance_source.present? %>
+              <% logo_path, tooltip_text = origin_type_logo(@project_info.finance_source.origin) %>
+              <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 16px; height: 16px; margin-left: 6px;", class:"tag-tooltip" %>
+            <% end %>
+          </h5>
+          <% if @project_info.finance_source.present? %>
+            <p><%= @project_info.finance_source %></p>
+          <% else %>
+            <p class="font-italic text-secondary">Neuvedený</p>
+          <% end %>
+        </div>
+        <div class="col">
+          <h5 class="d-flex align-items-center">Aktuálny stav
+            <% if @project_info.status.present? %>
+              <% logo_path, tooltip_text = origin_type_logo(@project_info.status.origin) %>
+              <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 16px; height: 16px; margin-left: 6px;", class:"tag-tooltip" %>
+            <% elsif @project_info.phase.present? %>
+              <% logo_path, tooltip_text = origin_type_logo(@project_info.phase.origin) %>
+              <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 16px; height: 16px; margin-left: 6px;", class:"tag-tooltip" %>
+            <% end %>
+          </h5>
+          <% if @project_info.finance_source.present? %>
+              <p><%= @project_info.status %>, <%= @project_info.phase %></p>
+          <% else %>
+            <p class="font-italic text-secondary">Neuvedený</p>
+          <% end %>
+        </div>
+        <div class="col-md-5">
+          <h5 class="d-flex align-items-center">Ročné náklady
+            <% if @project_info.operation.present? %>
+              <% logo_path, tooltip_text = origin_type_logo(@project_info.operation.origin) %>
+              <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 16px; height: 16px; margin-left: 6px;", class:"tag-tooltip" %>
+            <% end %>
+          </h5>
+          <% if @project_info.operation.present? %>
+              <p><%= number_to_currency(@project_info.operation, :unit => "€",  :separator => ",", :delimiter => " ", :format => "%n %u")%></p>
+          <% else %>
+            <p class="font-italic text-secondary">Neuvedené</p>
+          <% end %>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+            <h5 class="d-flex align-items-center">Dátum začiatku
+              <% if @project_info.start_date.present? %>
+                <% logo_path, tooltip_text = origin_type_logo(@project_info.start_date.origin) %>
+                <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 16px; height: 16px; margin-left: 6px;", class:"tag-tooltip" %>
+              <% end %>
+            </h5>
+            <% if @project_info.start_date.present? %>
+                <p><%= @project_info.start_date&.strftime('%d.%m.%Y') %></p>
+            <% else %>
+              <p class="font-italic text-secondary">Neuvedený</p>
+            <% end %>
+        </div>
+        <div class="col">
+            <h5 class="d-flex align-items-center">Termín ukončenia
+              <% if @project_info.end_date.present? %>
+                <% logo_path, tooltip_text = origin_type_logo(@project_info.end_date.origin) %>
+                <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 16px; height: 16px; margin-left: 6px;", class:"tag-tooltip" %>
+              <% end %>
+            </h5>
+            <% if @project_info.end_date.present? %>
+                <p><%= @project_info.end_date&.strftime('%d.%m.%Y') %></p>
+            <% else %>
+                <p class="font-italic text-secondary">Neuvedený</p>
+            <% end %>
+        </div>
+        <div class="col-md-5">
+          <h5 class="d-flex align-items-center">Schválené investičné náklady
+            <% if @project_info.approved_investment.present? %>
+              <% logo_path, tooltip_text = origin_type_logo(@project_info.approved_investment.origin) %>
+              <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 16px; height: 16px; margin-left: 6px;", class:"tag-tooltip" %>
+            <% end %>
+          </h5>
+          <% if @project_info.approved_investment.present? %>
+              <p><%= number_to_currency(@project_info.approved_investment, :unit => "€",  :separator => ",", :delimiter => " ", :format => "%n %u")%></p>
+          <% else %>
+            <p class="font-italic text-secondary">Neuvedené</p>
+          <% end %>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <h5>MetaIS <%= help_icon_if_blank(@project.code) %></h5>
+          <%= link_to @project.code, "https://metais.vicepremier.gov.sk/detail/Projekt/#{@project.uuid}/cimaster?tab=basicForm", target: "_blank" %>
+        </div>
+        <div class="col">
+            <h5 class="d-flex align-items-center">Posledná zmena
+              <% if @project_info.updated_at.present? %>
+                <% logo_path, tooltip_text = origin_type_logo(@project_info.updated_at.origin) %>
+                <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 16px; height: 16px; margin-left: 6px;", class:"tag-tooltip" %>
+              <% end %>
+            </h5>
+            <% if @project.updated_at.present? %>
+                <p><%= @project.updated_at&.strftime('%d.%m.%Y') %></p>
+            <% else %>
+                <p class="font-italic text-secondary">Neuvedený</p>
+            <% end %>
+        </div>
+        <div class="col-md-5">
+          <h5 class="d-flex align-items-center">Schválené ročné náklady
+            <% if @project_info.approved_operation.present? %>
+              <% logo_path, tooltip_text = origin_type_logo(@project_info.approved_operation.origin) %>
+              <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 16px; height: 16px; margin-left: 6px;", class:"tag-tooltip" %>
+            <% end %>
+          </h5>
+          <% if @project_info.approved_operation.present? %>
+              <p><%= number_to_currency(@project_info.approved_operation, :unit => "€",  :separator => ",", :delimiter => " ", :format => "%n %u")%></p>
+          <% else %>
+            <p class="font-italic text-secondary">Neuvedené</p>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <% if @project.evaluations.present? %>
+    <% @project.evaluations.each do |evaluation| %>
+      <% if evaluation.phases.present? %>
+        <% evaluation.phases.each do |phase| %>
+          <% if phase.published_revision.present? %>
+            <hr class="mt-0 mb-4">
+            <% if phase.phase_type.name == 'Prípravná fáza' %>
+              <h5><%= link_to 'Hodnotenie prípravnej fázy', project_show_revision_type_path(phase.project.id, 'hodnotenie-pripravy')%></h5>
+            <% else %>
+              <h5><%= link_to 'Hodnotenie fázy produkt', project_show_revision_type_path(phase.project.id, 'hodnotenie-produkt')%></h5>
+            <% end %>
+            <div class="row mb-4">
+              <div class="col-md-12">
+                <% if phase.published_revision.summary.present? %>
+                  <div class="row mb-3">
+                    <div class="col">
+                      <h5>Zhrnutie hodnotenia Red Flags</h5>
+                      <p class="mb-4"><%= phase.published_revision.summary %></p>
+                    </div>
+                  </div>
+                <% end %>
+
+                <% if phase.published_revision.recommendation.present? %>
+                  <div class="card mb-4 text-white <%= phase.published_revision.redflags_count.zero? ? 'bg-secondary' : 'bg-danger' %>">
+                    <div class="card-body">
+                      <h5 class="card-title">Stanovisko Slovensko.Digital</h5>
+                      <p class="card-text"><%= phase.published_revision.recommendation %></p>
+                    </div>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <hr class="mt-0 mb-4">
+
+      <% if @project_info.targets_text.present? %>
+        <div class="row mb-4">
+          <div class="col-md-12">
+            <h5 class="d-flex align-items-center">Ciele a merateľné ukazovatele
+              <% logo_path, tooltip_text = origin_type_logo(@project_info.targets_text.origin) %>
+              <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 16px; height: 16px; margin-left: 6px;", class:"tag-tooltip" %>
+            </h5>
+            <%= convert_to_list(@project_info.targets_text) %>
+          </div>
+        </div>
+      <% end %>
+      
+      <% if @assumption_events.any? || @real_events.any? %>
+        <div class="row mb-4">
+          <div class="col-md-12">
+            <h5>Harmonogram</h5>
+            <div class="row d-flex justify-content-center">
+              <% if @assumption_events.any? %>
+                <div class="col-md-6">
+                  <div class="main-card mb-3 card mt-2" style="border: none;">
+                    <p>Plánovaný priebeh projektu</p>
+                    <div class="card-body">
+                      <div class="vertical-timeline vertical-timeline--animate vertical-timeline--one-column">
+                        <% @assumption_events.each do |event| %>
+                          <div class="vertical-timeline-item vertical-timeline-element">
+                            <div>
+                              <span class="vertical-timeline-element-icon bounce-in">
+                                <i class="badge badge-dot badge-dot-xl badge-danger"></i>
+                              </span>
+                              <div class="vertical-timeline-element-content bounce-in">
+                                <% logo_path, tooltip_text = origin_type_logo(event.origin_type) %>
+
+                                <h4 class="timeline-title">
+                                  <%= event.name %> <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 12px; height: 12px;", class:"mr-2 tag-tooltip" if event.origin_type.present? %>
+                                </h4>
+
+                                <p><%= event.value %></p>
+                                <span class="vertical-timeline-element-date"><%= event.date.in_time_zone('Europe/Bratislava').strftime('%m/%Y') %></span>
+                              </div>
+                            </div>
+                          </div>
+                        <% end %>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+      
+              <% if @real_events.any? %>
+                <div class="col-md-6">
+                  <div class="main-card mb-3 mt-2 card" style="border: none;">
+                    <p>Reálny priebeh projektu</p>
+                    <div class="card-body">
+                      <div class="vertical-timeline vertical-timeline--animate vertical-timeline--one-column">
+                        <% @real_events.each do |event| %>
+                          <div class="vertical-timeline-item vertical-timeline-element">
+                            <div>
+                              <span class="vertical-timeline-element-icon bounce-in">
+                                <i class="badge badge-dot badge-dot-xl badge-danger"></i>
+                              </span>
+                              <div class="vertical-timeline-element-content bounce-in">
+                                <% logo_path, tooltip_text = origin_type_logo(event.origin_type) %>
+
+                                <h4 class="timeline-title">
+                                  <%= event.name %> <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 12px; height: 12px;", class:"mr-2 tag-tooltip" if event.origin_type.present? %>
+                                </h4>
+
+                                <p><%= event.value %></p>
+                                <span class="vertical-timeline-element-date"><%= event.date.in_time_zone('Europe/Bratislava').strftime('%m/%Y') %></span>
+                              </div>
+                            </div>
+                          </div>
+                        <% end %>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+      
+      <% if @project_info.supplier.present? || @combined_suppliers.any? %>
+        <div class="row mb-4">
+          <div class="col-md-12">
+            <h5>Dodávateľ projektu</h5>
+            <p><b>Dodávateľ:</b>
+                <% if @project_info.supplier.present? && @project_info.supplier_cin.present? %>
+                    <a href="https://www.finstat.sk/<%= @project_info.supplier_cin %>">
+                        <%= @project_info.supplier %>
+                    </a>
+                    <% logo_path, tooltip_text = origin_type_logo(@project_info.supplier&.origin) %>
+                    <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 16px; height: 16px; margin-left: 6px;", class:"tag-tooltip" %>
+            
+                <% else %>
+                    <span class="font-italic text-secondary">Neznámy</span>
+                <% end %>
+            </p>
+
+            <% if @combined_suppliers.any? %>
+              <ul>
+                <% @combined_suppliers.each do |supplier| %>
+                  <% logo_path, tooltip_text = origin_type_logo(supplier.origin_type) %>
+                  <b><%= case supplier.supplier_type&.name
+                        when "CRZ"
+                          "Dodávateľská zmlúva"
+                        when "NFP"
+                          "Zmlúva o NFP"
+                        when "VO"
+                          "Verejné obstarávanie"
+                        else
+                          supplier.supplier_type&.name
+                        end %></b>
+                  <li>
+                    <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 12px; height: 12px;", class:"tag-tooltip" if supplier.origin_type.present? %>       
+                    <% if supplier.value.present? && supplier.value =~ /\Ahttps?:\/\/[\S]+\z/ %>
+                        <%= link_to supplier.name, supplier.value %>
+                    <% else %>
+                        <%= supplier.name %>
+                    <% end %>
+                  </li>
+                <% end %>
+              </ul>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+      
+      <% if @project_info.documents_text.present? || @grouped_documents.any? %>
+        <div class="row mb-4">
+          <div class="col-md-12">
+            <h5>Dokumenty</h5>
+            
+            <% if @project_info.documents_text.present? %>
+              <p><%= @project_info.documents_text %></p>
+            <% end %>
+      
+            <% if @grouped_documents.any? %>
+              <% @grouped_documents.each do |description, documents| %>
+                <p class="mb-0"><%= description %></p>
+                <ul>
+                  <% documents.each do |doc| %>
+                    <% logo_path, tooltip_text = origin_type_logo(doc.origin_type) %>
+
+                    <li>
+                      <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 12px; height: 12px;", class:"tag-tooltip" if doc.origin_type.present? %>
+                      <%= link_to doc.name, doc.value %>
+                    </li>
+                  <% end %>
+                </ul>
+              <% end %>
+            <% end %>
+      
+          </div>
+        </div>
+      <% end %>
+
+      <% if @project_info.links_text.present? || @combined_links.any? %>
+        <div class="row mb-4">
+          <div class="col-md-12">
+            <h5>Linky</h5>
+
+            <% if @project_info.links_text.present? %>
+              <p><%= @project_info.links_text %></p>
+            <% end %>
+
+            <% if @combined_links.any? %>
+              <ul>
+                <% @combined_links.each do |link| %>
+                  <% logo_path, tooltip_text = origin_type_logo(link.origin_type) %>
+
+                  <li>
+                    <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 12px; height: 12px;", class:"tag-tooltip" if link.origin_type.present? %>
+                    <%= link_to link.name, link.value %>
+                  </li>
+                <% end %>
+              </ul>
+            <% end %>
+
+          </div>
+        </div>
+      <% end %>
+
+</div>

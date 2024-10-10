@@ -1,4 +1,4 @@
-FROM ruby:2.7.2
+FROM ruby:2.7.8
 
 # Install packages
 RUN apt-get update && apt-get install -y build-essential nodejs libpq-dev

@@ -52,3 +52,13 @@ ProjectStage.find_or_create_by!(name: 'Zrušený projekt').update!(position: 999
 PhaseType.find_or_create_by!(name: 'Prípravná fáza')
 PhaseType.find_or_create_by!(name: 'Fáza produkt')
 
+Metais::OriginType.find_or_create_by!(name: 'MetaIS')
+Metais::OriginType.find_or_create_by!(name: 'AI')
+Metais::OriginType.find_or_create_by!(name: 'Human')
+
+Metais::SupplierType.find_or_create_by!(name: 'CRZ')
+Metais::SupplierType.find_or_create_by!(name: 'VO')
+Metais::SupplierType.find_or_create_by!(name: 'NFP')
+
+Metais::ProjectEventType.find_or_create_by!(name: 'Predpoklad')
+Metais::ProjectEventType.find_or_create_by!(name: 'Realita')

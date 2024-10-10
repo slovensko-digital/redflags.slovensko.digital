@@ -10,15 +10,18 @@ RSpec.describe SyncAllTopicsJob, type: :job do
     [
       [],
       [],
-      ['Projekt', 'Projekt ID', 'Platforma', 'ID draft prípravy', 'ID prípravy', 'ID draft produktu', 'ID produktu'],
-      ['Projekt1', 'ABC1', '', 'ABC1', 'ABC1', 'ABC1', 'ABC1'],
-      ['Projekt2', 'ABC2', '', 'ABC2', 'ABC2', 'ABC2', 'ABC2']
+      ['Projekt', 'Projekt ID', 'MetaIS', 'Platforma', 'ID draft prípravy', 'ID prípravy', 'ID draft produktu', 'ID produktu'],
+      ['Projekt1', 1, '', '', 'ABC1', 'ABC1', 'ABC1', 'ABC1'],
+      ['Projekt2', 2, 'projekt_2741', '', 'ABC2', 'ABC2', 'ABC2', 'ABC2']
     ]
   end
 
-  let(:indices) { { 'Projekt' => 0, 'Projekt ID' => 1, 'Platforma' => 2, 'ID draft prípravy' => 3, 'ID prípravy' => 4, 'ID draft produktu' => 5, 'ID produktu' => 6 } }
+  let(:indices) { { 'Projekt' => 0, 'Projekt ID' => 1, 'MetaIS' => 2,'Platforma' => 3, 'ID draft prípravy' => 4, 'ID prípravy' => 5, 'ID draft produktu' => 6, 'ID produktu' => 7 } }
 
   before do
+    Project.create(id: 1)
+    Project.create(id: 2)
+
     mock_document = instance_double("Google::Apis::DocsV1::Document")
     allow(mock_document).to receive(:title).and_return("Dokument RF-priprava-template")
     allow(GoogleApiService).to receive(:get_document).and_return(mock_document)
@@ -45,8 +48,8 @@ RSpec.describe SyncAllTopicsJob, type: :job do
         [],
         [],
         ['Projekt'],
-        ['Projekt1', 'ABC1', '', 'ABC1', 'ABC1', 'ABC1', 'ABC1'],
-        ['Projekt2', 'ABC2', 'http://google.com', 'ABC2', 'ABC2', 'ABC2', 'ABC2']
+        ['Projekt1', 1, '', 'ABC1', 'ABC1', 'ABC1', 'ABC1'],
+        ['Projekt2', 2, 'projekt_2741', 'http://google.com', 'ABC2', 'ABC2', 'ABC2', 'ABC2']
       ]
     end
 
@@ -61,7 +64,7 @@ RSpec.describe SyncAllTopicsJob, type: :job do
       [
         [],
         [],
-        ['Projekt', 'Projekt ID', 'Platforma', 'ID draft prípravy', 'ID prípravy', 'ID draft produktu', 'ID produktu']
+        ['Projekt', 'Projekt ID', 'MetaIS', 'Platforma', 'ID draft prípravy', 'ID prípravy', 'ID draft produktu', 'ID produktu']
       ]
     end
 
@@ -76,9 +79,9 @@ RSpec.describe SyncAllTopicsJob, type: :job do
       [
         [],
         [],
-        ['Projekt', 'Projekt ID', 'Platforma', 'ID draft prípravy', 'ID prípravy', 'ID draft produktu', 'ID produktu'],
-        ['Projekt1', 'ABC1', '', 'ABC1', '', 'ABC1', ''],
-        ['Projekt2', 'ABC2', 'http://google.com', 'ABC2', 'ABC2', 'ABC2', 'ABC2']
+        ['Projekt', 'Projekt ID', 'MetaIS', 'Platforma', 'ID draft prípravy', 'ID prípravy', 'ID draft produktu', 'ID produktu'],
+        ['Projekt1', 1, '', '', 'ABC1', '', 'ABC1', ''],
+        ['Projekt2', 2, 'projekt_2741', 'http://google.com', 'ABC2', 'ABC2', 'ABC2', 'ABC2']
       ]
     end
 
