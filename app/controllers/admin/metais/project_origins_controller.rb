@@ -15,7 +15,6 @@ class Admin::Metais::ProjectOriginsController < ApplicationController
 
     @project_origins = @project.project_origins
     @project_origin = @project_origins.find(params[:id])
-    @ai_project_origin = @project_origins.joins(:origin_type).find_by(origin_types: { name: 'AI' })
 
     @assumption_events = @project_origins.flat_map { |project_origin| project_origin.events.assumpted }
     @real_events = @project_origins.flat_map { |project_origin| project_origin.events.real }
@@ -127,10 +126,10 @@ class Admin::Metais::ProjectOriginsController < ApplicationController
       redirect_to edit_admin_metais_project_project_origin_path(@project, @project_origin), alert: 'Nastala chyba pri odstraňovaní dokumentu.'
     end
   end
-  
+
   def update_group_order
     @project_origin = @project.project_origins.find(params[:project_origin_id])
-    
+
     description = params[:description]
     group_order = params[:group_order].to_i
 

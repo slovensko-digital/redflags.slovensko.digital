@@ -12,8 +12,9 @@ class LinkMetaisProjectsAndEvaluationsJob < ApplicationJob
   def link_metais_project(project)
     code = project.metais_code
     metais_project = Metais::Project.find_by(code: code)
+    return unless metais_project
 
-    if metais_project.present? && !project.metais_projects.exists?(metais_project.id)
+    unless project.metais_projects.exists?(metais_project.id)
       project.metais_projects << metais_project
     end
   end
