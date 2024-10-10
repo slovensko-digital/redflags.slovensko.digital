@@ -72,34 +72,16 @@ class Metais::Project < ApplicationRecord
       projects = Metais::Project.where(id: projects)
     end
 
-<<<<<<< HEAD
-    if params[:sort].present?
-      sort_direction = params[:sort_direction]&.upcase == 'ASC' ? 'ASC' : 'DESC'
-
-      projects = case params[:sort]
-                  when 'alpha'
-                    projects.order("LOWER(project_origins.final_title) #{sort_direction}")
-                  when 'date'
-                    projects.order("metais.projects.updated_at #{sort_direction}")
-                  when 'price'
-                    projects.order("project_origins.final_investment #{sort_direction} NULLS #{sort_direction == 'ASC' ? 'FIRST' : 'LAST'}")
-                  end
-    else
-      sort_direction = params[:sort_direction]&.upcase == 'ASC' ? 'ASC' : 'DESC'
-      projects.order("metais.projects.updated_at #{sort_direction}")
-    end
-=======
     params[:sort] = 'date' unless params[:sort].present?
     sort_direction = params[:sort_direction]&.upcase == 'ASC' ? 'ASC' : 'DESC'
     projects = case params[:sort]
                 when 'alpha'
-                  projects.order("project_origins.final_title #{sort_direction}")
+                  projects.order("LOWER(project_origins.final_title) #{sort_direction}")
                 when 'date'
                   projects.order("metais.projects.updated_at #{sort_direction}")
                 when 'price'
                   projects.order("project_origins.final_investment #{sort_direction} NULLS #{sort_direction == 'ASC' ? 'FIRST' : 'LAST'}")
                 end
->>>>>>> 5528eb2b28e4e76dc2a4b690013e5a7e76656f3d
 
     projects.page(page).per(per_page)
   end
