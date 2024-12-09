@@ -32,7 +32,7 @@ class SyncAllTopicsJob < ApplicationJob
 
 
     if project_metais_code.present?
-      project = Project.find_by(id: project_id)
+      project = Project.find_or_initialize_by(id: project_id)
       project.metais_code = project_metais_code
       project.save!
     end
