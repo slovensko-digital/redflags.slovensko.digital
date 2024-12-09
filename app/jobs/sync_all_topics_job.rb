@@ -1,7 +1,7 @@
 class SyncAllTopicsJob < ApplicationJob
   queue_as :default
 
-  COLUMN_NAMES = ['Projekt', 'Projekt ID', 'MetaIS', 'Platforma', 'ID draft prípravy', 'ID prípravy', 'ID draft produktu', 'ID produktu'].freeze
+  COLUMN_NAMES = ['Projekt', 'Projekt ID', 'Platforma', 'ID draft prípravy', 'ID prípravy', 'ID draft produktu', 'ID produktu'].freeze
 
   def perform(sync_all: true)
     sheets_service = GoogleApiService.get_sheets_service
@@ -23,19 +23,11 @@ class SyncAllTopicsJob < ApplicationJob
   def process_row(row, indices, sync_all)
     project_name = row[indices["Projekt"]]
     project_id = row[indices["Projekt ID"]]
-    project_metais_code = row[indices["MetaIS"]]
     platform_link = row[indices["Platforma"]]
     preparation_document_id = row[indices["ID draft prípravy"]]
     preparation_page_id = row[indices["ID prípravy"]]
     product_document_id = row[indices["ID draft produktu"]]
     product_page_id = row[indices["ID produktu"]]
-
-
-    if project_metais_code.present?
-      project = Project.find_or_initialize_by(id: project_id)
-      project.metais_code = project_metais_code
-      project.save!
-    end
 
     if sync_all
       process_row_for_sync_all(project_name, project_id, platform_link, preparation_document_id, preparation_page_id, product_document_id, product_page_id)
