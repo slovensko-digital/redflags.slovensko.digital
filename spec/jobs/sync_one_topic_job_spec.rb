@@ -12,7 +12,7 @@ RSpec.describe SyncOneTopicJob, type: :job do
       [],
       ['Projekt', 'Projekt ID', 'Platforma', 'ID draft prípravy', 'ID prípravy', 'ID draft produktu', 'ID produktu'],
       ['Projekt1', 'ABC1', '', 'ABC1', 'ABC1', 'ABC1', 'ABC1'],
-      ['Projekt2', 'ABC2', 'http://google.com', 'ABC2', 'ABC2', 'ABC2', 'ABC2']
+      ['Projekt2', 'ABC2', 'Platforma link', 'ABC2', 'ABC2', 'ABC2', 'ABC2']
     ]
   end
 
