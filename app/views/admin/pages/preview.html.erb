@@ -12,7 +12,6 @@
 </div>
 
 <% if @phase.present? %>
-  <% @project = @phase_revision %>
   <%= render file: 'phase_revision/show' %>
 <% else %>
   <% @page = @phase_revision %>
