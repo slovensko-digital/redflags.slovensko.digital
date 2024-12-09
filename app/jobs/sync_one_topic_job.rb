@@ -34,7 +34,7 @@ class SyncOneTopicJob < ApplicationJob
     product_page_id = row[indices["ID produktu"]]
 
     if target_id == preparation_page_id.to_i
-      if platform_link != ''
+      if platform_link == 'Platforma link'
         SyncTopicJob.perform_now(project_id, preparation_page_id)
       else
         enqueue_job_for_update("#{project_name} - Príprava", project_id, preparation_document_id, preparation_page_id, 'Prípravná fáza')
