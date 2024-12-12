@@ -100,6 +100,8 @@ class PhaseRevision < ApplicationRecord
     current_label = nil
     current_status_content = ''
     collecting = false
+    description_collecting = false
+    description_content = ''
 
     doc.search('h3, p, ul, li').each do |element|
       if element.name == 'h3'
@@ -111,11 +113,21 @@ class PhaseRevision < ApplicationRecord
           current_status_content = ''
         end
 
+        if description_collecting
+          assign_value(metadata_mapping["Stručný opis:"], description_content.strip)
+          description_collecting = false
+          description_content = ''
+        end
+
         collecting = true if current_label == "Čo sa práve deje"
+        description_collecting = true if current_label == "Stručný opis"
       end
 
       if collecting && %w[p ul].include?(element.name)
         current_status_content += element.to_html
+
+      elsif description_collecting && %w[p ul li].include?(element.name)
+        description_content += element.to_html
 
       elsif element.name == 'p'
         strong_element = element.at('strong')
@@ -138,6 +150,10 @@ class PhaseRevision < ApplicationRecord
 
     if collecting && metadata_mapping.key?("Čo sa práve deje:")
       assign_value(metadata_mapping["Čo sa práve deje:"], current_status_content)
+    end
+
+    if description_collecting && metadata_mapping.key?("Stručný opis:")
+      assign_value(metadata_mapping["Stručný opis:"], description_content.strip)
     end
   end
 
