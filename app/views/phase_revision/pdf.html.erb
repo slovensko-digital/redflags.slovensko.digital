@@ -11,7 +11,7 @@
           <% end %>
         </p>
       <% end %>
-      <p class="lead text-muted mt-4"><%= @phase_revision.description %></p>
+      <p class="lead text-muted mt-4"><%= @phase_revision.description&.html_safe %></p>
     </div>
   </div>
 
