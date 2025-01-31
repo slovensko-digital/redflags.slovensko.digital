@@ -6,7 +6,7 @@ class Metais::ProjectDataExtractionResultJob < ApplicationJob
   queue_as :metais_data_extraction
 
   def perform(project_uuid, location_header)
-    url = "#{ENV.fetch('API_URL')}/projects/#{project_uuid}"
+    url = "#{ENV.fetch('API_URL')}#{location_header}"
     response = Net::HTTP.get_response(URI(url))
 
     handle_response_errors(response)
@@ -15,6 +15,7 @@ class Metais::ProjectDataExtractionResultJob < ApplicationJob
     raise RuntimeError.new('Result status is not "Done"') unless body['status'] == 'Done'
 
     result = body['result']
+    result = parse_json(result) if result.is_a?(String)
 
     unless ['No documents', 'No documents for project plan'].include? result['detail']
       metais_project = find_metais_project(project_uuid)
@@ -62,16 +63,16 @@ class Metais::ProjectDataExtractionResultJob < ApplicationJob
 
   def update_project_origin(project_origin, result)
     project_origin.project_manager = "#{result['responsible']['first_name']} #{result['responsible']['surname']}"
-    project_origin.approved_investment = result['capex'] unless result['capex'].zero?
-    project_origin.approved_operation = result['opex'] unless result['opex'].zero?
-    project_origin.benefits = result['declared'] unless result['declared'].zero?
+    project_origin.approved_investment = result['capex'].to_i unless result['capex'].to_i.zero?
+    project_origin.approved_operation = result['opex'].to_i unless result['opex'].to_i.zero?
+    project_origin.benefits = result['declared'].to_i unless result['declared'].to_i.zero?
     project_origin.targets_text = format_targets_text(result) unless format_targets_text(result).empty?
     project_origin.save!
   end
 
   def format_targets_text(result)
-    kpis = result['kpis'].join("\n") unless result['kpis'].empty?
-    goals = result['goals'].join("\n") unless result['goals'].empty?
+    kpis = Array(result['kpis']).join("\n") unless result['kpis'].to_s.empty?
+    goals = Array(result['goals']).join("\n") unless result['goals'].to_s.empty?
     [kpis, goals].compact.join("\n")
   end
 

@@ -31,6 +31,10 @@ class Metais::Project < ApplicationRecord
     @ai_project_origin ||= project_origins.joins(:origin_type).find_by(origin_types: { name: 'AI' })
   end
 
+  def get_metais_project_origin
+    metais_project_origin ||= project_origins.joins(:origin_type).find_by(origin_types: { name: 'MetaIS' })
+  end
+
   def self.evaluation_counts
     total_count = Metais::Project.count
     yes_count = Metais::Project
@@ -84,6 +88,34 @@ class Metais::Project < ApplicationRecord
                 end
 
     projects.page(page).per(per_page)
+  end
+
+  def get_all_documents_for_project
+    get_metais_project_origin&.documents || []
+  end
+
+ def get_latest_version_for_document(document_uuid)
+    Datahub::Metais::ProjectDocumentVersion
+      .joins(:document)  # Joins via the :document association
+      .where(project_documents: { uuid: document_uuid })  # References the correct table name
+      .order(created_at: :desc)
+      .first
+  end
+
+  def get_project_documents
+    get_all_documents_for_project.map do |document|
+      version = get_latest_version_for_document(document.uuid)
+      next unless version && version['filename']
+
+      date_str = version['created_at'].strftime("%Y-%m-%dT%H:%M:%S")
+      name_with_date = "#{File.basename(version['filename'], '.*')}_#{date_str}#{File.extname(version['filename'])}"
+
+      {
+        'uuid' => document.uuid,
+        'name' => name_with_date,
+        'date' => version['created_at']
+      }
+    end.compact
   end
 
   private
