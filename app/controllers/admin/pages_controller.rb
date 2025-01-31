@@ -21,7 +21,7 @@ class Admin::PagesController < AdminController
       end
       @ratings_by_type = @phase_revision.ratings.index_by(&:rating_type)
       @project = @phase.project
-
+      
     else
       if params['version'] == 'latest'
         @phase_revision = @page.latest_revision
