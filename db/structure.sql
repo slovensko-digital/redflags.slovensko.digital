@@ -1,6 +1,7 @@
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
+SET transaction_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
@@ -356,6 +357,38 @@ CREATE TABLE public.ar_internal_metadata (
 
 
 --
+-- Name: combined_projects; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.combined_projects (
+    id bigint NOT NULL,
+    metais_project_id bigint NOT NULL,
+    evaluation_id bigint,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: combined_projects_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.combined_projects_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: combined_projects_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.combined_projects_id_seq OWNED BY public.combined_projects.id;
+
+
+--
 -- Name: pages; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -431,7 +464,7 @@ CREATE TABLE public.phase_revisions (
     title character varying NOT NULL,
     full_name character varying,
     guarantor character varying,
-    description character varying,
+    description text,
     budget character varying,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
@@ -611,7 +644,7 @@ CREATE TABLE public.projects_metais_projects (
 
 CREATE TABLE public.que_jobs (
     priority smallint DEFAULT 100 NOT NULL,
-    run_at timestamp with time zone DEFAULT now() NOT NULL,
+    run_at timestamp without time zone DEFAULT now() NOT NULL,
     job_id bigint NOT NULL,
     job_class text NOT NULL,
     args json DEFAULT '[]'::json NOT NULL,
@@ -786,6 +819,13 @@ ALTER TABLE ONLY metais.supplier_types ALTER COLUMN id SET DEFAULT nextval('meta
 
 
 --
+-- Name: combined_projects id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.combined_projects ALTER COLUMN id SET DEFAULT nextval('public.combined_projects_id_seq'::regclass);
+
+
+--
 -- Name: pages id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -936,6 +976,14 @@ ALTER TABLE ONLY public.ar_internal_metadata
 
 
 --
+-- Name: combined_projects combined_projects_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.combined_projects
+    ADD CONSTRAINT combined_projects_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: pages pages_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -982,7 +1030,7 @@ ALTER TABLE ONLY public.phases
 ALTER TABLE ONLY public.project_stages
     ADD CONSTRAINT project_stages_pkey PRIMARY KEY (id);
 
-    
+
 --
 -- Name: projects projects_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
@@ -1105,6 +1153,20 @@ CREATE INDEX "index_metais.project_suppliers_on_project_origin_id" ON metais.pro
 --
 
 CREATE INDEX "index_metais.project_suppliers_on_supplier_type_id" ON metais.project_suppliers USING btree (supplier_type_id);
+
+
+--
+-- Name: index_combined_projects_on_evaluation_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_combined_projects_on_evaluation_id ON public.combined_projects USING btree (evaluation_id);
+
+
+--
+-- Name: index_combined_projects_on_metais_project_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_combined_projects_on_metais_project_id ON public.combined_projects USING btree (metais_project_id);
 
 
 --
@@ -1295,6 +1357,30 @@ ALTER TABLE ONLY metais.project_events
 
 
 --
+-- Name: combined_projects fk_rails_0d08d8ab66; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.combined_projects
+    ADD CONSTRAINT fk_rails_0d08d8ab66 FOREIGN KEY (evaluation_id) REFERENCES public.projects(id);
+
+
+--
+-- Name: combined_projects fk_rails_18e52e7275; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.combined_projects
+    ADD CONSTRAINT fk_rails_18e52e7275 FOREIGN KEY (metais_project_id) REFERENCES metais.projects(id);
+
+
+--
+-- Name: phase_revisions fk_rails_290d0a047c; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.phase_revisions
+    ADD CONSTRAINT fk_rails_290d0a047c FOREIGN KEY (revision_id) REFERENCES public.revisions(id);
+
+
+--
 -- Name: projects_metais_projects fk_rails_747f5e41f3; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1319,22 +1405,6 @@ ALTER TABLE ONLY public.projects_metais_projects
 
 
 --
--- Name: phase_revision_ratings fk_rails_89f94d4743; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.phase_revision_ratings
-    ADD CONSTRAINT fk_rails_89f94d4743 FOREIGN KEY (phase_revision_id) REFERENCES public.phase_revisions(id);
-
-
---
--- Name: phase_revision_ratings fk_rails_8f89f5f94e; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.phase_revision_ratings
-    ADD CONSTRAINT fk_rails_8f89f5f94e FOREIGN KEY (rating_type_id) REFERENCES public.rating_types(id);
-
-
---
 -- Name: pages fk_rails_9214ad0f21; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1343,19 +1413,11 @@ ALTER TABLE ONLY public.pages
 
 
 --
--- Name: phase_revisions fk_rails_9b7644f642; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: phase_revision_ratings fk_rails_9a5c0eae42; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.phase_revisions
-    ADD CONSTRAINT fk_rails_9b7644f642 FOREIGN KEY (stage_id) REFERENCES public.project_stages(id);
-
-
---
--- Name: phase_revisions fk_rails_9bbd5a8be5; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.phase_revisions
-    ADD CONSTRAINT fk_rails_9bbd5a8be5 FOREIGN KEY (revision_id) REFERENCES public.revisions(id);
+ALTER TABLE ONLY public.phase_revision_ratings
+    ADD CONSTRAINT fk_rails_9a5c0eae42 FOREIGN KEY (phase_revision_id) REFERENCES public.phase_revisions(id);
 
 
 --
@@ -1383,11 +1445,27 @@ ALTER TABLE ONLY public.revisions
 
 
 --
+-- Name: phase_revision_ratings fk_rails_df4b31c2b5; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.phase_revision_ratings
+    ADD CONSTRAINT fk_rails_df4b31c2b5 FOREIGN KEY (rating_type_id) REFERENCES public.rating_types(id);
+
+
+--
 -- Name: pages fk_rails_ee4b1c338f; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.pages
     ADD CONSTRAINT fk_rails_ee4b1c338f FOREIGN KEY (latest_revision_id) REFERENCES public.revisions(id);
+
+
+--
+-- Name: phase_revisions fk_rails_fb290ef702; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.phase_revisions
+    ADD CONSTRAINT fk_rails_fb290ef702 FOREIGN KEY (stage_id) REFERENCES public.project_stages(id);
 
 
 --
@@ -1449,9 +1527,9 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20240724072736'),
 ('20240730180654'),
 ('20240731124741'),
-('20240801081124'),
 ('20240820080110'),
 ('20240820080303'),
+('20240820193320'),
 ('20240821210736'),
 ('20240821212620'),
 ('20240822112026'),
@@ -1459,4 +1537,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20240823082322'),
 ('20240825111806'),
 ('20240825115911'),
-('20240924210648');
+('20240924210648'),
+('20241212091706');
+
+
