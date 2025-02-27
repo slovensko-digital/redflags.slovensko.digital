@@ -1,0 +1,346 @@
+<div id="projects-index" class="container pt-2">
+  <h1 class="mt-5 mb-3">Zoznam štátných IT projektov</h1>
+  <p class="lead"><strong>Moderný</strong>, <strong>prehľadný</strong> a <strong>jednoduchý</strong> prístup k <strong>štátným IT projektom</strong> už <em>nie je budúcnosť</em>... Nemusíte tráviť hodiny čítaním dlhých dokumentácií, ktoré nedávajú zmysel. Naše riešenie Vám prináša všetky potrebné informácie.</p>
+
+  <div class="mt-4">
+    <%= form_with url: metais_projects_path, method: :get, class: 'form my-2 my-lg-0', local: true, id: "form" do |form| %>
+      <%= hidden_field_tag :sort, params[:sort] %>
+      <%= hidden_field_tag :sort_direction, params[:sort_direction] %>
+      <%= hidden_field_tag :status, params[:status] %>
+      <%= hidden_field_tag :guarantor, params[:guarantor] %>
+      <%= hidden_field_tag :has_evaluation, params[:has_evaluation] %>
+      
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group d-flex flex-row">
+            <%= text_field_tag :title, params[:title], class: 'form-control mr-1', placeholder: "Meno projektu" %>
+            <button onclick="document.getElementById('form').submit();" class='btn btn-primary'>Hľadať</button>
+          </div>
+        </div>
+        <div class="col-md-6 d-flex justify-content-end">
+          <div class="text-center">
+            <button class="btn btn-sm btn-outline-primary p-1 d-flex justify-content-center align-items-center mr-2" id="filter-button" type="button" data-toggle="collapse" data-target="#filterForm" aria-expanded="false" aria-controls="filterForm">
+              <svg id="filter-icon" width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect class="fltr-line1" x="7" y="10" width="18" height="1" fill="#385EFF"/>
+                <rect class="fltr-line2" x="7" y="20" width="18" height="1" fill="#385EFF"/>
+                <circle class="fltr-crcl1" cx="13" cy="20.5" r="2.5" fill="white" stroke="#385EFF"/>
+                <circle class="fltr-crcl2" cx="19" cy="10.5" r="2.5" fill="white" stroke="#385EFF"/>
+              </svg>
+            </button>
+          </div>
+          <div class="form-group d-flex flex-row align-items-center">
+            <% sort_options = {
+              '' => 'Podľa dátumu',
+              'alpha' => 'Abecedne',
+              'date' => 'Podľa dátumu',
+              'price' => 'Podľa ceny'} %>
+
+            <% current_sort = params[:sort] || '' %>
+            <% current_sort_label = sort_options[current_sort] %>
+
+            <div class="dropdown">
+              <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton11" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="width: 200px;">
+                <%= current_sort_label %>
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton11">
+                  <% sort_options.each do |value, label| %>
+                    <a class="dropdown-item" href="#" onclick="document.getElementById('sort').value='<%= value %>'; document.getElementById('form').submit();">
+                      <%= label %>
+                    </a>
+                  <% end %>
+              </div>
+            </div>
+            <button id="ascdesctoggle" class="btn tag-tooltip bg-transparent border-0 d-flex justify-content-center align-items-center" title="Zoradenie vzostupne alebo zostupne">
+              <svg height="20px" width="20px" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <path id="down-icon" style="fill:rgb(56,94,255);" d="M123.177,505.18c0.545,0.543,1.117,1.058,1.713,1.547c0.264,0.219,0.546,0.408,0.818,0.613 c0.334,0.251,0.661,0.51,1.008,0.742c0.33,0.222,0.675,0.413,1.013,0.616c0.312,0.186,0.616,0.383,0.937,0.554 c0.349,0.186,0.704,0.343,1.06,0.51c0.334,0.158,0.662,0.324,1.004,0.467c0.346,0.143,0.697,0.258,1.049,0.383 c0.366,0.132,0.728,0.272,1.1,0.385c0.352,0.105,0.706,0.185,1.061,0.273c0.382,0.098,0.76,0.203,1.15,0.281 c0.408,0.081,0.816,0.129,1.227,0.188c0.341,0.048,0.678,0.113,1.022,0.147c0.765,0.074,1.531,0.115,2.298,0.115 s1.533-0.04,2.296-0.116c0.346-0.034,0.681-0.099,1.022-0.147c0.411-0.059,0.819-0.107,1.227-0.188 c0.389-0.078,0.768-0.185,1.15-0.281c0.355-0.088,0.709-0.166,1.061-0.273c0.372-0.113,0.734-0.253,1.1-0.385 c0.352-0.126,0.703-0.24,1.049-0.383c0.343-0.143,0.672-0.309,1.004-0.467c0.355-0.166,0.711-0.324,1.06-0.51 c0.321-0.172,0.625-0.368,0.937-0.554c0.34-0.203,0.683-0.394,1.013-0.616c0.349-0.233,0.676-0.492,1.008-0.742 c0.273-0.205,0.554-0.394,0.818-0.613c0.596-0.489,1.168-1.004,1.713-1.547l116.359-116.361c9.089-9.087,9.089-23.824,0-32.912 c-9.087-9.089-23.824-9.089-32.912,0l-76.632,76.637V23.273C162.91,10.42,152.49,0,139.637,0s-23.273,10.42-23.273,23.273v409.27 l-76.636-76.634c-9.087-9.089-23.824-9.089-32.912,0c-9.089,9.087-9.089,23.823,0,32.912L123.177,505.18z"></path> <path id="up-icon" style="fill:rgba(100,100,100,0.4);" d="M387.113,5.274c-0.261-0.216-0.538-0.402-0.807-0.604c-0.34-0.254-0.67-0.515-1.021-0.751 c-0.327-0.219-0.667-0.408-1.002-0.608c-0.316-0.189-0.625-0.388-0.953-0.562c-0.343-0.183-0.694-0.338-1.046-0.504 c-0.338-0.16-0.67-0.329-1.016-0.472c-0.341-0.141-0.689-0.256-1.035-0.379c-0.369-0.133-0.737-0.276-1.116-0.389 c-0.346-0.104-0.694-0.18-1.043-0.268c-0.388-0.098-0.771-0.206-1.167-0.285c-0.399-0.079-0.802-0.126-1.202-0.183 c-0.349-0.051-0.694-0.116-1.049-0.152c-0.74-0.073-1.482-0.11-2.225-0.112C372.409,0.003,372.389,0,372.364,0 s-0.045,0.003-0.07,0.003c-0.743,0.003-1.485,0.039-2.225,0.112c-0.355,0.036-0.7,0.101-1.049,0.152 c-0.402,0.057-0.805,0.104-1.202,0.183c-0.396,0.078-0.779,0.186-1.167,0.285c-0.349,0.088-0.697,0.164-1.043,0.268 c-0.379,0.115-0.745,0.256-1.116,0.389c-0.346,0.124-0.694,0.237-1.035,0.379c-0.348,0.143-0.68,0.312-1.016,0.472 c-0.352,0.164-0.703,0.32-1.046,0.504c-0.327,0.174-0.636,0.372-0.953,0.562c-0.335,0.2-0.675,0.389-1.002,0.608 c-0.352,0.236-0.681,0.496-1.021,0.751c-0.268,0.202-0.546,0.388-0.807,0.604c-0.596,0.489-1.168,1.004-1.713,1.547 L239.542,123.179c-9.089,9.087-9.089,23.824,0,32.912c9.087,9.089,23.824,9.089,32.912,0l76.637-76.632v409.268 c0,12.853,10.42,23.273,23.273,23.273s23.273-10.42,23.273-23.273V79.459l76.636,76.634c4.543,4.544,10.499,6.816,16.455,6.816 c5.956,0,11.913-2.271,16.455-6.817c9.089-9.087,9.089-23.824,0-32.912L388.826,6.82C388.281,6.277,387.709,5.762,387.113,5.274z"></path> </g> </g></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="collapse container mt-4 p-0" id="filterForm">
+        <div class="row d-flex justify-content-between">
+          <div class="form-group d-flex col-12 col-md-6 col-lg-auto flex-grow-1">
+            <div class="dropdown mr-2 w-100 d-flex">
+              <button class="btn btn-outline-primary dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <%= params[:status].present? ? params[:status] : 'Status projektu' %>
+              </button>
+              <% if params[:status].present? %>
+                  <button type="button" class="btn btn-sm ml-2" onclick="removeFilter('status')">×</button>
+              <% end %>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="width: 225px; max-height: 350px; overflow-y: scroll;">
+                  <% @unique_statuses.each do |status| %>
+                    <% status_count = @status_counts[status] || 0 %>
+                    <a class="dropdown-item d-flex flex-column" href="#" onclick="document.getElementById('status').value='<%= status %>'; document.getElementById('form').submit();">
+                      <strong><%= status %></strong>
+                      <span class="text-muted"><%= "#{status_count} #{status_count <= 4 ? 'projekty' : 'projektov'}" %></span>
+                    </a>
+                  <% end %>
+                  
+                  <div class="dropdown-divider my-2"></div>
+                  
+                  <a class="dropdown-item d-flex flex-column" href="#" onclick="document.getElementById('status').value=''; document.getElementById('form').submit();">
+                    <strong>Všetky projekty</strong>
+                  </a>
+              </div>
+            </div>
+          </div>
+          <div class="form-group d-flex col-12 col-md-6 col-lg-auto flex-grow-1">
+            <div class="dropdown mr-2 w-100 d-flex">
+              <button class="btn btn-outline-primary dropdown-toggle w-100 d-flex d-flex-column align-items-center" type="button" id="dropdownMenuButton2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <%= params[:guarantor].present? ? params[:guarantor] : 'Gestor projektu' %>
+              </button>
+              <% if params[:guarantor].present? %>
+                  <button type="button" class="btn btn-sm ml-2" onclick="removeFilter('guarantor')">×</button>
+              <% end %>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton2" style="max-height: 350px; overflow-y: scroll; overflow-x: hidden">
+                    <% @unique_guarantors.each do |guarantor| %>
+                      <% guarantor_count = @guarantor_counts[guarantor] || 0 %>
+                      <a class="dropdown-item d-flex flex-column" href="#" onclick="document.getElementById('guarantor').value='<%= guarantor %>'; document.getElementById('form').submit();">
+                        <strong style="word-wrap: break-word;"><%= guarantor %></strong>
+                        <span class="text-muted"><%= "#{guarantor_count} #{guarantor_count <= 4 ? 'projekty' : 'projektov'}" %></span>
+                      </a>
+                    <% end %>
+                    
+                    <div class="dropdown-divider my-2"></div>
+                    
+                    <a class="dropdown-item d-flex flex-column" href="#" onclick="document.getElementById('guarantor').value=''; document.getElementById('form').submit();">
+                      <strong>Všetky projekty</strong>
+                    </a>
+              </div>
+            </div>
+          </div>
+          <div class="form-group d-flex col-12 col-md-6 col-lg-auto flex-grow-1">
+            <div class="dropdown mr-2 w-100 d-flex">
+              <button class="btn btn-outline-primary dropdown-toggle w-100" type="button" id="dropdownMenuButton3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <%= params[:code].present? ? params[:code] : 'MetaIS kód projektu' %>
+              </button>
+              <% if params[:code].present? %>
+                  <button type="button" class="btn btn-sm ml-2" onclick="removeFilter('code')">×</button>
+              <% end %>
+              <div class="dropdown-menu px-4" aria-labelledby="dropdownMenuButton3" style="width: 250px; max-height: 350px;">
+                  <%= text_field_tag :code, params[:code], placeholder: 'MetaIS kód', class: 'form-control', size: 4 %>
+
+                  <div class="dropdown-divider my-2"></div>
+
+                <a class="dropdown-item d-flex flex-column px-1" href="#" onclick="document.getElementById('code').value=''; document.getElementById('form').submit();">
+                    <strong>Všetky projekty</strong>
+                  </a>
+                  <div class="d-flex justify-content-end mt-2">
+                    <button onclick="document.getElementById('form').submit();" class='btn btn-primary'>Potvrdiť</button>
+                  </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group d-flex col-12 col-md-6 col-lg-auto flex-grow-1">
+            <div class="dropdown mr-2 w-100 d-flex">
+              <button class="btn btn-outline-primary dropdown-toggle w-100" type="button" id="dropdownMenuButton4" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <%= params[:min_price].present? || params[:max_price].present? ? "#{params[:min_price]}€ - #{params[:max_price]}€" : 'Investičné náklady projektu' %>
+              </button>
+              <% if params[:min_price].present? || params[:max_price].present? %>
+                  <button type="button" class="btn btn-sm ml-2" onclick="removeFilter('price')">×</button>
+              <% end %>
+              <div class="dropdown-menu p-3" aria-labelledby="dropdownMenuButton4" style="width: 300px;">
+                  <div class="d-flex">
+                    <%= text_field_tag :min_price, params[:min_price], placeholder: 'Od', class: 'form-control mr-2', size: 6 %>
+                    <%= text_field_tag :max_price, params[:max_price], placeholder: 'Do', class: 'form-control', size: 6 %>
+                  </div>
+
+                  <div class="dropdown-divider my-2"></div>
+                  <%= link_to "Do €100,000", request.params.merge(min_price: 0, max_price: 100000), class: 'dropdown-item' %>
+                  <%= link_to "€100,000 - €500,000", request.params.merge(min_price: 100000, max_price: 500000), class: 'dropdown-item' %>
+                  <%= link_to "€500,000 - €1,000,000", request.params.merge(min_price: 500000, max_price: 1000000), class: 'dropdown-item' %>
+                  <%= link_to "€1,000,000 - €5,000,000", request.params.merge(min_price: 1000000, max_price: 5000000), class: 'dropdown-item' %>
+                  <%= link_to "Nad €5,000,000", request.params.merge(min_price: 5000000, max_price: nil), class: 'dropdown-item' %>
+
+                  <div class="dropdown-divider my-2"></div>
+
+                  <a class="dropdown-item d-flex flex-column" href="#" onclick="document.getElementById('min_price').value=''; document.getElementById('max_price').value=''; document.getElementById('form').submit();">
+                    <strong>Všetky projekty</strong>
+                  </a>
+
+                  <div class="d-flex justify-content-end mt-2">
+                    <button onclick="document.getElementById('form').submit();" class='btn btn-primary'>Potvrdiť</button>
+                  </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group d-flex col-12 col-md-6 col-lg-auto flex-grow-1">
+            <div class="dropdown mr-2 w-100 d-flex">
+              <button class="btn btn-outline-primary dropdown-toggle w-100" type="button" id="dropdownMenuButton5" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <%= 'Hodnotenie Red Flags' %>
+              </button>
+              <% if params[:has_evaluation].present? %>
+                  <button type="button" class="btn btn-sm ml-2" onclick="removeFilter('has_evaluation')">×</button>
+              <% end %>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton5" style="width: 250px;">
+                  <a class="dropdown-item d-flex flex-column" href="#" onclick="document.getElementById('has_evaluation').value='yes'; document.getElementById('form').submit();">
+                    <strong>Áno</strong>
+                    <span class="text-muted"><%= "#{@evaluation_counts[:yes]} projektov" %></span>
+                  </a>
+                  
+                  <a class="dropdown-item d-flex flex-column" href="#" onclick="document.getElementById('has_evaluation').value='no'; document.getElementById('form').submit();">
+                    <strong>Nie</strong>
+                    <span class="text-muted"><%= "#{@evaluation_counts[:no]} projektov" %></span>
+                  </a>
+                  
+                  <div class="dropdown-divider my-2"></div>
+                  
+                  <a class="dropdown-item d-flex flex-column" href="#" onclick="document.getElementById('has_evaluation').value=''; document.getElementById('form').submit();">
+                    <strong>Všetky projekty</strong>
+                  </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <table class="table mt-4">
+    <thead>
+    <tr>
+      <th colspan="8">Projekt</th>
+      <th class="text-center tag-tooltip d-none d-md-table-cell" title="Investičná náklady projektu">Investičné náklady</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% @projects.each do |project| %>
+      <tr>
+        <td style="width: 22rem;" colspan="8">
+          <div class="d-flex flex-column">
+            <%= link_to project.project_origins.first.title, metais_project_path(project), class: 'table-title-item hover:text-primary' %>
+              <div class="col-12 col-md-7 mb-4 d-flex flex-row align-items-center pl-0">
+                <p class="mr-2 mb-0 tag-tooltip" title="Dátum poslednej zmeny projektu"><small>Dátum poslednej zmeny:</small>
+                  <%=
+                    if project.updated_at.present?
+                      content_tag(:small, l(project.updated_at.in_time_zone('Europe/Bratislava'), format: "%d.%m.%Y"), class: "font-italic")
+                    else
+                      content_tag(:small, "Neuvedená", style: "color: grey;", class: "font-italic tag-tooltip", title: "Dátum poslednej zmeny projektu nie je známy")
+                    end
+                  %>
+                </p>
+              </div>
+            <div class="d-flex flex-column flex-md-row">
+              <div class="col-12 col-md-7 d-flex flex-row align-items-center pl-0">
+                <%=
+                  if project.get_project_origin_info.guarantor.present?
+                    content_tag(:span, project.get_project_origin_info.guarantor, class: "tag-tooltip", title: "Gestor štátného IT projektu")
+                  else
+                    content_tag(:span, "Gestor neuvedený", style: "color: grey;", class: "font-italic tag-tooltip", title: "Gestor projektu nie je známy")
+                  end
+                %>
+              </div>
+
+              <div class="col-12 col-md-5 d-flex flex-row align-items-center pl-0">
+                <%
+                  status = project.get_project_origin_info.status&.strip
+                  status_class = case status
+                                 when 'Rozpracovaný'
+                                   'status-1'
+                                 when 'Ohlásený'
+                                   'status-2'
+                                 when 'Plánovaný'
+                                   'status-3'
+                                 when 'Hodnotený'
+                                   'status-4'
+                                 when 'Vrátený na dopracovanie'
+                                   'status-5'
+                                 when 'Schválený'
+                                   'status-6'
+                                 when 'Zrušený'
+                                   'status-7'
+                                 when 'Realizovaný'
+                                   'status-8'
+                                 when 'Ukončený'
+                                   'status-9'
+                                 when 'Nasadený'
+                                   'status-10'
+                                 when 'Znovu hodnotený'
+                                   'status-11'
+                                 when 'Neschválený'
+                                   'status-12'
+                                 when 'Mimoriadne ukončený'
+                                   'status-13'
+                                 else
+                                   ''
+                                 end
+                %>
+                  <%=
+                    if status.present?
+                      content_tag(:span, status, class: "state-badge #{status_class} tag-tooltip", title: "Stav, v ktorom sa projekt nachádza")
+                    else
+                      content_tag(:span, "Stav neuvedený", style: "color: grey;", class: "font-italic tag-tooltip", title: "Stav a fáza projektu nie sú známe")
+                    end
+                  %>
+              </div>
+              <div class="col-12 col-md-7 d-flex flex-row align-items-center pl-0 d-md-none">
+                <p class="font-weight-bold mr-2 mb-0 tag-tooltip" title="Investičné náklady projektu nie sú známe">Cena:</p>
+                <%=
+                  if project.get_project_origin_info.approved_investment.present? && project.get_project_origin_info.approved_investment > 0
+                    number_to_currency(project.get_project_origin_info.approved_investment, unit: "€", separator: ",", delimiter: " ", format: "%n %u")
+                  elsif project.get_project_origin_info.investment.present? && project.get_project_origin_info.investment > 0
+                    number_to_currency(project.get_project_origin_info.investment, unit: "€", separator: ",", delimiter: " ", format: "%n %u")
+                  else
+                    content_tag(:span, "Neuvedená", style: "color: grey;", class: "font-italic tag-tooltip", title: "Investičné náklady projektu nie sú známe")
+                  end
+                %>
+              </div>
+            </div>
+          </div>
+        </td>
+        <td colspan="4" class="text-center align-middle table-price d-none d-md-table-cell">
+          <%=
+            if project.get_project_origin_info.approved_investment.present? && project.get_project_origin_info.approved_investment > 0
+              number_to_currency(project.get_project_origin_info.approved_investment, unit: "€", separator: ",", delimiter: " ", format: "%n %u")
+            elsif project.get_project_origin_info.investment.present? && project.get_project_origin_info.investment > 0
+              number_to_currency(project.get_project_origin_info.investment, unit: "€", separator: ",", delimiter: " ", format: "%n %u")
+            else
+              content_tag(:span, "Neuvedená", style: "color: grey;", class: "font-italic tag-tooltip", title: "Investičné náklady projektu nie sú známe")
+            end
+          %>
+        </td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+  <nav class="d-flex justify-content-end align-items-center mt-4" aria-label="Page navigation">
+    <ul class="pagination">
+      <% if @projects.prev_page %>
+        <li class="page-item">
+          <%= link_to '<', metais_projects_path(request.query_parameters.merge(page: @projects.prev_page)), class: 'page-link' %>
+        </li>
+      <% end %>
+
+      <% start_page = [1, @projects.current_page - 2].max %>
+      <% end_page = [@projects.total_pages, @projects.current_page + 2].min %>
+
+      <% if start_page > 1 %>
+        <li class="page-item">
+          <%= link_to 1, metais_projects_path(request.query_parameters.merge(page: 1)), class: 'page-link' %>
+        </li>
+        <% if start_page > 2 %>
+          <li class="page-item disabled"><span class="page-link">...</span></li>
+        <% end %>
+      <% end %>
+
+      <% (start_page..end_page).each do |i| %>
+        <li class="page-item <%= 'active' if i == @projects.current_page %>">
+          <%= link_to i, metais_projects_path(request.query_parameters.merge(page: i)), class: 'page-link' %>
+        </li>
+      <% end %>
+
+      <% if end_page < @projects.total_pages %>
+        <% if end_page < @projects.total_pages - 1 %>
+          <li class="page-item disabled"><span class="page-link">...</span></li>
+        <% end %>
+        <li class="page-item">
+          <%= link_to @projects.total_pages, metais_projects_path(request.query_parameters.merge(page: @projects.total_pages)), class: 'page-link' %>
+        </li>
+      <% end %>
+      <% if @projects.next_page %>
+        <li class="page-item">
+          <%= link_to '>', metais_projects_path(request.query_parameters.merge(page: @projects.next_page)), class: 'page-link' %>
+        </li>
+      <% end %>
+    </ul>
+  </nav>
+</div>
