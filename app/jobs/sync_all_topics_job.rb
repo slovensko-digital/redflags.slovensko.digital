@@ -37,7 +37,7 @@ class SyncAllTopicsJob < ApplicationJob
   end
 
   def process_row_for_sync_all(project_name, project_id, platform_link, preparation_document_id, preparation_page_id, product_document_id, product_page_id)
-    if platform_link.present?
+    if platform_link == 'Platforma link'
       SyncTopicJob.perform_later(project_id, preparation_page_id)
     else
       enqueue_job_for_update("#{project_name} - Príprava", project_id, preparation_document_id, preparation_page_id, 'Prípravná fáza')
