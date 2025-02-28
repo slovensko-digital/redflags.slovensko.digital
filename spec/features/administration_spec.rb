@@ -7,14 +7,15 @@ RSpec.feature 'Administration', type: :feature do
     authorize_as_admin
     visit admin_root_path
 
-    expect { click_on 'Synchronize' }.to have_enqueued_job(SyncAllTopicsJob)
+    expect { click_on 'Synchronize All - (Platform, Google)' }.to have_enqueued_job(SyncAllTopicsJob)
   end
 
   def see_all_pages
     authorize_as_admin
     visit admin_root_path
-
-    within 'table' do
+    
+    tables = all('table')
+    within tables[1] do
       expect(page).to have_content('published')
       expect(page).to have_content('unpublished')
     end
@@ -58,7 +59,8 @@ RSpec.feature 'Administration', type: :feature do
 
     click_on 'Publish'
 
-    within 'table' do
+    tables = all('table')
+    within tables[1] do
       expect(page).to have_content('published')
     end
   end
@@ -90,7 +92,8 @@ RSpec.feature 'Administration', type: :feature do
 
     click_on 'Unpublish'
 
-    within 'table' do
+    tables = all('table')
+    within tables[1] do
       expect(page).to have_content('unpublished')
     end
   end

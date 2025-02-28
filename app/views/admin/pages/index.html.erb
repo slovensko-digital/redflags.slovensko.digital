@@ -4,8 +4,8 @@
   <div class="mr-3">
     <h6>Actions</h6>
     <div class="form-group">
-      <%= link_to 'Synchronize', sync_admin_pages_path, class: 'btn btn-primary btn-sm', method: :put %>
-      <%= link_to 'Synchronize Google drafts', sync_google_admin_pages_path, class: 'btn btn-primary btn-sm', method: :put %>
+      <%= link_to 'Synchronize All - (Platform, Google)', sync_admin_pages_path, class: 'btn btn-primary btn-sm', method: :put %>
+      <%= link_to 'Synchronize Google', sync_google_admin_pages_path, class: 'btn btn-primary btn-sm', method: :put %>
     </div>
   </div>
   <div class="mr-3">
@@ -21,6 +21,25 @@
         <li><span class="badge badge-danger">preview</span> &ndash; page has no preview (parser failure)</li>
       </ul>
     </div>
+  </div>
+  <div class="mr-3">
+    <h6>Job Stats</h6>
+    <table class="table table-bordered text-center">
+      <thead>
+        <tr>
+          <th>Queue</th>
+          <th>Working Count</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @job_stats.each do |queue_name, stats| %>
+          <tr>
+            <td><%= queue_name %></td>
+            <td><%= stats[:working_count] %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
   </div>
 </div>
 
@@ -70,7 +89,7 @@
               <%= link_to 'Publish', publish_admin_page_path(page, version: 'latest'), class: 'btn btn-primary btn-sm', method: :patch %>
               <%= link_to 'Preview', preview_admin_page_path(page, version: 'latest'), class: 'btn btn-link btn-sm' if page_preview?(page) && revision_preview?(page.latest_revision) %>
             <% end %>
-            <%= link_to 'Synchronize', sync_one_admin_page_path(page), class: 'btn btn-info btn-sm', method: :put %>
+            <%= link_to 'Synchronize this', sync_one_admin_page_path(page), class: 'btn btn-info btn-sm', method: :put %>
           <% end %>
         </td>
       </tr>
