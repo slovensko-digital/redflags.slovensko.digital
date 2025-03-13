@@ -1,3 +1,5 @@
+$black: #000000;
+$light_black: #141617;
 $gray-dark:     #373a3c;
 $gray:          #55595c;
 $gray-light:    #818a91;
@@ -5,7 +7,7 @@ $gray-lighter:  #c4c3ca;
 $gray-lightest: #f4f4f4;
 $color-highlight: lightgoldenrodyellow;
 
-$blue: #3a67e8;
+$blue: #385EFF;
 $orange: #ffac33;
 
 $theme-colors: (
@@ -19,10 +21,12 @@ $theme-colors: (
   dark: $gray-dark
 );
 
-$headings-font-family: 'Merriweather', 'Georgia', 'Times New Roman', serif;
+$headings-font-family: 'Roboto Mono', 'Georgia', 'Times New Roman', serif;
 $font-family-sans-serif: 'Roboto', sans-serif;
 $font-weight-normal: 300;
+$font-weight-semi-bold: 500;
 $font-weight-bold: 700;
+$font-weight-black: 900;
 
 $modal-backdrop-bg: white;
 $modal-backdrop-opacity: .7;

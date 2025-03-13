@@ -2,8 +2,8 @@ class StaticController < ApplicationController
   def index
     top_project_revisions = PhaseRevision.where(published: true).joins(:revision).limit(5)
 
-    @good_projects = top_project_revisions.where('phase_revisions.redflags_count = ?', 0).order('phase_revisions.total_score::float / phase_revisions.maximum_score DESC')
-    @bad_projects = top_project_revisions.order('phase_revisions.redflags_count DESC, phase_revisions.total_score::float / phase_revisions.maximum_score ASC')
+    @good_projects = top_project_revisions.where('phase_revisions.redflags_count = ? AND phase_revisions.maximum_score > 0', 0).order('phase_revisions.total_score::float / phase_revisions.maximum_score DESC')
+    @bad_projects = top_project_revisions.where('phase_revisions.maximum_score > 0').order('phase_revisions.redflags_count DESC, phase_revisions.total_score::float / phase_revisions.maximum_score ASC')
   end
 
   def about

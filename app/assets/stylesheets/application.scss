@@ -6,7 +6,15 @@
 
 @import 'projects';
 @import 'static';
+@import 'schedule';
+@import 'statuses';
+@import 'navbar';
+@import 'footer';
 
+h1, h2, h3, h4, h5, h6 {
+  font-family: $headings-font-family;
+  font-weight: $font-weight-bold;
+}
 
 .btn-outline-primary:hover {
   border-color: $link-hover-color;
@@ -14,48 +22,15 @@
   background-color: transparent;
 }
 
-.navbar {
-  @include media-breakpoint-up(md) {
-    .navbar-brand img {
-      width: 240px;
-    }
-  }
+.table-title-item, .table-price {
+  font-family: $headings-font-family;
+  font-size: large;
+  color: $black;
 }
 
-.container {
-  max-width: 1024px;
-}
+#filterForm.collapsing {
+  transition: height 0.5s ease-out;
 
-footer {
-  background-color: $gray-dark;
-  color: $white;
-
-  a {
-    color: $white;
-    &:hover {
-      color: $white;
-    }
-  }
-
-  .fa-inverse {
-    color: $gray-dark;
-  }
-
-  .icons {
-    a:hover {
-      text-decoration: none;
-    }
-  }
-
-  .newsletter {
-    .legal {
-      font-size: $small-font-size;
-      
-      a {
-        text-decoration: underline;
-      }
-    }
-  }
 }
 
 h1 .badge-alpha {

@@ -1,0 +1,443 @@
+<%= form_with(model: [@project, @project_origin], url: admin_metais_project_project_origin_path(@project, @project_origin), method: :patch, local: true) do |form| %>
+  <div id="project-show" class="container main">
+    <div class="alert alert-secondary d-flex justify-content-between align-items-center" role="alert">
+        <p class="mb-0">
+            <span class="font-weight-bold">Projekt updatovaný v dátume:</span> <%= @project_info&.updated_at&.in_time_zone('Europe/Bratislava')&.strftime('%H:%M %d.%m.%Y') %>.
+            <span class="font-weight-bold">AI extrakcia v dátume:</span> <%= @project.get_ai_project_origin&.updated_at&.in_time_zone('Europe/Bratislava')&.strftime('%H:%M %d.%m.%Y') || '-' %>
+        </p>
+        <div>
+            <%= link_to 'Zobraziť', metais_project_path(@project), class: "btn btn-link", role: "button" %>
+            <%= form.submit 'Uložiť', class: 'btn btn-primary' %>
+        </div>
+    </div>
+    <div class="row mb-5">
+      <div class="col-md-12 mb-3">
+        <h5><%= form.label :title, "Názov projektu" %>
+        <% if @project_info.title.present? %>
+            <% logo_path, tooltip_text = origin_type_logo(@project_info.title.origin) %>
+            <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 16px; height: 16px;", class:"tag-tooltip" %>
+        <% end %>
+        </h5>
+        <%= form.text_field :title, value: @project_info.title, class: "form-control"  %>
+      </div>
+      <div class="col-md-12">
+        <h5><%= form.label :description, "Popis" %>
+        <% if @project_info.description.present? %>
+            <% logo_path, tooltip_text = origin_type_logo(@project_info.description.origin) %>
+            <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 16px; height: 16px;", class:"tag-tooltip" %>
+        <% end %>
+        </h5>
+        <%= form.text_area :description, value: @project_info.description, class: "form-control", rows: 12 %>
+      </div>
+    </div>
+
+    <div class="row mb-4">
+          <div class="col-md-6">
+            <h6 class="m-0"><%= form.label :guarantor, "Garant" %>
+            <% if @project_info.guarantor.present? %>
+                <% logo_path, tooltip_text = origin_type_logo(@project_info.guarantor.origin) %>
+                <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 16px; height: 16px;", class:"tag-tooltip" %>
+            <% end %>
+            </h6>
+            <%= form.text_field :guarantor, value: @project_info.guarantor, class: "form-control"  %>
+          </div>
+          <div class="col-md-6">
+            <h6 class="m-0"><%= form.label :project_manager, "Projektový manažér" %>
+            <% if @project_info.project_manager.present? %>
+                <% logo_path, tooltip_text = origin_type_logo(@project_info.project_manager.origin) %>
+                <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 16px; height: 16px;", class:"tag-tooltip" %>
+            <% end %>
+            </h6>
+            <%= form.text_field :project_manager, value: @project_info.project_manager, class: "form-control"  %>
+          </div>
+
+          <div class="col-md-6 mt-3">
+            <h6 class="m-0"><%= form.label :finance_source, "Zdroj financovania" %>
+            <% if @project_info.finance_source.present? %>
+                <% logo_path, tooltip_text = origin_type_logo(@project_info.finance_source.origin) %>
+                <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 16px; height: 16px;", class:"tag-tooltip" %>
+            <% end %>
+            </h6>
+            <% finance_source_mappings = Metais::Project::FINANCE_SOURCE_MAPPINGS %>
+            <%= form.select :finance_source, 
+                  Metais::ProjectOrigin.pluck(:finance_source).uniq.reject(&:blank?).map { |fs| [finance_source_mappings[fs] || fs, fs] }, { selected: @project_info.finance_source }, class: "form-control" %>
+          </div>
+          <div class="col-md-6 mt-3">
+            <h6 class="m-0"><%= form.label :status, "Stav" %>
+            <% if @project_info.status.present? %>
+                <% logo_path, tooltip_text = origin_type_logo(@project_info.status.origin) %>
+                <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 16px; height: 16px;", class:"tag-tooltip" %>
+            <% end %>
+            </h6>
+            <%= form.select :status, Metais::ProjectOrigin.pluck(:status).uniq.reject(&:blank?), { selected: @project_info.status }, { class: "form-control" }  %>
+            <h6 class="m-0 mt-3"><%= form.label :phase, "Fáza" %>
+            <% if @project_info.phase.present? %>
+                <% logo_path, tooltip_text = origin_type_logo(@project_info.phase.origin) %>
+                <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 16px; height: 16px;", class:"tag-tooltip" %>
+            <% end %>
+            </h6>
+            <%= form.select :phase, Metais::ProjectOrigin.pluck(:phase).uniq.reject(&:blank?), { selected: @project_info.phase }, { class: "form-control" }  %>
+          </div>
+
+          <div class="col-md-6 mt-3">
+            <h6 class="m-0"><%= form.label :start_date, "Dátum začiatku" %>
+            <% if @project_info.start_date.present? %>
+                <% logo_path, tooltip_text = origin_type_logo(@project_info.start_date.origin) %>
+                <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 16px; height: 16px;", class:"tag-tooltip" %>
+            <% end %>
+            </h6>
+            <%= form.date_field :start_date, 
+              value: (@project_info.start_date.present? ? @project_info.start_date.strftime("%F") : Date.today.strftime("%F")), 
+              class: "form-control datepicker" %>
+          </div>
+          <div class="col-md-6 mt-3">
+            <h6 class="m-0"><%= form.label :end_date, "Termín ukončenia " %>
+            <% if @project_info.end_date.present? %>
+                <% logo_path, tooltip_text = origin_type_logo(@project_info.end_date.origin) %>
+                <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 16px; height: 16px;", class:"tag-tooltip" %>
+            <% end %>
+            </h6>
+            <%= form.date_field :end_date, 
+              value: (@project_info.end_date.present? ? @project_info.end_date.strftime("%F") : Date.today.strftime("%F")), 
+              class: "form-control datepicker" %>
+          </div>
+
+          <div class="col-md-12 mt-3">
+            <h5>Rozpočet projektu</h5>
+            <div class="row">
+              <div class="col-md-6">
+                <h6 class="m-0"><%= form.label :investment, "Investícia" %>
+                <% if @project_info.investment.present? %>
+                    <% logo_path, tooltip_text = origin_type_logo(@project_info.investment.origin) %>
+                    <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 16px; height: 16px;", class:"tag-tooltip" %>
+                <% end %>
+                </h6>
+                <%= form.number_field :investment, value: @project_info.investment, step: 0.1, class: "form-control"  %>
+                <h6 class="m-0 mt-3"><%= form.label :operation, "Ročné náklady" %>
+                <% if @project_info.operation.present? %>
+                    <% logo_path, tooltip_text = origin_type_logo(@project_info.operation.origin) %>
+                    <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 16px; height: 16px;", class:"tag-tooltip" %>
+                <% end %>
+                </h6>
+                <%= form.number_field :operation, value: @project_info.operation, step: 0.1, class: "form-control"  %>
+              </div>
+              <div class="col-md-6">
+                <h6 class="m-0"><%= form.label :approved_investment, "Schválená investícia" %>
+                <% if @project_info.approved_investment.present? %>
+                    <% logo_path, tooltip_text = origin_type_logo(@project_info.approved_investment.origin) %>
+                    <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 16px; height: 16px;", class:"tag-tooltip" %>
+                <% end %>
+                </h6>
+                <%= form.number_field :approved_investment, value: @project_info.approved_investment, step: 0.1, class: "form-control"  %>
+                <h6 class="m-0 mt-3"><%= form.label :approved_operation, "Schválené ročné náklady" %>
+                <% if @project_info.approved_operation.present? %>
+                    <% logo_path, tooltip_text = origin_type_logo(@project_info.approved_operation.origin) %>
+                    <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 16px; height: 16px;", class:"tag-tooltip" %>
+                <% end %>
+                </h6>
+                <%= form.number_field :approved_operation, value: @project_info.approved_operation, step: 0.1, class: "form-control"  %>
+              </div>
+            </div>
+          </div>
+    </div>
+
+    <hr class="mt-0 mb-2">
+
+    <div class="row mb-4 mt-4">
+      <div class="col-md-12">
+        <h5><%= form.label :targets_text, "Ciele a merateľné ukazovatele" %>
+        <% if @project_info.targets_text.present? %>
+            <% logo_path, tooltip_text = origin_type_logo(@project_info.targets_text.origin) %>
+            <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 16px; height: 16px;", class:"tag-tooltip" %>
+        <% end %>
+        </h5>
+        <%= form.text_area :targets_text, value: @project_info.targets_text, class: "form-control", rows: 5 %>
+      </div>
+    </div>
+
+    <div class="row mb-4 mt-4">
+      <div class="col-md-12">
+        <h5><%= form.label :documents_text, "Dokumenty" %>
+        <% if @project_info.documents_text.present? %>
+            <% logo_path, tooltip_text = origin_type_logo(@project_info.documents_text.origin) %>
+            <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 16px; height: 16px;", class:"tag-tooltip" %>
+        <% end %>
+        </h5>
+        <%= form.text_area :documents_text, value: @project_info.documents_text, class: "form-control", rows: 2 %>
+      </div>
+    </div>
+
+    <div class="row mb-4 mt-4">
+      <div class="col-md-12">
+        <h5><%= form.label :links_text, "Linky" %>
+        <% if @project_info.links_text.present? %>
+            <% logo_path, tooltip_text = origin_type_logo(@project_info.links_text.origin) %>
+            <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 16px; height: 16px;", class:"tag-tooltip" %>
+        <% end %>
+        </h5>
+        <%= form.text_area :links_text, value: @project_info.links_text, class: "form-control", rows: 2 %>
+      </div>
+    </div>
+
+    <div class="row mb-4">
+      <div class="col-md-12">
+        <h5>Dodávateľ projektu</h5>
+    
+        <h6 class="m-0"><%= form.label :supplier, "Dodávateľ" %></h6>
+        <%= form.text_field :supplier, value: @project_info.supplier, class: "form-control", id: "supplier-input" %>
+    
+        <h6 class="m-0 mt-3"><%= form.label :supplier_cin, "IČO" %></h6>
+        <%= form.text_field :supplier_cin, value: @project_info.supplier_cin, class: "form-control", id: "supplier-cin-input" %>
+    
+        <script>
+          document.getElementById('supplier-cin-input').addEventListener('input', function() {
+            document.getElementById('supplier-input').value = '';
+          });
+    
+          var form = document.querySelector('form'); 
+    
+          form.addEventListener('submit', function(event) {
+            var supplier = document.getElementById('supplier-input').value.trim();
+            var supplierCin = document.getElementById('supplier-cin-input').value.trim();
+    
+            var cinPattern = /^\d{6,8}$/;
+            
+            if (!cinPattern.test(supplierCin) || !supplier) {
+              event.preventDefault();
+              alert('Zadajte IČO v správnom tvare (6/8 číslic) a meno dodávateľa.');
+            }
+          });
+        </script>
+      </div>
+    </div>
+
+    <div class="form-group col-md-12 d-flex justify-content-end">
+      <%= form.submit 'Uložiť', class: 'btn btn-primary' %>
+    </div>
+  </div>
+<% end %>
+
+<hr class="mt-5 mb-5">
+
+<div class="container main">
+  <div class="row mb-4">
+    <div class="col-md-12">
+        <h5>Priebeh projektu</h5>
+        <h6>Predpokladaný priebeh projektu</h6>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Názov</th>
+                <th>Popis</th>
+                <th>Dátum</th>
+                <th>Akcia</th>
+            </tr>
+            </thead>
+            <tbody>
+            <% @assumption_events.each do |event| %>
+                <tr>
+                <td>
+                    <% logo_path, tooltip_text = origin_type_logo(event.origin_type) %>
+                    <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 16px; height: 16px;", class:"tag-tooltip" %>
+                    <%= event.name %>
+                </td>
+                <td><%= event.value %></td>
+                <td><%= event.date.in_time_zone('Europe/Bratislava').strftime('%d.%m.%Y') %></td>
+                <td>
+                    <%= link_to 'Odstrániť', admin_metais_project_project_origin_remove_event_path(project_id: @project.id, project_origin_id: @project_origin.id, event_id: event.id), method: :delete, data: { confirm: 'Naozaj chcete aktivitu odstrániť?' } %>
+                </td>
+                </tr>
+            <% end %>
+            <tr>
+                <%= form_with(url: admin_metais_project_project_origin_add_event_path(project_id: @project.id, project_origin_id: @project_origin.id), method: :post, local: true) do |f| %>
+                <td><%= f.text_field 'event[name]', class: "w-100 form-control" %></td>
+                <td><%= f.text_field 'event[value]', class: "w-100 form-control" %></td>
+                <td><%= f.date_field 'event[date]', class: "form-control" %></td>
+                <%= hidden_field_tag 'event[origin_type]', 'Human' %>
+                <%= hidden_field_tag 'event[event_type]', 'Predpoklad' %>
+                <td><%= f.submit 'Pridať', class: 'btn btn-primary' %></td>
+                <% end %>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-12">
+      <h6>Reálný priebeh projektu</h6>
+      <table class="table">
+        <thead>
+        <tr>
+          <th>Názov</th>
+          <th>Popis</th>
+          <th>Dátum</th>
+          <th>Akcia</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% @real_events.each do |event| %>
+          <tr>
+            <td>
+                <% logo_path, tooltip_text = origin_type_logo(event.origin_type) %>
+                <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 16px; height: 16px;", class:"tag-tooltip" %>
+                <%= event.name %>
+            </td>
+            <td><%= event.value %></td>
+            <td><%= event.date.in_time_zone('Europe/Bratislava').strftime('%d.%m.%Y') %></td>
+            <td>
+              <%= link_to 'Odstrániť', admin_metais_project_project_origin_remove_event_path(project_id: @project.id, project_origin_id: @project_origin.id, event_id: event.id), method: :delete, data: { confirm: 'Naozaj chcete aktivitu odstrániť?' } %>
+            </td>
+          </tr>
+        <% end %>
+        <tr>
+          <%= form_with(url: admin_metais_project_project_origin_add_event_path(project_id: @project.id, project_origin_id: @project_origin.id), method: :post, local: true) do |f| %>
+            <td><%= f.text_field 'event[name]', class: "w-100 form-control" %></td>
+            <td><%= f.text_field 'event[value]', class: "w-100 form-control" %></td>
+            <td><%= f.date_field 'event[date]', class: "form-control" %></td>
+            <%= hidden_field_tag 'event[origin_type]', 'Human' %>
+            <%= hidden_field_tag 'event[event_type]', 'Realita' %>
+            <td><%= f.submit 'Pridať', class: 'btn btn-primary' %></td>
+          <% end %>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>  
+</div> 
+<hr class="mt-5 mb-5">
+<div class="container main">
+    <div class="col-md-12">
+      <h5>Verejné obstarávanie, Dodávateľská zmúva, Zmlúva o NFP</h5>
+      <table class="table w-100">
+        <thead>
+        <tr>
+          <th>Typ</th>
+          <th>Link</th>
+          <th>Akcia</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% @combined_suppliers.each do |supplier| %>
+          <tr>
+            <td>              
+                <% logo_path, tooltip_text = origin_type_logo(supplier.origin_type) %>
+                <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 16px; height: 16px;", class:"tag-tooltip" %>
+                <b><%= supplier.supplier_type.name if supplier.supplier_type.present? %></b>
+            </td>
+            <td><%= link_to supplier.name, supplier.value, class: "w-100" %></td>
+            <td>
+              <%= link_to 'Odstrániť', admin_metais_project_project_origin_remove_supplier_path(project_id: @project.id, project_origin_id: @project_origin.id, supplier_id: supplier.id), method: :delete, data: { confirm: 'Naozaj chcete item odstrániť?' } %>
+            </td>
+          </tr>
+        <% end %>
+        <tr>
+          <%= form_with(url: admin_metais_project_project_origin_add_supplier_path(project_id: @project.id, project_origin_id: @project_origin.id), method: :post, local: true) do |f| %>
+            <td><%= f.select 'supplier[supplier_type]', Metais::SupplierType.pluck(:name, :id), {}, {class: 'form-control'} %></td>
+            <td><%= f.text_field 'supplier[value]', class: "w-100 form-control" %></td>
+            <%= hidden_field_tag 'supplier[origin_type]', 'Human' %>
+            <td><%= f.submit 'Pridať', class: 'btn btn-primary' %></td>
+          <% end %>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <hr class="mt-5 mb-5">
+  <div class="container main">
+    <div class="col-md-12 mt-5">
+      <h5>Dokumenty</h5>
+      <table class="table w-100 mt-5">
+        <thead>
+        <tr>
+          <th>Názov skupiny</th>
+          <th>Priorita</th>
+          <th class="text-center">Akcia</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% @grouped_documents.each do |description, documents| %>
+            <%= form_with(url: admin_metais_project_project_origin_update_group_order_path(project_id: @project.id, project_origin_id: @project_origin.id, description: description), method: :patch, local: true) do |f| %>
+                <tr>
+                    <td><h6><%= description %></h6></td>
+                    <td><%= f.number_field 'group_order', value: documents.first.group_order, class: "form-control", min: 1 %></td>
+                    <td class="text-center"><%= f.submit 'Aktualizovať poradie', class: 'btn btn-primary' %></td>
+                </tr>
+            <% end %>
+        <% end %>
+        </tbody>
+      </table>
+      
+      <table class="table w-100 mt-5">
+        <thead>
+        <tr>
+          <th>Názov</th>
+          <th>Link</th>
+          <th>Popis</th>
+          <th>Akcia</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% @combined_documents.each do |document| %>
+          <tr>
+            <td>
+                <% logo_path, tooltip_text = origin_type_logo(document.origin_type) %>
+                <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 16px; height: 16px;", class:"tag-tooltip" %>
+                <b><%= document.name %></b>
+            </td>
+            <td><%= link_to document.value, document.value %></td>
+            <td><%= document.description %></td>
+            <td>
+              <%= link_to 'Odstrániť', admin_metais_project_project_origin_remove_document_path(project_id: @project.id, project_origin_id: @project_origin.id, document_id: document.id), method: :delete, data: { confirm: 'Naozaj chcete item odstrániť?' } %>
+            </td>
+          </tr>
+        <% end %>
+        <tr>
+          <%= form_with(url: admin_metais_project_project_origin_add_document_path(project_id: @project.id, project_origin_id: @project_origin.id), method: :post, local: true) do |f| %>
+            <td><%= f.text_field 'document[name]', class: "form-control" %></td>
+            <td><%= f.text_field 'document[value]', class: "form-control" %></td>
+            <td><%= f.text_field 'document[description]', class: "form-control" %></td>
+            <%= hidden_field_tag 'document[origin_type]', 'Human' %>
+            <td><%= f.submit 'Pridať', class: 'btn btn-primary' %></td>
+          <% end %>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <hr class="mt-5 mb-5">
+  <div class="container main">
+    <div class="col-md-12 mt-5">
+      <h5>Linky</h5>
+      <table class="table w-100">
+        <thead>
+        <tr>
+          <th>Názov</th>
+          <th>Link</th>
+          <th>Akcia</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% @combined_links.each do |link| %>
+          <tr>
+            <td>
+                <% logo_path, tooltip_text = origin_type_logo(link.origin_type) %>
+                <%= image_tag logo_path, alt: tooltip_text, title: tooltip_text, style: "width: 16px; height: 16px;", class:"tag-tooltip" %>
+                <b><%= link.name %></b>
+            </td>
+            <td><%= link_to link.value, link.value %></td>
+            <td>
+              <%= link_to 'Odstrániť', admin_metais_project_project_origin_remove_link_path(project_id: @project.id, project_origin_id: @project_origin.id, link_id: link.id), method: :delete, data: { confirm: 'Naozaj chcete item odstrániť?' } %>
+            </td>
+          </tr>
+        <% end %>
+        <tr>
+          <%= form_with(url: admin_metais_project_project_origin_add_link_path(project_id: @project.id, project_origin_id: @project_origin.id), method: :post, local: true) do |f| %>
+            <td><%= f.text_field 'link[name]', class: "w-100 form-control" %></td>
+            <td><%= f.text_field 'link[value]', class: "w-100 form-control" %></td>
+            <%= hidden_field_tag 'link[origin_type]', 'Human' %>
+            <td><%= f.submit 'Pridať', class: 'btn btn-primary' %></td>
+          <% end %>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
