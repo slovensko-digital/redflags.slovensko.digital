@@ -75,7 +75,26 @@
         </div>
       </div>
     </nav>
+
     <hr class="mt-0">
+
+    <div class="container mt-3">
+      <% flash.each do |type, message| %>
+        <% bootstrap_class = case type.to_sym
+          when :notice then 'alert alert-success'
+          when :alert then 'alert alert-danger'
+          else 'alert alert-info'
+        end %>
+
+        <div class="<%= bootstrap_class %> alert-dismissible" role="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <%= message %>
+        </div>
+      <% end %>
+    </div>
+
     <%= yield %>
     <footer class="footer py-5 mt-5">
       <div class="container">
@@ -102,40 +121,7 @@
               <li><a href="https://acfslovakia.sk/">Active Citizens Fund - Slovakia</a></li>
             </ul>
             <div class="mb-5 mt-md-3 newsletter">
-              <strong>Novinky mailom</strong><br>
-              <form id="newsletter-form" role="form" method="POST" action="https://8ae9bea9.sibforms.com/serve/MUIFAKFIVoMSeBQPGxhFT1I22RylAl9ymCurl5Z6DA4AX2T0t0IXNoRPBcj5iLx9civwqvenwRuwe2tkgSc6GJgtcI9On77GCJMpXpMqsYkWFt89O4n_s1BV2ItmgGBIbDLK99gSvpIaXfYga72KpZbfnE7BHw1hOzg9zR8AJDsrfDdTYa6sdz7fRaqovrR6qo3XjGDcPfDv6l0h" data-action="https://8ae9bea9.sibforms.com/serve/MUIFAKFIVoMSeBQPGxhFT1I22RylAl9ymCurl5Z6DA4AX2T0t0IXNoRPBcj5iLx9civwqvenwRuwe2tkgSc6GJgtcI9On77GCJMpXpMqsYkWFt89O4n_s1BV2ItmgGBIbDLK99gSvpIaXfYga72KpZbfnE7BHw1hOzg9zR8AJDsrfDdTYa6sdz7fRaqovrR6qo3XjGDcPfDv6l0h">
-                <div class="row mt-2">
-                  <div class="col-md-8">
-                    <div class="form-group">
-                      <input type="email" id="EMAIL" name="EMAIL" class="form-control" autocomplete="off" placeholder="Zadajte emailovú adresu*" data-required="true" required>
-                    </div>
-                  </div>
-                  <div class="col-md-3 pl-md-0">
-                    <%= button_tag 'Prihlásiť', class: 'btn btn-primary btn-block', type: 'submit' %>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-11 legal mt-2">
-                    <div class="checkbox d-flex align-items-start">
-                      <input type="checkbox" class="input_replaced mr-2 mt-1" value="1" id="OPT_IN" name="OPT_IN" required>
-                      <label for="OPT_IN" class="mb-0">
-                        Súhlasím so zasielaním bezplatného newslettera na mnou zadaný e-mail. Tento súhlas môžem kedykoľvek odvolať na
-                        <a href="mailto:kontakt@slovensko.digital">kontakt@slovensko.digital</a>. Oboznámil(a) som sa s informáciami v sekcii
-                        <a href="https://slovensko.digital/ochrana-osobnych-udajov" target="_blank">Ochrana osobných údajov</a>.
-                      </label>
-                    </div>
-                  </div>
-                </div>
-                <input type="text" name="email_address_check" value="" class="input--hidden sr-only">
-                <input type="hidden" name="locale" value="en">
-              </form>
-              <div id="newsletter-success" class="d-none">
-                <div class="row">
-                  <div class="col-md-12">
-                    <p>Na zadanú adresu sme poslali email pre potvrdenie odberu. Ďakujeme za Váš záujem.</p>
-                  </div>
-                </div>
-              </div>
+              <%= render 'newsletter_subscriptions/form' %>
             </div>
           </div>
 

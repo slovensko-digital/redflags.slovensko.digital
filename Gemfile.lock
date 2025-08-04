@@ -52,6 +52,10 @@ GEM
       autoprefixer-rails (>= 6.0.3)
       popper_js (>= 1.12.9, < 2)
       sass (>= 3.5.2)
+    brevo (4.0.0)
+      addressable (~> 2.3, >= 2.3.0)
+      json (~> 2.1, >= 2.1.0)
+      typhoeus (~> 1.0, >= 1.0.1)
     builder (3.2.4)
     byebug (11.1.3)
     capybara (3.32.2)
@@ -89,6 +93,8 @@ GEM
       railties (>= 3.2, < 6.1)
     erubi (1.9.0)
     erubis (2.7.0)
+    ethon (0.12.0)
+      ffi (>= 1.3.0)
     execjs (2.7.0)
     factory_bot (5.2.0)
       activesupport (>= 4.2.0)
@@ -293,6 +299,8 @@ GEM
     turbolinks (5.2.1)
       turbolinks-source (~> 5.2)
     turbolinks-source (5.2.0)
+    typhoeus (1.4.1)
+      ethon (>= 0.9.0)
     tzinfo (1.2.7)
       thread_safe (~> 0.1)
     uber (0.1.0)
@@ -320,6 +328,7 @@ PLATFORMS
 DEPENDENCIES
   annotate
   bootstrap (~> 4.0.0.beta)
+  brevo (~> 4.0)
   byebug
   capybara
   clockwork
