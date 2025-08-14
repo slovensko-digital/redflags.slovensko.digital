@@ -31,6 +31,9 @@ Rails.application.routes.draw do
     mount Que::Web, at: 'que'
   end
 
+  post 'newsletter/subscribe', to: 'newsletter_subscriptions#subscribe', as: :newsletter_subscribe
+  get 'newsletter/confirmed', to: 'newsletter_subscriptions#confirmed', as: :newsletter_confirmed
+
   get 'o-projekte', as: 'about', to: 'static#about'
   get 'ako-hodnotime', as: 'about_rating', to: 'static#about_rating'
   get 'ako-sa-zapojit', as: 'contribute', to: 'static#contribute'
