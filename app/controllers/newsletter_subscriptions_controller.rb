@@ -3,7 +3,7 @@ class NewsletterSubscriptionsController < ApplicationController
   def subscribe
     email = params.require(:email)
     begin
-      EmailService.subscribe_to_newsletter_with_doi(email, 'NewsletterSubscription')
+      NewsletterSubscriptionService.subscribe(email)
       respond_to do |format|
         format.js { render :success }
       end
