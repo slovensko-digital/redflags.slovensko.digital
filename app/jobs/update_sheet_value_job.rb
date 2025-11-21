@@ -6,8 +6,10 @@ class UpdateSheetValueJob < ApplicationJob
   def perform(page_id, column_names, page_type, published_value)
     sheets_service = GoogleApiService.get_sheets_service
     response_values = sheets_service.get_spreadsheet_values(ENV['GOOGLE_SHEET_ID'], 'A:Z')&.values
+    raise ArgumentError, "Spreadsheet appears empty." if response_values.nil? || response_values.empty?
 
     header_row = response_values[2]
+    raise ArgumentError, "Header row is missing in the spreadsheet." if header_row.nil?
     indices = find_indices(header_row)
 
     row_index = find_row_index(response_values[3..-1], indices, page_id)
@@ -33,9 +35,18 @@ class UpdateSheetValueJob < ApplicationJob
   end
 
   def find_row_index(rows, indices, page_id)
+    target_id = normalize_id(page_id)
     rows.find_index do |row|
-      row[indices['ID prípravy']] == page_id.to_s || row[indices['ID produktu']] == page_id.to_s
+      normalize_id(row[indices['ID prípravy']]) == target_id ||
+        normalize_id(row[indices['ID produktu']]) == target_id
     end
+  end
+
+  def normalize_id(cell)
+    return nil if cell.nil?
+    numeric = cell.to_s.strip
+    numeric = numeric.chomp('.0') if numeric.end_with?('.0')
+    numeric
   end
 
   def handle_row(sheets_service, google_sheet_id, header_row, row_index, column_name, published_value)
