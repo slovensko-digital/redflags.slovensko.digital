@@ -10,8 +10,7 @@ class ExportTopicIntoSheetJob < ApplicationJob
     'Biznis prínos-Príprava', 'Príspevok v informatizácii body-Príprava', 'Príspevok v informatizácii-Príprava', 'Štúdia uskutočniteľnosti body-Príprava',
     'Štúdia uskutočniteľnosti-Príprava', 'Alternatívy body-Príprava', 'Alternatívy-Príprava', 'Kalkulácia efektívnosti body-Príprava',
     'Kalkulácia efektívnosti-Príprava', 'Transparentnosť a participácia body-Príprava', 'Transparentnosť a participácia-Príprava',
-    'Participácia na príprave projektu body-Príprava', 'Participácia na príprave projektu-Príprava', 'Názov-Produkt',
-    'Garant-Produkt', 'Stručný opis-Produkt', 'Náklady na projekt-Produkt', 'Aktuálny stav projektu-Produkt', 'Čo sa práve deje-Produkt',
+    'Názov-Produkt', 'Garant-Produkt', 'Stručný opis-Produkt', 'Náklady na projekt-Produkt', 'Aktuálny stav projektu-Produkt', 'Čo sa práve deje-Produkt',
     'Zhrnutie hodnotenia Red Flags-Produkt', 'Stanovisko Slovensko.Digital-Produkt', 'Reforma VS body-Produkt', 'Reforma VS-Produkt',
     'Merateľné ciele (KPI) body-Produkt', 'Merateľné ciele (KPI)-Produkt', 'Postup dosiahnutia cieľov body-Produkt', 'Postup dosiahnutia cieľov-Produkt',
     'Súlad s KRIT body-Produkt', 'Súlad s KRIT-Produkt', 'Biznis prínos body-Produkt', 'Biznis prínos-Produkt', 'Príspevok v informatizácii body-Produkt',
@@ -34,7 +33,6 @@ class ExportTopicIntoSheetJob < ApplicationJob
     "Alternatívy" => "Alternatívy body",
     "Kalkulácia efektívnosti" => "Kalkulácia efektívnosti body",
     "Transparentnosť a participácia" => "Transparentnosť a participácia body",
-    "Participácia na príprave projektu" => "Participácia na príprave projektu body",
     "Súlad s požiadavkami" => "Súlad s požiadavkami body",
     "Elektronické služby" => "Elektronické služby body",
     "Identifikácia, autentifikácia, autorizácia (IAA)" => "Identifikácia, autentifikácia, autorizácia (IAA) body",
@@ -88,27 +86,31 @@ class ExportTopicIntoSheetJob < ApplicationJob
     end
 
     sheets_service = GoogleApiService.get_sheets_service
-    response = sheets_service.get_spreadsheet_values(ENV['GOOGLE_SHEET_EXPORT_ID'], 'A:CA')
-    header_row = response.values[2]
-    current_row_count = response.values.count
+    sheet = fetch_sheet_values(sheets_service, ENV['GOOGLE_SHEET_EXPORT_ID'], 'A:CA')
+    header_row = sheet.fetch(:header_row)
+    data_rows = sheet.fetch(:data_rows)
+    current_row_count = sheet.fetch(:all_rows).count
+
+    ensure_expected_columns!(header_row)
+
     column_indices = COLUMN_NAMES.map { |name| header_row.index(name) }
+    values = COLUMN_NAMES.map { |name| result[name] }
+    row_payload = Array.new(header_row.length)
+    column_indices.each_with_index { |header_index, value_index| row_payload[header_index] = values[value_index] }
 
-    values = COLUMN_NAMES.map { |name| result[name]  }
-
-    if find_row_index_by_project_id(response.values[3..], header_row, new_revision.phase.project_id)
-      range = "Hárok1!#{column_letter(column_indices.min + 1)}#{current_row_count}:#{column_letter(column_indices.max + 1)}#{current_row_count}"
-    else
-      range = "Hárok1!#{column_letter(column_indices.min + 1)}#{current_row_count + 1}:#{column_letter(column_indices.max + 1)}#{current_row_count + 1}"
-    end
-    update_google_sheet(sheets_service, ENV['GOOGLE_SHEET_EXPORT_ID'], column_indices, values, range)
+    existing_row_index = find_row_index_by_project_id(data_rows, header_row, new_revision.phase.project_id)
+    target_row = existing_row_index ? existing_row_index + 4 : current_row_count + 1
+    range = "Hárok1!A#{target_row}:#{column_letter(header_row.length)}#{target_row}"
+    update_google_sheet(sheets_service, ENV['GOOGLE_SHEET_EXPORT_ID'], column_indices, row_payload, range)
   end
 
   def delete_row(new_revision)
     sheets_service = GoogleApiService.get_sheets_service
-    response = sheets_service.get_spreadsheet_values(ENV['GOOGLE_SHEET_EXPORT_ID'], 'A:BA')
-    header_row = response.values[2]
+    sheet = fetch_sheet_values(sheets_service, ENV['GOOGLE_SHEET_EXPORT_ID'], 'A:BA')
+    header_row = sheet.fetch(:header_row)
+    data_rows = sheet.fetch(:data_rows)
 
-    row_index = find_row_index(response.values[3..-1], header_row, new_revision.revision.page.id)
+    row_index = find_row_index(data_rows, header_row, new_revision.revision.page.id)
 
     if row_index
       delete_google_sheet_row(sheets_service, ENV['GOOGLE_SHEET_EXPORT_ID'], row_index + 3)
@@ -156,14 +158,37 @@ class ExportTopicIntoSheetJob < ApplicationJob
     spreadsheet.sheets.first.properties.sheet_id
   end
 
+  def fetch_sheet_values(sheets_service, sheet_id, range)
+    raw_values = sheets_service.get_spreadsheet_values(sheet_id, range)&.values
+    raise ArgumentError, "Spreadsheet appears empty." if raw_values.nil? || raw_values.empty?
+
+    header_row = raw_values[2]
+    raise ArgumentError, "Header row is missing in export sheet." if header_row.nil?
+
+    {
+      all_rows: raw_values,
+      header_row: header_row,
+      data_rows: raw_values[3..-1]
+    }
+  end
+
+  def ensure_expected_columns!(header_row)
+    missing_columns = COLUMN_NAMES.reject { |name| header_row.include?(name) }
+    unless missing_columns.empty?
+      raise ArgumentError, "Missing expected columns in export sheet: #{missing_columns.join(', ')}"
+    end
+  end
+
   def find_row_index(rows, header_row, page_id)
     id_index = header_row.index('ID hodnotenia')
-    rows.find_index { |row| row[id_index] == page_id.to_s }
+    raise ArgumentError, "Could not find column 'ID hodnotenia' in export sheet." if id_index.nil?
+    rows&.find_index { |row| row[id_index].to_s.strip == page_id.to_s }
   end
 
   def find_row_index_by_project_id(rows, header_row, project_id)
     project_id_index = header_row.index('Projekt ID')
-    rows.find_index { |row| row[project_id_index] == project_id.to_s }
+    raise ArgumentError, "Could not find column 'Projekt ID' in export sheet." if project_id_index.nil?
+    rows&.find_index { |row| row[project_id_index].to_s.strip == project_id.to_s }
   end
 
   def column_letter(number)
