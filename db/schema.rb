@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20241212091706) do
+ActiveRecord::Schema.define(version: 20251205131243) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -43,7 +43,7 @@ ActiveRecord::Schema.define(version: 20241212091706) do
     t.string "budget"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "body_html"
+    t.text "body_html"
     t.integer "total_score"
     t.integer "maximum_score"
     t.integer "redflags_count", default: 0

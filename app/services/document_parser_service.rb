@@ -1,4 +1,6 @@
 require 'nokogiri'
+require 'net/http'
+require 'base64'
 
 class DocumentParserService
   def initialize(document)
@@ -97,26 +99,17 @@ class DocumentParserService
   end
 
   def parse_stars(stars_str)
-    filled_stars = stars_str.count('★')
-    grey_stars = stars_str.count('☆')
-    '<img src="//platforma.slovensko.digital/images/emoji/twitter/star.png?v=5" title=":star:" class="emoji" alt=":star:">' * filled_stars + '<img src="//platforma-slovensko-digital-uploads.s3-eu-central-1.amazonaws.com/original/2X/b/bdd2e11053ea53c9b119412c78ec0994497635b3.png?v=5" title=":grey_star:" class="emoji emoji-custom" alt=":grey_star:">' * grey_stars
+    star_img = %(<img src="#{ActionController::Base.helpers.image_path('emoji/star.png')}" title=":star:" class="emoji" alt=":star:">)
+    grey_img = %(<img src="#{ActionController::Base.helpers.image_path('emoji/grey_star.png')}" title=":grey_star:" class="emoji emoji-custom" alt=":grey_star:">)
+    star_img * stars_str.count('★') + grey_img * stars_str.count('☆')
   end
 
   def parse_inline_object(inline_object)
-    if inline_object.inline_object_properties
-      embedded_object = inline_object.inline_object_properties.embedded_object
-      if embedded_object&.image_properties
-        "
-        <div class='d-flex justify-content-center'>
-          <img src='#{embedded_object.image_properties.content_uri}' alt='Inline Object' />
-         </div>
-        "
-      else
-        ""
-      end
-    else
-      ""
-    end
+    image_properties = inline_object&.inline_object_properties&.embedded_object&.image_properties
+    return "" unless image_properties
+
+    image_src = inline_image_src(image_properties.content_uri)
+    "<div class='d-flex justify-content-center'><img src='#{image_src}' alt='Inline Object' /></div>"
   end
 
   def parse_list_item(bullet, text_content)
@@ -125,10 +118,28 @@ class DocumentParserService
     "<#{list_tag}><li>#{text_content}</li></#{list_tag}>"
   end
 
-
   def extract_title(html_content)
     doc = Nokogiri::HTML(html_content)
 
     doc.at('h3').next_element.text.strip
+  end
+
+  def inline_image_src(content_uri)
+    return content_uri unless (token = google_access_token)
+
+    uri = URI.parse(content_uri)
+    response = Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https') do |http|
+      request = Net::HTTP::Get.new(uri)
+      request['Authorization'] = "Bearer #{token}"
+      http.request(request)
+    end
+
+    return content_uri unless response.is_a?(Net::HTTPSuccess)
+
+    "data:#{response['content-type'] || 'image/png'};base64,#{Base64.strict_encode64(response.body)}"
+  end
+
+  def google_access_token
+    @google_access_token ||= GoogleApiService.authorize.tap { |auth| auth.fetch_access_token! if auth.access_token.nil? }.access_token
   end
 end
