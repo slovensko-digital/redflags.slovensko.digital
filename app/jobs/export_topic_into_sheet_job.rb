@@ -1,6 +1,8 @@
 class ExportTopicIntoSheetJob < ApplicationJob
   queue_as :default
 
+  MAX_CELL_CHARACTERS = 50_000
+
   COLUMN_NAMES = [
     'Projekt', 'Projekt ID', 'ID hodnotenia prípravy', 'Link na hodnotenie prípravy', 'ID hodnotenia produktu', 'Link na hodnotenie produktu',
     'Názov-Príprava', 'Garant-Príprava', 'Stručný opis-Príprava', 'Náklady na projekt-Príprava', 'Aktuálny stav projektu-Príprava',
@@ -101,7 +103,8 @@ class ExportTopicIntoSheetJob < ApplicationJob
     existing_row_index = find_row_index_by_project_id(data_rows, header_row, new_revision.phase.project_id)
     target_row = existing_row_index ? existing_row_index + 4 : current_row_count + 1
     range = "Hárok1!A#{target_row}:#{column_letter(header_row.length)}#{target_row}"
-    update_google_sheet(sheets_service, ENV['GOOGLE_SHEET_EXPORT_ID'], column_indices, row_payload, range)
+    sanitized_row_payload = sanitize_row_values(row_payload)
+    update_google_sheet(sheets_service, ENV['GOOGLE_SHEET_EXPORT_ID'], sanitized_row_payload, range)
   end
 
   def delete_row(new_revision)
@@ -130,9 +133,15 @@ class ExportTopicIntoSheetJob < ApplicationJob
     result
   end
 
-  def update_google_sheet(sheets_service, google_sheet_id, column_indices, values, range)
+  def update_google_sheet(sheets_service, google_sheet_id, values, range)
     value_range_object = Google::Apis::SheetsV4::ValueRange.new(values: [values])
     sheets_service.update_spreadsheet_value(google_sheet_id, range, value_range_object, value_input_option: 'USER_ENTERED')
+  rescue Google::Apis::ClientError => e
+    raise unless bad_request_error?(e)
+
+    fallback_values = values.map { |value| formula_to_plain_text(value) }
+    fallback_range = Google::Apis::SheetsV4::ValueRange.new(values: [fallback_values])
+    sheets_service.update_spreadsheet_value(google_sheet_id, range, fallback_range, value_input_option: 'USER_ENTERED')
   end
 
   def delete_google_sheet_row(sheets_service, google_sheet_id, row_index)
@@ -180,15 +189,56 @@ class ExportTopicIntoSheetJob < ApplicationJob
   end
 
   def find_row_index(rows, header_row, page_id)
-    id_index = header_row.index('ID hodnotenia')
-    raise ArgumentError, "Could not find column 'ID hodnotenia' in export sheet." if id_index.nil?
-    rows&.find_index { |row| row[id_index].to_s.strip == page_id.to_s }
+    preparation_id_index = header_row.index('ID hodnotenia prípravy')
+    product_id_index = header_row.index('ID hodnotenia produktu')
+
+    if preparation_id_index.nil? && product_id_index.nil?
+      raise ArgumentError, "Could not find columns 'ID hodnotenia prípravy' or 'ID hodnotenia produktu' in export sheet."
+    end
+
+    rows&.find_index do |row|
+      row_matches_id?(row, preparation_id_index, page_id) || row_matches_id?(row, product_id_index, page_id)
+    end
   end
 
   def find_row_index_by_project_id(rows, header_row, project_id)
     project_id_index = header_row.index('Projekt ID')
     raise ArgumentError, "Could not find column 'Projekt ID' in export sheet." if project_id_index.nil?
     rows&.find_index { |row| row[project_id_index].to_s.strip == project_id.to_s }
+  end
+
+  def sanitize_row_values(values)
+    values.map { |value| sanitize_cell_value(value) }
+  end
+
+  def sanitize_cell_value(value)
+    return value unless value.is_a?(String)
+
+    sanitized = value.encode('UTF-8', invalid: :replace, undef: :replace, replace: '')
+    sanitized = sanitized.gsub(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/, '')
+    sanitized.length > MAX_CELL_CHARACTERS ? sanitized[0, MAX_CELL_CHARACTERS] : sanitized
+  end
+
+  def formula_to_plain_text(value)
+    return value unless value.is_a?(String)
+
+    hyperlink_match = value.match(/\AHYPERLINK\("([^"]+)"/i) || value.match(/\A=HYPERLINK\("([^"]+)"/i)
+    return hyperlink_match[1] if hyperlink_match
+
+    value.start_with?('=') ? value.sub(/\A=/, '') : value
+  end
+
+  def row_matches_id?(row, index, page_id)
+    return false if index.nil?
+
+    row[index].to_s.strip == page_id.to_s
+  end
+
+  def bad_request_error?(error)
+    status_code = error.respond_to?(:status_code) ? error.status_code : nil
+    return true if status_code == 400
+
+    status_code.nil? && error.message.to_s.include?('Invalid request')
   end
 
   def column_letter(number)
