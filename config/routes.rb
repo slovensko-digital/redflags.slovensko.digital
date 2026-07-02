@@ -41,4 +41,6 @@ Rails.application.routes.draw do
   get 'statne-it-v-cislach', as: 'stats', to: 'static#stats'
 
   root to: 'static#index'
+
+  get :health, to: 'health#index'
 end

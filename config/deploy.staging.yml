@@ -1,0 +1,26 @@
+servers:
+  web:
+    hosts:
+      - dev.slovensko.digital
+
+  worker:
+    hosts:
+      - dev.slovensko.digital
+
+  clock:
+    hosts:
+      - dev.slovensko.digital
+
+env:
+  clear:
+    RAILS_ENV: production
+    RAILS_LOG_LEVEL: info
+    ROLLBAR_ENV: staging
+    GOOGLE_SHEET_ID: 1QUphB9a0sV7Db3Vln9idYeiar3nY_4eFa2GTyLbVQ0w
+    GOOGLE_SHEET_EXPORT_ID: 17D8meP_tDwIYn2ZENM_s_DsH-wwdnFWVTI-v9q9DnDw
+
+proxy:
+  host: redflags.staging.slovensko.digital
+
+ssh:
+  user: kamal
