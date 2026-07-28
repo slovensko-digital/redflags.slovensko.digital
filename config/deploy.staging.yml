@@ -1,0 +1,36 @@
+servers:
+  web:
+    hosts:
+      - dev.slovensko.digital
+    options:
+      memory: 400m
+
+  worker:
+    hosts:
+      - dev.slovensko.digital
+    options:
+      memory: 500m
+
+  clock:
+    hosts:
+      - dev.slovensko.digital
+    options:
+      memory: 150m
+
+env:
+  clear:
+    RAILS_ENV: staging
+    RAILS_LOG_LEVEL: info
+    RAILS_LOG_TO_STDOUT: "true"
+    RAILS_SERVE_STATIC_FILES: "true"
+    APP_HOST: redflags.staging.slovensko.digital
+    ROLLBAR_ENV: staging
+  secret:
+    - GOOGLE_SHEET_ID
+    - GOOGLE_SHEET_EXPORT_ID
+
+proxy:
+  host: redflags.staging.slovensko.digital
+
+ssh:
+  user: kamal

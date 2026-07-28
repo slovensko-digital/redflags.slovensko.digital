@@ -2,7 +2,12 @@ name: Slovensko.Digital CI
 
 on:
   push:
-    branches: '**'
+    branches: [master]
+  pull_request:
+    branches: ['**']
+
+permissions:
+  contents: read
 
 jobs:
   test:
@@ -30,6 +35,13 @@ jobs:
 
       - run: bundle exec rails db:create db:schema:load --trace
       - run: bundle exec rspec
+
+  staging-deploy:
+    name: Deploy to staging environment
+    needs: test
+    if: ${{github.ref == 'refs/heads/master'}}
+    uses: ./.github/workflows/staging_deploy.yml
+    secrets: inherit
 
   gitlab-push:
     needs: test
