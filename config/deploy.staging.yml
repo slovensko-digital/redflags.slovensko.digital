@@ -25,9 +25,6 @@ env:
     RAILS_SERVE_STATIC_FILES: "true"
     APP_HOST: redflags.staging.slovensko.digital
     ROLLBAR_ENV: staging
-  secret:
-    - GOOGLE_SHEET_ID
-    - GOOGLE_SHEET_EXPORT_ID
 
 proxy:
   host: redflags.staging.slovensko.digital

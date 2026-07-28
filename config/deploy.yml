@@ -38,6 +38,8 @@ env:
     - GOOGLE_APPLICATION_CREDENTIALS
     - BREVO_API_KEY
     - ROLLBAR_ACCESS_TOKEN
+    - GOOGLE_SHEET_ID
+    - GOOGLE_SHEET_EXPORT_ID
 
 aliases:
   console: app exec --interactive --reuse "bin/rails console"
