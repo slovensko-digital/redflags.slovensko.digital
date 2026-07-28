@@ -2,14 +2,20 @@ servers:
   web:
     hosts:
       - dev.slovensko.digital
+    options:
+      memory: 400m
 
   worker:
     hosts:
       - dev.slovensko.digital
+    options:
+      memory: 500m
 
   clock:
     hosts:
       - dev.slovensko.digital
+    options:
+      memory: 150m
 
 env:
   clear:
