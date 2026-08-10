@@ -47,10 +47,19 @@
 
   <body>
     <%= render 'components/navbar' %>
-    <% flash.each do |message_type, message| %>
-        <div class="container alert alert-success" role="alert">
-          <%= message %>
-        </div>
+    <% flash.each do |type, message| %>
+      <% bootstrap_class = case type.to_sym
+        when :notice then 'alert alert-success'
+        when :alert then 'alert alert-danger'
+        else 'alert alert-info'
+      end %>
+
+      <div class="container <%= bootstrap_class %> alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <%= message %>
+      </div>
     <% end %>
     <%= yield %>
     <%= render 'components/footer' %>

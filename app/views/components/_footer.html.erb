@@ -50,34 +50,7 @@
 
       <div class="col-md-7 border-primary footer-border">
         <div class="mb-5 mt-md-3 newsletter">
-          <label for="subscribe-email" class="font-weight-bold"><b>Novinky emailom</b></label><br>
-          <p class="legal">Raz mesačne, žiaden spam</p>
-          <form id="newsletter-form" role="form" action="https://my.sendinblue.com/users/subscribe/js_id/29wti/id/3" data-action="https://my.sendinblue.com/users/subscribeembed/js_id/29wti/id/3" method="post">
-            <div class="row">
-              <div class="col-md-8">
-                <div class="form-group">
-                  <input type="hidden" name="js_id" id="js_id" value="29wti">
-                  <input type="hidden" name="listid" id="listid" value="23">
-                  <input type="hidden" name="from_url" id="from_url" value="yes">
-                  <input type="hidden" name="hdn_email_txt" id="hdn_email_txt" value="">
-                  <input type="email" required="" name="email" placeholder="Zadajte emailovú adresu" class="subscribe-email form-control" id="subscribe-email">
-                </div>
-              </div>
-              <div class="col-md-3 pl-md-0">
-                <button type="submit" class="btn btn-primary btn-block font-weight-bold">Prihlásiť</button>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-11 legal mt-2">
-                Prihlásením dávam dobrovoľný súhlas OZ Slovensko.Digital na zasielanie bezplatného newslettera na mnou zadaný e-mail. Tento súhlas môžem kedykoľvek odvolať na <a href="mailto:kontakt@slovensko.digital">kontakt@slovensko.digital</a>. Oboznámil(a) som sa s informáciami v sekcii <a href="https://slovensko.digital/ochrana-osobnych-udajov" target="_blank">Ochrana osobných údajov</a>.
-              </div>
-            </div>
-          </form>
-          <div id="newsletter-success" class="d-none">
-            <p>
-              <strong>Ďakujeme za Váš záujem.</strong>
-            </p>
-          </div>
+          <%= render 'newsletter_subscriptions/form' %>
         </div>
 
         <p class="font-weight-bold">Projekt finančne podporili</p>

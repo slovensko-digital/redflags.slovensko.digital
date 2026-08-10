@@ -4,6 +4,8 @@ class Admin::PagesController < AdminController
   def index
     @pages = Page.includes(phase: :project).order(created_at: :desc)
     @projects = @pages.map { |page| page.phase&.project }.uniq
+    
+    @job_stats = QueJob.job_stats
   end
 
   def show

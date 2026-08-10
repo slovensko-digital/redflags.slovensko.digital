@@ -1,0 +1,62 @@
+service: redflags-slovensko-digital
+
+image: sd/redflags-slovensko-digital
+
+servers:
+  web:
+    options:
+      "add-host": host.docker.internal:host-gateway
+  worker:
+    cmd: bundle exec que -w 1 ./config/environment.rb
+    options:
+      "add-host": host.docker.internal:host-gateway
+  clock:
+    cmd: bundle exec clockwork config/clock.rb
+    options:
+      "add-host": host.docker.internal:host-gateway
+
+deploy_timeout: 200
+
+proxy:
+  ssl: true
+  app_port: 3000
+  healthcheck:
+    path: /health
+
+env:
+  clear:
+    REDFLAGS_DISCOURSE_URL: https://platforma.slovensko.digital/
+    REDFLAGS_PROJECTS_CATEGORY_ID: 43
+    REDFLAGS_CATEGORY_SLUG: red-flags
+    BREVO_DOI_TEMPLATE_ID: 304
+    GOOGLE_SHEET_SCRIPT_URL: https://script.google.com/macros/s/AKfycbxGiD3jAsjoIZcqwLkS345dYxQYOwUonOHs-gWFeuzyHa904u9mXJOuNTAejlFklWpYPw/exec
+  secret:
+    - SECRET_KEY_BASE
+    - DATABASE_URL
+    - ADMIN_USER
+    - ADMIN_PASSWORD
+    - GOOGLE_APPLICATION_CREDENTIALS
+    - BREVO_API_KEY
+    - ROLLBAR_ACCESS_TOKEN
+    - GOOGLE_SHEET_ID
+    - GOOGLE_SHEET_EXPORT_ID
+
+aliases:
+  console: app exec --interactive --reuse "bin/rails console"
+  shell: app exec --interactive --reuse "sh"
+  logs: app logs -f
+  dbc: app exec --interactive --reuse "bin/rails dbconsole"
+
+registry:
+  server: registry.dev.slovensko.digital
+  username:
+    - KAMAL_REGISTRY_USERNAME
+  password:
+    - KAMAL_REGISTRY_PASSWORD
+
+builder:
+  arch: amd64
+  remote: ssh://kamal@dev.slovensko.digital
+  cache:
+    type: registry
+    options: mode=max,image-manifest=true,oci-mediatypes=true

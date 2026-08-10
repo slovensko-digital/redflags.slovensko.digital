@@ -184,6 +184,7 @@ class PhaseRevision < ApplicationRecord
         if score + bad_score > 0
           rating = self.ratings.find_or_initialize_by(rating_type: rating_type)
           rating.score = score
+          rating.save! if rating.changed?
           redflags_count += 1 if bad_score == 4
           total_score += score
           maximum_score += 4

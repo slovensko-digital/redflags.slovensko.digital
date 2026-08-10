@@ -63,8 +63,12 @@ RSpec.describe UpdateSheetValueJob, type: :job do
       allow_any_instance_of(UpdateSheetValueJob).to receive(:find_row_index).and_return(nil)
     end
 
-    it 'raises an ArgumentError' do
-      expect { described_class.perform_now(page_id, column_names, page_type, published_value) }.to raise_error(ArgumentError, "No data found for the given page_id in the spreadsheet. ID may not match or is not in string format.")
+    it 'logs warning and exits without updating the sheet' do
+      expect(Rails.logger).to receive(:warn).with(/Skipping update because page_id=nonexistent was not found/)
+
+      described_class.perform_now(page_id, column_names, page_type, published_value)
+
+      expect(sheets_service).not_to have_received(:update_spreadsheet_value)
     end
   end
 end

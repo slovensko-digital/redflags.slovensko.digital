@@ -57,6 +57,9 @@ Rails.application.routes.draw do
     resources :projects, path: 'statne-it-projekty', only: [:index, :show]
   end
 
+  post 'newsletter/subscribe', to: 'newsletter_subscriptions#subscribe', as: :newsletter_subscribe
+  get 'newsletter/confirmed', to: 'newsletter_subscriptions#confirmed', as: :newsletter_confirmed
+
   get 'o-projekte', as: 'about', to: 'static#about'
   get 'ako-hodnotime', as: 'about_rating', to: 'static#about_rating'
   get 'ako-sa-zapojit', as: 'contribute', to: 'static#contribute'
@@ -64,4 +67,6 @@ Rails.application.routes.draw do
   get 'statne-it-v-cislach', as: 'stats', to: 'static#stats'
 
   root to: 'static#index'
+
+  get :health, to: 'health#show'
 end
