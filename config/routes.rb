@@ -42,5 +42,5 @@ Rails.application.routes.draw do
 
   root to: 'static#index'
 
-  get :health, to: 'health#index'
+  get :health, to: 'health#show'
 end
