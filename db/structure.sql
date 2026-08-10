@@ -467,7 +467,7 @@ CREATE TABLE public.phase_revisions (
     budget character varying,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    body_html character varying,
+    body_html text,
     total_score integer,
     maximum_score integer,
     redflags_count integer DEFAULT 0,
@@ -1537,6 +1537,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20240825111806'),
 ('20240825115911'),
 ('20240924210648'),
-('20241212091706');
+('20241212091706'),
+('20251205131243');
 
 
