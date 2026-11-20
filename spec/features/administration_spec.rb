@@ -122,7 +122,7 @@ RSpec.feature 'Administration', type: :feature do
     authorize_as_admin
     visit admin_root_path
 
-    click_on Page.first.id
+    click_on Page.first.id.to_s
 
     within :id, dom_id(Revision.first) do
       expect(page).to have_content('published')
@@ -150,7 +150,7 @@ RSpec.feature 'Administration', type: :feature do
   def preview_non_latest_revision(version)
     authorize_as_admin
     visit admin_root_path
-    click_on Page.first.id
+    click_on Page.first.id.to_s
     within :id, dom_id(Revision.find_by_version(version)) do
       expect(page).not_to have_content('published')
       expect(page).not_to have_content('latest')
@@ -185,7 +185,7 @@ RSpec.feature 'Administration', type: :feature do
   def publish_non_latest_revision(version)
     authorize_as_admin
     visit admin_root_path
-    click_on Page.first.id
+    click_on Page.first.id.to_s
 
     within :id, dom_id(Revision.find_by_version(version)) do
       expect(page).not_to have_content('published')
