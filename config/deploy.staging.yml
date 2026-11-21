@@ -3,19 +3,8 @@ servers:
     hosts:
       - dev.slovensko.digital
     options:
-      memory: 400m
-
-  worker:
-    hosts:
-      - dev.slovensko.digital
-    options:
-      memory: 500m
-
-  clock:
-    hosts:
-      - dev.slovensko.digital
-    options:
-      memory: 250m
+      # The web runs the jobs too (GoodJob), there is no worker or clock.
+      memory: 600m
 
 env:
   clear:
