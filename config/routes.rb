@@ -1,10 +1,10 @@
-require 'que/web'
-
-Que::Web.use(Rack::Auth::Basic) do |username, password|
-  username == ENV.fetch('ADMIN_USER') && password == ENV.fetch('ADMIN_PASSWORD')
-end
-
 Rails.application.routes.draw do
+  # Ratings imported from Google Docs keep the path of the star images with the digest of the build that
+  # imported them. A build with another digest does not have that file, so send it to the current one.
+  get 'assets/emoji/:name-:digest.png',
+      to: redirect(status: 302) { |params, _request| ActionController::Base.helpers.image_path("emoji/#{params[:name]}.png") },
+      constraints: { name: /star|grey_star/, digest: /\h+/ }
+
   get 'projekty/:id', to: redirect('/hodnotenia/%{id}/hodnotenie-pripravy')
   get 'projekty/:id/hodnotenie-pripravy', to: redirect('/hodnotenia/%{id}/hodnotenie-pripravy')
 
@@ -50,7 +50,7 @@ Rails.application.routes.draw do
 
     resources :projects
 
-    mount Que::Web, at: 'que'
+    mount GoodJob::Engine, at: 'jobs', as: :jobs
   end
 
   namespace :metais, path: '' do

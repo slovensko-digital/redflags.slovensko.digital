@@ -43,6 +43,8 @@
 class PhaseRevision < ApplicationRecord
   belongs_to :phase
   belongs_to :revision
+  # The revision without its raw document, the list of projects needs only its page.
+  belongs_to :revision_for_list, -> { select(:id, :page_id) }, class_name: 'Revision', foreign_key: :revision_id, optional: true, inverse_of: false
   belongs_to :stage, class_name: 'ProjectStage', optional: true
 
   has_many :ratings, class_name: 'PhaseRevisionRating'

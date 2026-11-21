@@ -14,6 +14,12 @@ class Project < ApplicationRecord
                                                              foreign_key: 'project_id',
                                                              association_foreign_key: 'metais_project_id'
 
+  # The list of projects shows the published revision of every phase with its ratings. Load them for all
+  # projects at once, not with a few queries per project.
+  LIST_ASSOCIATIONS = [:metais_projects, { phases: [:phase_type, { published_revision: [:stage, { ratings: :rating_type }, { revision_for_list: :page }] }] }].freeze
+
+  scope :with_published_phases, -> { joins(phases: :published_revision).preload(LIST_ASSOCIATIONS) }
+
   def has_published_phases?
     phases.any? { |phase| phase.published_revision.present? }
   end
@@ -22,13 +28,14 @@ class Project < ApplicationRecord
     per_page = 25
     page = params[:page] || 1
 
-    projects = Project.joins(phases: :published_revision)
+    projects = Project.with_published_phases
 
     if params[:title].present?
       projects = projects.where('phase_revisions.title ILIKE ?', "%#{params[:title]}%")
     end
 
-    params[:sort] = 'date' unless params[:sort].present?
+    # Unknown sorts, such as the ones of the former list (newest, alpha_reverse, ...), sort by date.
+    params[:sort] = 'date' unless %w[alpha date preparation product].include?(params[:sort])
     sort_direction = params[:sort_direction]&.upcase == 'ASC' ? 'ASC' : 'DESC'
     projects = case params[:sort]
                 when 'alpha'

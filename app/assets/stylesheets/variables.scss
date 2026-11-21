@@ -30,3 +30,10 @@ $font-weight-black: 900;
 
 $modal-backdrop-bg: white;
 $modal-backdrop-opacity: .7;
+
+// Keep the look of Bootstrap 4.0. Since 4.6 small text is bigger (.875em), tables have their own
+// text color instead of the color of their section (the white top lists on the home page) and
+// inputs get the light weight of the body text.
+$small-font-size: 80%;
+$table-color: inherit;
+$input-font-weight: 400;

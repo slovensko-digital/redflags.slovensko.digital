@@ -8,7 +8,6 @@ require "active_record/railtie"
 require "action_controller/railtie"
 require "action_mailer/railtie"
 require "action_view/railtie"
-require "action_cable/engine"
 require "sprockets/railtie"
 # require "rails/test_unit/railtie"
 
@@ -19,7 +18,12 @@ Bundler.require(*Rails.groups)
 module Redflags
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 5.1
+    config.load_defaults 8.1
+
+    # Please, add to the `ignore` list any other `lib` subdirectories that do
+    # not contain `.rb` files, or that should not be reloaded or eager loaded.
+    # Common ones are `templates`, `generators`, or `middleware`, for example.
+    config.autoload_lib(ignore: %w[assets tasks])
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
@@ -28,7 +32,10 @@ module Redflags
     # Don't generate system test files.
     config.generators.system_tests = nil
 
-    config.active_job.queue_adapter = :que
+    config.active_job.queue_adapter = :good_job
+
+    # The tables of Metais are in their own schema with foreign keys from public. schema.rb dumps the
+    # foreign keys of public before the tables of metais and cannot be loaded, structure.sql can.
     config.active_record.schema_format = :sql
   end
 end

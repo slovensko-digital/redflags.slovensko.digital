@@ -1,9 +1,9 @@
 default: &default
   adapter: postgresql
   encoding: unicode
-  # For details on connection pooling, see Rails configuration guide
-  # http://guides.rubyonrails.org/configuring.html#database-pooling
-  pool: <%= ENV['RAILS_MAX_THREADS'] || 5 %>
+  # The threads of Puma, and GoodJob in the same process: 1 connection to listen for new jobs,
+  # 2 for its cron and scheduler and 1 for the thread that performs the jobs.
+  pool: <%= ENV.fetch('RAILS_MAX_THREADS', 3).to_i + 1 + 2 + 1 %>
 
 development:
   <<: *default

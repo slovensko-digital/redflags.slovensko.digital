@@ -26,19 +26,19 @@
     </div>
   </div>
   <div class="mr-3">
-    <h6>Job Stats</h6>
+    <h6>Jobs (<%= link_to 'dashboard', admin_jobs_path %>)</h6>
     <table class="table table-bordered text-center">
       <thead>
         <tr>
-          <th>Queue</th>
-          <th>Working Count</th>
+          <th>State</th>
+          <th>Count</th>
         </tr>
       </thead>
       <tbody>
-        <% @job_stats.each do |queue_name, stats| %>
+        <% @job_stats.each do |state, count| %>
           <tr>
-            <td><%= queue_name %></td>
-            <td><%= stats[:working_count] %></td>
+            <td><%= state %></td>
+            <td><%= count %></td>
           </tr>
         <% end %>
       </tbody>
