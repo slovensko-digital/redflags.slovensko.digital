@@ -12,6 +12,10 @@ jobs:
     name: Deploy to staging environment
     runs-on: ubuntu-latest
     environment: staging
+    # Kamal fails on its lock when two deploys run at once, let the next one wait.
+    concurrency:
+      group: staging-deploy
+      cancel-in-progress: false
 
     steps:
       - name: Checkout code
