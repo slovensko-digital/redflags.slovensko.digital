@@ -1,5 +1,9 @@
 require 'que/web'
 
+# Sinatra takes its environment from APP_ENV or RACK_ENV, not from RAILS_ENV. Without them que-web runs
+# as development: it refuses other hosts than localhost and shows errors with the code.
+Que::Web.set :environment, Rails.env.to_sym
+
 Que::Web.use(Rack::Auth::Basic) do |username, password|
   username == ENV.fetch('ADMIN_USER') && password == ENV.fetch('ADMIN_PASSWORD')
 end
