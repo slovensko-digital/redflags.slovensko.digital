@@ -76,8 +76,11 @@ class Project < ApplicationRecord
                         .distinct
 
       if ProjectsHelper::ALLOWED_TAGS.keys.include?(selected_tag)
+        # The tags are on the revision from Platforma, not on the revision of the phase.
         projects = Project.with_published_phases
-                          .where(phase_revisions: { tags: selected_tag })
+                          .joins(phases: { published_revision: :revision })
+                          .where('? = ANY(revisions.tags)', selected_tag)
+                          .distinct
       end
 
       projects = projects.sort_by do |project|

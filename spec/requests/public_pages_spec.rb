@@ -52,6 +52,18 @@ RSpec.describe 'Public pages', type: :request do
     expect(count_queries.call).to eq(queries_for_one_project)
   end
 
+  it 'lists the projects with a tag' do
+    page.published_revision.update_columns(tags: ['hodnotene-sd'])
+    other_page = create(:page, :published, phase: create(:phase, phase_type: phase_type))
+    other_page.published_revision.phase_revision.update!(phase: other_page.phase, published: true)
+
+    get projects_path(tag: 'hodnotene-sd')
+
+    expect(response).to have_http_status(:ok)
+    expect(response.body).to include(project_show_revision_type_path(project, 'hodnotenie-pripravy'))
+    expect(response.body).not_to include(project_show_revision_type_path(other_page.phase.project, 'hodnotenie-pripravy'))
+  end
+
   it 'shows the rating of the project' do
     get project_show_revision_type_path(project, 'hodnotenie-pripravy')
 
