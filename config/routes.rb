@@ -5,6 +5,12 @@ Que::Web.use(Rack::Auth::Basic) do |username, password|
 end
 
 Rails.application.routes.draw do
+  # Ratings imported from Google Docs keep the path of the star images with the digest of the build that
+  # imported them. A build with another digest does not have that file, so send it to the current one.
+  get 'assets/emoji/:name-:digest.png',
+      to: redirect(status: 302) { |params, _request| ActionController::Base.helpers.image_path("emoji/#{params[:name]}.png") },
+      constraints: { name: /star|grey_star/, digest: /\h+/ }
+
   get 'projekty/:id', to: redirect('/projekty/%{id}/hodnotenie-pripravy')
   resources :projects, path: 'projekty' do
     get ':revision_type/verzia/:version', to: 'phase_revision#show_history', as: 'show_history'
