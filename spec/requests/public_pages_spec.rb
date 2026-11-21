@@ -34,6 +34,24 @@ RSpec.describe 'Public pages', type: :request do
     end
   end
 
+  it 'lists more projects with the same number of queries' do
+    count_queries = lambda do
+      queries = 0
+      counter = ->(*, payload) { queries += 1 unless payload[:name] == 'SCHEMA' || payload[:cached] }
+      ActiveSupport::Notifications.subscribed(counter, 'sql.active_record') { get projects_path }
+      queries
+    end
+    count_queries.call
+    queries_for_one_project = count_queries.call
+
+    2.times do
+      other_page = create(:page, :published, phase: create(:phase, phase_type: phase_type))
+      other_page.published_revision.phase_revision.update!(phase: other_page.phase, published: true)
+    end
+
+    expect(count_queries.call).to eq(queries_for_one_project)
+  end
+
   it 'shows the rating of the project' do
     get project_show_revision_type_path(project, 'hodnotenie-pripravy')
 

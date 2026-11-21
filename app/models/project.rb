@@ -10,6 +10,12 @@
 class Project < ApplicationRecord
   has_many :phases
 
+  # The list of projects shows the published revision of every phase with its ratings. Load them for all
+  # projects at once, not with a few queries per project.
+  LIST_ASSOCIATIONS = { phases: [:phase_type, { published_revision: [:stage, { ratings: :rating_type }, { revision_for_list: :page }] }] }.freeze
+
+  scope :with_published_phases, -> { joins(phases: :published_revision).preload(LIST_ASSOCIATIONS) }
+
   def has_published_phases?
     phases.any? { |phase| phase.published_revision.present? }
   end
@@ -18,23 +24,23 @@ class Project < ApplicationRecord
 
     case sort_param
     when 'newest'
-      projects = Project.joins(phases: :published_revision)
+      projects = Project.with_published_phases
                          .select('projects.*, MAX(phase_revisions.published_at) AS newest_published_at')
                          .group('projects.id')
                          .order('newest_published_at DESC')
     when 'oldest'
-      projects = Project.joins(phases: :published_revision)
+      projects = Project.with_published_phases
                          .select('projects.*, MIN(phase_revisions.published_at) AS oldest_published_at')
                          .group('projects.id')
                          .order('oldest_published_at')
     when 'alpha', 'alpha_reverse'
-      projects = Project.joins(phases: :published_revision)
+      projects = Project.with_published_phases
                    .select('DISTINCT ON (projects.id) projects.*, LOWER(phase_revisions.title) AS alpha_title')
                    .order('projects.id, alpha_title')
       projects = projects.sort_by(&:alpha_title)
       projects = projects.reverse if sort_param == 'alpha_reverse'
     when 'preparation_lowest'
-      projects = Project.joins(phases: :published_revision)
+      projects = Project.with_published_phases
                         .where(phases: { phase_type: PhaseType.find_by(name: 'Prípravná fáza') })
                         .distinct
       projects = projects.sort_by do |project|
@@ -42,7 +48,7 @@ class Project < ApplicationRecord
         phase_prep ? (phase_prep.published_revision.aggregated_rating) : 0
       end.reverse
     when 'preparation_highest'
-      projects = Project.joins(phases: :published_revision)
+      projects = Project.with_published_phases
                         .where(phases: { phase_type: PhaseType.find_by(name: 'Prípravná fáza') })
                         .distinct
       projects = projects.sort_by do |project|
@@ -50,7 +56,7 @@ class Project < ApplicationRecord
         phase_prep ? (phase_prep.published_revision.aggregated_rating) : 0
       end
     when 'product_lowest'
-      projects = Project.joins(phases: :published_revision)
+      projects = Project.with_published_phases
                         .where(phases: { phase_type: PhaseType.find_by(name: 'Fáza produkt') })
                         .distinct
       projects = projects.sort_by do |project|
@@ -58,7 +64,7 @@ class Project < ApplicationRecord
         phase_prep ? (phase_prep.published_revision.aggregated_rating) : 0
       end.reverse
     when 'product_highest'
-      projects = Project.joins(phases: :published_revision)
+      projects = Project.with_published_phases
                         .where(phases: { phase_type: PhaseType.find_by(name: 'Fáza produkt') })
                         .distinct
       projects = projects.sort_by do |project|
@@ -66,11 +72,11 @@ class Project < ApplicationRecord
         phase_prep ? (phase_prep.published_revision.aggregated_rating) : 0
       end
     else
-      projects = Project.joins(phases: :published_revision)
+      projects = Project.with_published_phases
                         .distinct
 
       if ProjectsHelper::ALLOWED_TAGS.keys.include?(selected_tag)
-        projects = Project.joins(phases: :published_revision)
+        projects = Project.with_published_phases
                           .where(phase_revisions: { tags: selected_tag })
       end
 
