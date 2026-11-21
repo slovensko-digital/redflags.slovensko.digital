@@ -35,7 +35,7 @@ workers:
         cpu: 5m
         memory: 100Mi
       limits:
-        memory: 150Mi
+        memory: 250Mi
   worker:
     replicaCount: "1"
     command: ["bundle", "exec", "que", "-w1", "./config/environment.rb"]

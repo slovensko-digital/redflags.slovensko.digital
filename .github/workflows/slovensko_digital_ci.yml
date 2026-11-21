@@ -19,7 +19,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:12-alpine
+        image: postgres:16-alpine
         env:
           POSTGRES_USER: runner
           POSTGRES_HOST_AUTH_METHOD: trust
@@ -28,12 +28,12 @@ jobs:
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
 
-      - run: bundle exec rails db:create db:schema:load --trace
+      - run: bin/rails db:create db:schema:load --trace
       - run: bundle exec rspec
 
   staging-deploy:
@@ -50,7 +50,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 

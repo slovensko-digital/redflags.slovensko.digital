@@ -12,8 +12,8 @@
 </div>
 
 <% if @phase.present? %>
-  <%= render file: 'phase_revision/show' %>
+  <%= render template: 'phase_revision/show' %>
 <% else %>
   <% @page = @phase_revision %>
-  <%= render file: 'static/page' %>
+  <%= render template: 'static/page' %>
 <% end %>

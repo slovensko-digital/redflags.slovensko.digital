@@ -15,7 +15,7 @@ servers:
     hosts:
       - dev.slovensko.digital
     options:
-      memory: 150m
+      memory: 250m
 
 env:
   clear:

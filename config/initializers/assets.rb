@@ -12,3 +12,8 @@ Rails.application.config.assets.paths << Rails.root.join('node_modules')
 # application.js, application.css, and all non-JS/CSS in the app/assets
 # folder are already added.
 # Rails.application.config.assets.precompile += %w( admin.js admin.css )
+
+# Bootstrap 4 and Font Awesome 4 are written for older Sass. Dart Sass compiles them,
+# only with deprecation warnings, so do not print the ones from the gems.
+Rails.application.config.sass.quiet_deps = true
+Rails.application.config.sass.silence_deprecations = %w[import global-builtin color-functions]
