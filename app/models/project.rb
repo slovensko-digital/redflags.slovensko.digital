@@ -9,10 +9,14 @@
 
 class Project < ApplicationRecord
   has_many :phases
+  has_and_belongs_to_many :metais_projects, class_name: 'Metais::Project',
+                                                             join_table: 'public.projects_metais_projects',
+                                                             foreign_key: 'project_id',
+                                                             association_foreign_key: 'metais_project_id'
 
   # The list of projects shows the published revision of every phase with its ratings. Load them for all
   # projects at once, not with a few queries per project.
-  LIST_ASSOCIATIONS = { phases: [:phase_type, { published_revision: [:stage, { ratings: :rating_type }, { revision_for_list: :page }] }] }.freeze
+  LIST_ASSOCIATIONS = [:metais_projects, { phases: [:phase_type, { published_revision: [:stage, { ratings: :rating_type }, { revision_for_list: :page }] }] }].freeze
 
   scope :with_published_phases, -> { joins(phases: :published_revision).preload(LIST_ASSOCIATIONS) }
 
@@ -20,75 +24,66 @@ class Project < ApplicationRecord
     phases.any? { |phase| phase.published_revision.present? }
   end
 
-  def self.filtered_projects(selected_tag, sort_param)
+  def self.filtered_and_sorted_projects(params)
+    per_page = 25
+    page = params[:page] || 1
 
-    case sort_param
-    when 'newest'
-      projects = Project.with_published_phases
-                         .select('projects.*, MAX(phase_revisions.published_at) AS newest_published_at')
-                         .group('projects.id')
-                         .order('newest_published_at DESC')
-    when 'oldest'
-      projects = Project.with_published_phases
-                         .select('projects.*, MIN(phase_revisions.published_at) AS oldest_published_at')
-                         .group('projects.id')
-                         .order('oldest_published_at')
-    when 'alpha', 'alpha_reverse'
-      projects = Project.with_published_phases
-                   .select('DISTINCT ON (projects.id) projects.*, LOWER(phase_revisions.title) AS alpha_title')
-                   .order('projects.id, alpha_title')
-      projects = projects.sort_by(&:alpha_title)
-      projects = projects.reverse if sort_param == 'alpha_reverse'
-    when 'preparation_lowest'
-      projects = Project.with_published_phases
-                        .where(phases: { phase_type: PhaseType.find_by(name: 'Prípravná fáza') })
-                        .distinct
-      projects = projects.sort_by do |project|
-        phase_prep = project.phases.find { |p| p.phase_type.name == 'Prípravná fáza' }
-        phase_prep ? (phase_prep.published_revision.aggregated_rating) : 0
-      end.reverse
-    when 'preparation_highest'
-      projects = Project.with_published_phases
-                        .where(phases: { phase_type: PhaseType.find_by(name: 'Prípravná fáza') })
-                        .distinct
-      projects = projects.sort_by do |project|
-        phase_prep = project.phases.find { |p| p.phase_type.name == 'Prípravná fáza' }
-        phase_prep ? (phase_prep.published_revision.aggregated_rating) : 0
-      end
-    when 'product_lowest'
-      projects = Project.with_published_phases
-                        .where(phases: { phase_type: PhaseType.find_by(name: 'Fáza produkt') })
-                        .distinct
-      projects = projects.sort_by do |project|
-        phase_prep = project.phases.find { |p| p.phase_type.name == 'Fáza produkt' }
-        phase_prep ? (phase_prep.published_revision.aggregated_rating) : 0
-      end.reverse
-    when 'product_highest'
-      projects = Project.with_published_phases
-                        .where(phases: { phase_type: PhaseType.find_by(name: 'Fáza produkt') })
-                        .distinct
-      projects = projects.sort_by do |project|
-        phase_prep = project.phases.find { |p| p.phase_type.name == 'Fáza produkt' }
-        phase_prep ? (phase_prep.published_revision.aggregated_rating) : 0
-      end
-    else
-      projects = Project.with_published_phases
-                        .distinct
+    projects = Project.with_published_phases
 
-      if ProjectsHelper::ALLOWED_TAGS.keys.include?(selected_tag)
-        # The tags are on the revision from Platforma, not on the revision of the phase.
-        projects = Project.with_published_phases
-                          .joins(phases: { published_revision: :revision })
-                          .where('? = ANY(revisions.tags)', selected_tag)
-                          .distinct
-      end
-
-      projects = projects.sort_by do |project|
-        max_rating = project.phases.map { |p| p.published_revision&.aggregated_rating }.compact.max
-        max_rating
-      end
+    if params[:title].present?
+      projects = projects.where('phase_revisions.title ILIKE ?', "%#{params[:title]}%")
     end
 
+    # Unknown sorts, such as the ones of the former list (newest, alpha_reverse, ...), sort by date.
+    params[:sort] = 'date' unless %w[alpha date preparation product].include?(params[:sort])
+    sort_direction = params[:sort_direction]&.upcase == 'ASC' ? 'ASC' : 'DESC'
+    projects = case params[:sort]
+                when 'alpha'
+                  projects = projects.select('DISTINCT ON (projects.id) projects.*, LOWER(phase_revisions.title) AS alpha_title')
+                                      .order("projects.id, alpha_title")
+                  projects = projects.sort_by(&:alpha_title)
+                  projects = projects.reverse if sort_direction == 'DESC'
+                  projects
+                when 'date'
+                  if sort_direction == 'ASC'
+                    projects = projects.select("projects.*, MIN(phase_revisions.published_at) AS oldest_published_at").group("projects.id")
+                                        .order("oldest_published_at")
+                  elsif sort_direction == 'DESC'
+                    projects = projects.select('projects.*, MAX(phase_revisions.published_at) AS newest_published_at').group('projects.id')
+                                        .order('newest_published_at DESC')
+                  end
+                when 'preparation'
+                  if sort_direction == 'ASC'
+                    projects = projects.where(phases: { phase_type: PhaseType.find_by(name: 'Prípravná fáza') }).distinct
+                    projects = projects.sort_by do |project|
+                      phase_prep = project.phases.find { |p| p.phase_type.name == 'Prípravná fáza' }
+                      phase_prep ? (phase_prep.published_revision.aggregated_rating) : 0
+                    end.reverse
+                  elsif sort_direction == 'DESC'
+                    projects = projects.where(phases: { phase_type: PhaseType.find_by(name: 'Prípravná fáza') }).distinct
+                    projects = projects.sort_by do |project|
+                      phase_prep = project.phases.find { |p| p.phase_type.name == 'Prípravná fáza' }
+                      phase_prep ? (phase_prep.published_revision.aggregated_rating) : 0
+                    end
+                  end
+                when 'product'
+                  if sort_direction == 'ASC'
+                    projects = projects.where(phases: { phase_type: PhaseType.find_by(name: 'Fáza produkt') }).distinct
+                    projects = projects.sort_by do |project|
+                      phase_prep = project.phases.find { |p| p.phase_type.name == 'Fáza produkt' }
+                      phase_prep ? (phase_prep.published_revision.aggregated_rating) : 0
+                    end.reverse
+
+                  elsif sort_direction == 'DESC'
+                    projects = projects.where(phases: { phase_type: PhaseType.find_by(name: 'Fáza produkt') }).distinct
+                    projects = projects.sort_by do |project|
+                      phase_prep = project.phases.find { |p| p.phase_type.name == 'Fáza produkt' }
+                      phase_prep ? (phase_prep.published_revision.aggregated_rating) : 0
+                    end
+                  end
+                end
+
+    projects = Kaminari.paginate_array(projects).page(page).per(per_page)
     projects
   end
 end

@@ -34,6 +34,8 @@ jobs:
           bundler-cache: true
 
       - run: bin/rails db:create db:schema:load --trace
+      # The database of Datahub is read only, the app has no migrations for it.
+      - run: createdb datahub_test && psql -v ON_ERROR_STOP=1 -q -d datahub_test -f db/datahub_structure.sql
       - run: bundle exec rspec
 
   # A pull request merged before its run starts runs on master too, so check the event as well.

@@ -33,5 +33,9 @@ module Redflags
     config.generators.system_tests = nil
 
     config.active_job.queue_adapter = :good_job
+
+    # The tables of Metais are in their own schema with foreign keys from public. schema.rb dumps the
+    # foreign keys of public before the tables of metais and cannot be loaded, structure.sql can.
+    config.active_record.schema_format = :sql
   end
 end

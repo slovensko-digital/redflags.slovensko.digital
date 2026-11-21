@@ -16,22 +16,29 @@ RSpec.describe 'Public pages', type: :request do
     expect(response.body).to include('Red Flags: IS Obchodného registra - Prípravná fáza')
   end
 
-  [nil, 'newest', 'oldest', 'alpha', 'alpha_reverse', 'preparation_lowest', 'preparation_highest'].each do |sort|
-    it "lists the projects sorted by #{sort || 'rating'}" do
-      get projects_path(sort: sort)
+  [nil, 'alpha', 'date', 'preparation'].product(%w[ASC DESC]).each do |sort, direction|
+    it "lists the projects sorted by #{sort || 'date'} #{direction}" do
+      get projects_path(sort: sort, sort_direction: direction)
 
       expect(response).to have_http_status(:ok)
       expect(response.body).to include(project_show_revision_type_path(project, 'hodnotenie-pripravy'))
     end
   end
 
-  %w[product_lowest product_highest].each do |sort|
-    it "lists only the projects rated in the product phase sorted by #{sort}" do
-      get projects_path(sort: sort)
+  %w[ASC DESC].each do |direction|
+    it "lists only the projects rated in the product phase sorted by product #{direction}" do
+      get projects_path(sort: 'product', sort_direction: direction)
 
       expect(response).to have_http_status(:ok)
       expect(response.body).not_to include(project_show_revision_type_path(project, 'hodnotenie-pripravy'))
     end
+  end
+
+  it 'lists the projects sorted by date for a sort of the former list' do
+    get projects_path(sort: 'preparation_lowest')
+
+    expect(response).to have_http_status(:ok)
+    expect(response.body).to include(project_show_revision_type_path(project, 'hodnotenie-pripravy'))
   end
 
   it 'lists more projects with the same number of queries' do
@@ -50,18 +57,6 @@ RSpec.describe 'Public pages', type: :request do
     end
 
     expect(count_queries.call).to eq(queries_for_one_project)
-  end
-
-  it 'lists the projects with a tag' do
-    page.published_revision.update_columns(tags: ['hodnotene-sd'])
-    other_page = create(:page, :published, phase: create(:phase, phase_type: phase_type))
-    other_page.published_revision.phase_revision.update!(phase: other_page.phase, published: true)
-
-    get projects_path(tag: 'hodnotene-sd')
-
-    expect(response).to have_http_status(:ok)
-    expect(response.body).to include(project_show_revision_type_path(project, 'hodnotenie-pripravy'))
-    expect(response.body).not_to include(project_show_revision_type_path(other_page.phase.project, 'hodnotenie-pripravy'))
   end
 
   it 'shows the rating of the project' do

@@ -1,6 +1,6 @@
 #project-show {
   @include media-breakpoint-up(md) {
-    padding-top: 6rem;
+    padding-top: 3rem;
   }
 
   .full-description {
@@ -109,13 +109,12 @@ img.emoji {
 }
 
 .accordion:after {
-  font-family: 'Merriweather';
-  font-size: $h3-font-size;
-  content: "-";
+  color: $black;
+  font-size: medium;
+  text-decoration: underline;
+  content: "Schovať hodnotené kritériá";
 }
 
 .accordion.collapsed:after {
-  font-family: 'Merriweather';
-  font-size: $h3-font-size;
-  content: "+";
+  content: "Zobraziť hodnotené kritériá";
 }

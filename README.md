@@ -48,7 +48,7 @@ flowchart LR
 ```mermaid
 flowchart LR
     team(["Tím Red Flags"])
-    trigger(["denne o 5:00"])
+    trigger(["denne o 4:00"])
 
     subgraph app["Aplikácia Red Flags"]
         publish["Publish, Unpublish<br>v admine"]
@@ -77,11 +77,11 @@ flowchart LR
     exportJob -- "riadok projektu" --> export
 ```
 
-- Publish a Unpublish zapíšu do riadka stránky v *Prehľade* stĺpce `Príprava publikovaná?` alebo `Produkt publikovaný?`, `Dátum publikácie …` a `RF web …`. Job o 5:00 ich zapíše znova pre každú stránku.
+- Publish a Unpublish zapíšu do riadka stránky v *Prehľade* stĺpce `Príprava publikovaná?` alebo `Produkt publikovaný?`, `Dátum publikácie …` a `RF web …`. Job o 4:00 ich zapíše znova pre každú stránku.
 - *Export hodnotení IT projektov* (hárok `Hárok1`) má jeden riadok na projekt, ktorý hľadá podľa `Projekt ID`. Nový projekt pridá pod posledný riadok. Zrušenie publikovania riadok neodstráni. Ak treba tabuľku naplniť nanovo, vymaž hodnoty pod hlavičkou (od 4. riadka) a spusti `bin/rails redflags:sync_sheets`.
 
 ## Úlohy na pozadí
 
-Úlohy (ActiveJob) spúšťa [GoodJob](https://github.com/bensheldon/good_job) vo vlákne webového servera, samostatný worker ani clock netreba. Úlohy beží vždy len jedna naraz. Denný import o 3:00 a zápis do tabuliek o 5:00 plánuje GoodJob v `config/initializers/good_job.rb` podľa systémového času kontajnera. Ručne sa dajú spustiť cez `bin/rails redflags:sync_google_drafts` a `bin/rails redflags:sync_sheets`. Fronta, padnuté úlohy a plán sú v admine na `/admin/jobs`.
+Úlohy (ActiveJob) spúšťa [GoodJob](https://github.com/bensheldon/good_job) vo vlákne webového servera, samostatný worker ani clock netreba. Beží vždy len jedna úloha naraz. Denný import o 3:00, zápis do tabuliek o 4:00 a synchronizáciu s MetaIS o 5:00 a 6:00 plánuje GoodJob v `config/initializers/good_job.rb` podľa systémového času kontajnera. Ručne sa dajú spustiť rake úlohami z `lib/tasks`, napríklad `bin/rails redflags:sync_sheets`. Fronta, padnuté úlohy a plán sú v admine na `/admin/jobs`.
 
 Úlohy, ktoré padnú na dočasnej chybe Google API (limit požiadaviek, chyba servera, timeout), sa zopakujú až päťkrát v priebehu niekoľkých minút. Ostatné chyby sa neopakujú, úloha ostane v `/admin/jobs` medzi padnutými.

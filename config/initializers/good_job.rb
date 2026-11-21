@@ -16,9 +16,19 @@ Rails.application.configure do
       description: 'Imports the drafts of the ratings from Google Docs, as rake redflags:sync_google_drafts.'
     },
     sync_sheets: {
-      cron: '0 5 * * *',
+      cron: '0 4 * * *',
       class: 'SyncSheetsProjectInfoJob',
       description: 'Writes what is published to the Google sheets, as rake redflags:sync_sheets.'
+    },
+    metais_daily_sync: {
+      cron: '0 5 * * *',
+      class: 'Metais::DailySyncProjectsJob',
+      description: 'Syncs the projects from MetaIS, as rake metais:daily_sync.'
+    },
+    metais_daily_sync_evaluations: {
+      cron: '0 6 * * *',
+      class: 'LinkMetaisProjectsAndEvaluationsJob',
+      description: 'Links the projects from MetaIS with the ratings, as rake metais:daily_sync_evaluations.'
     }
   }
 end

@@ -1,0 +1,85 @@
+footer {
+  background-color: $light_black;
+  color: $white;
+
+  a {
+    color: $white;
+    &:hover {
+      color: $white;
+    }
+  }
+
+  .fa-inverse {
+    color: $gray-dark;
+  }
+
+  .icons {
+    a:hover {
+      text-decoration: none;
+    }
+  }
+
+  .newsletter {
+    .legal {
+      font-size: $small-font-size;
+
+      a {
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+.footer-border {
+  border-left: 1px solid;
+  padding-left: 3rem;
+}
+
+.footer-sk {
+  padding-right: 3rem;
+}
+
+.pontis-logo {
+  width: 125px;
+}
+
+.us-logo, .acf-logo {
+  width: 200px;
+}
+@media (max-width: 1200px) {
+  .pontis-logo {
+    width: 100px;
+  }
+  .us-logo, .acf-logo {
+    width: 175px;
+  }
+}
+@media (max-width: 992px) {
+  .pontis-logo {
+    width: 75px;
+  }
+  .us-logo, .acf-logo {
+    width: 150px;
+  }
+}
+@media (max-width: 768px) {
+  .responsive-img {
+    width: 125px;
+  }
+  .footer-border {
+    border-top: 1px solid;
+    border-left: none;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    padding-top: 3rem;
+  }
+  .footer-sk {
+    padding-right: 0;
+    padding-bottom: 3rem;
+  }
+}
+@media (max-width: 576px) {
+  .responsive-img {
+    width: 100px;
+  }
+}
