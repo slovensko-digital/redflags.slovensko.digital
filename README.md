@@ -79,3 +79,9 @@ flowchart LR
 
 - Publish a Unpublish zapíšu do riadka stránky v *Prehľade* stĺpce `Príprava publikovaná?` alebo `Produkt publikovaný?`, `Dátum publikácie …` a `RF web …`. Job o 5:00 ich zapíše znova pre každú stránku.
 - *Export hodnotení IT projektov* (hárok `Hárok1`) má jeden riadok na projekt, ktorý hľadá podľa `Projekt ID`. Nový projekt pridá pod posledný riadok. Zrušenie publikovania riadok neodstráni. Ak treba tabuľku naplniť nanovo, vymaž hodnoty pod hlavičkou (od 4. riadka) a spusti `bin/rails redflags:sync_sheets`.
+
+## Úlohy na pozadí
+
+Úlohy (ActiveJob) spúšťa [GoodJob](https://github.com/bensheldon/good_job) vo vlákne webového servera, samostatný worker ani clock netreba. Úlohy beží vždy len jedna naraz. Denný import o 3:00 a zápis do tabuliek o 5:00 plánuje GoodJob v `config/initializers/good_job.rb` podľa systémového času kontajnera. Ručne sa dajú spustiť cez `bin/rails redflags:sync_google_drafts` a `bin/rails redflags:sync_sheets`. Fronta, padnuté úlohy a plán sú v admine na `/admin/jobs`.
+
+Úlohy, ktoré padnú na dočasnej chybe Google API (limit požiadaviek, chyba servera, timeout), sa zopakujú až päťkrát v priebehu niekoľkých minút. Ostatné chyby sa neopakujú, úloha ostane v `/admin/jobs` medzi padnutými.
