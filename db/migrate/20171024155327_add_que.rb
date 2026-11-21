@@ -1,11 +1,5 @@
 class AddQue < ActiveRecord::Migration[5.1]
-  def self.up
-    # The current version as of this migration's creation.
-    Que.migrate! :version => 3
-  end
-
-  def self.down
-    # Completely removes Que's job queue.
-    Que.migrate! :version => 0
+  # Created the tables of Que, which GoodJob replaced. DropQue drops them, so there is nothing to do here.
+  def change
   end
 end

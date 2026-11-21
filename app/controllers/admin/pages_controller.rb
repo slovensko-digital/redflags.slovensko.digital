@@ -5,7 +5,8 @@ class Admin::PagesController < AdminController
     @pages = Page.includes(phase: :project).order(created_at: :desc)
     @projects = @pages.map { |page| page.phase&.project }.uniq
     
-    @job_stats = QueJob.job_stats
+    @job_stats = { 'Queued' => GoodJob::Job.queued.count, 'Running' => GoodJob::Job.running.count, 'Scheduled' => GoodJob::Job.scheduled.count,
+                   'Retried' => GoodJob::Job.retried.count, 'Failed' => GoodJob::Job.discarded.count }
   end
 
   def show

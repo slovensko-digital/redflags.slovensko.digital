@@ -32,9 +32,6 @@ module Redflags
     # Don't generate system test files.
     config.generators.system_tests = nil
 
-    config.active_job.queue_adapter = :que
-
-    # Que keeps functions and triggers in the database, schema.rb cannot hold them.
-    config.active_record.schema_format = :sql
+    config.active_job.queue_adapter = :good_job
   end
 end

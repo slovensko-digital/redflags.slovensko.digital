@@ -1,13 +1,3 @@
-require 'que/web'
-
-# Sinatra takes its environment from APP_ENV or RACK_ENV, not from RAILS_ENV. Without them que-web runs
-# as development: it refuses other hosts than localhost and shows errors with the code.
-Que::Web.set :environment, Rails.env.to_sym
-
-Que::Web.use(Rack::Auth::Basic) do |username, password|
-  username == ENV.fetch('ADMIN_USER') && password == ENV.fetch('ADMIN_PASSWORD')
-end
-
 Rails.application.routes.draw do
   # Ratings imported from Google Docs keep the path of the star images with the digest of the build that
   # imported them. A build with another digest does not have that file, so send it to the current one.
@@ -38,7 +28,7 @@ Rails.application.routes.draw do
 
     resources :projects
 
-    mount Que::Web, at: 'que'
+    mount GoodJob::Engine, at: 'jobs', as: :jobs
   end
 
   post 'newsletter/subscribe', to: 'newsletter_subscriptions#subscribe', as: :newsletter_subscribe

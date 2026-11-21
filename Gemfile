@@ -24,10 +24,8 @@ gem 'kaminari'
 gem 'turbolinks', '~> 5'
 
 gem 'discourse_api'
-gem 'que', '~> 2.4'
-gem 'que-web'
-
-gem 'clockwork'
+# Jobs and their schedule run in the web server process
+gem 'good_job', '~> 4.24'
 
 gem 'rollbar'
 gem 'oj'
