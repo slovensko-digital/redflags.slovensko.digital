@@ -48,7 +48,7 @@
 
         <% prep_revision = project.phases.select { |phase| phase.phase_type.name == 'Prípravná fáza' && phase.published_revision.present? }.first %>
         <% prep_revision = prep_revision&.published_revision %>
-        <% prep_page = prep_revision&.revision&.page %>
+        <% prep_page = prep_revision&.revision_for_list&.page %>
         <td class="align-middle text-center" colspan="2">
           <% if prep_page.nil? %>
           -
@@ -57,7 +57,7 @@
               <strong class="text-danger">
                 <%= prep_revision.redflags_count %> &times; <%= fa_icon('flag', class: 'text-danger') %>
               </strong>
-              <% if prep_page.latest_revision %>
+              <% if prep_page.latest_revision_id %>
                 <%= link_to 'Zobraziť', project_show_revision_type_path(project.id, 'hodnotenie-pripravy') %>
               <% end %>
             </div>
@@ -66,7 +66,7 @@
               <strong>
                 <%= number_to_percentage(prep_revision.total_score_percentage, precision: 0) %>
               </strong>
-              <% if prep_page.latest_revision %>
+              <% if prep_page.latest_revision_id %>
                 <%= link_to 'Zobraziť', project_show_revision_type_path(project.id, 'hodnotenie-pripravy') %>
               <% end %>
             </div>
@@ -75,7 +75,7 @@
 
         <% prod_revision = project.phases.select { |phase| phase.phase_type.name == 'Fáza produkt' && phase.published_revision.present? }.first %>
         <% prod_revision = prod_revision&.published_revision %>
-        <% prod_page = prod_revision&.revision&.page%>
+        <% prod_page = prod_revision&.revision_for_list&.page%>
         <td class="align-middle text-center" colspan="2">
           <% if prod_page.nil? %>
           -
@@ -84,7 +84,7 @@
               <strong class="text-danger">
                 <%= prod_revision.redflags_count %> &times; <%= fa_icon('flag', class: 'text-danger') %>
               </strong>
-              <% if prod_page.latest_revision %>
+              <% if prod_page.latest_revision_id %>
                 <%= link_to 'Zobraziť', project_show_revision_type_path(project.id, 'hodnotenie-produktu') %>
               <% end %>
             </div>
@@ -93,7 +93,7 @@
               <strong>
                 <%= number_to_percentage(prod_revision.total_score_percentage, precision: 0) %>
               </strong>
-              <% if prod_page.latest_revision %>
+              <% if prod_page.latest_revision_id %>
                 <%= link_to 'Zobraziť', project_show_revision_type_path(project.id, 'hodnotenie-produktu') %>
               <% end %>
             </div>
