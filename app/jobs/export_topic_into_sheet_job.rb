@@ -91,7 +91,6 @@ class ExportTopicIntoSheetJob < ApplicationJob
     sheet = fetch_sheet_values(sheets_service, ENV['GOOGLE_SHEET_EXPORT_ID'], 'A:CA')
     header_row = sheet.fetch(:header_row)
     data_rows = sheet.fetch(:data_rows)
-    current_row_count = sheet.fetch(:all_rows).count
 
     ensure_expected_columns!(header_row)
 
@@ -101,10 +100,15 @@ class ExportTopicIntoSheetJob < ApplicationJob
     column_indices.each_with_index { |header_index, value_index| row_payload[header_index] = values[value_index] }
 
     existing_row_index = find_row_index_by_project_id(data_rows, header_row, new_revision.phase.project_id)
-    target_row = existing_row_index ? existing_row_index + 4 : current_row_count + 1
-    range = "Hárok1!A#{target_row}:#{column_letter(header_row.length)}#{target_row}"
     sanitized_row_payload = sanitize_row_values(row_payload)
-    update_google_sheet(sheets_service, ENV['GOOGLE_SHEET_EXPORT_ID'], sanitized_row_payload, range)
+    last_column = column_letter(header_row.length)
+
+    if existing_row_index
+      row = existing_row_index + 4
+      update_google_sheet(sheets_service, ENV['GOOGLE_SHEET_EXPORT_ID'], sanitized_row_payload, "Hárok1!A#{row}:#{last_column}#{row}")
+    else
+      append_to_google_sheet(sheets_service, ENV['GOOGLE_SHEET_EXPORT_ID'], sanitized_row_payload, "Hárok1!A:#{last_column}")
+    end
   end
 
   def delete_row(new_revision)
@@ -134,14 +138,25 @@ class ExportTopicIntoSheetJob < ApplicationJob
   end
 
   def update_google_sheet(sheets_service, google_sheet_id, values, range)
-    value_range_object = Google::Apis::SheetsV4::ValueRange.new(values: [values])
-    sheets_service.update_spreadsheet_value(google_sheet_id, range, value_range_object, value_input_option: 'USER_ENTERED')
+    with_plain_text_fallback(values) do |value_range_object|
+      sheets_service.update_spreadsheet_value(google_sheet_id, range, value_range_object, value_input_option: 'USER_ENTERED')
+    end
+  end
+
+  # Updating values does not add rows to the sheet, so a row behind the last one of the sheet
+  # is refused. Appending inserts the row after the last row with values.
+  def append_to_google_sheet(sheets_service, google_sheet_id, values, range)
+    with_plain_text_fallback(values) do |value_range_object|
+      sheets_service.append_spreadsheet_value(google_sheet_id, range, value_range_object, value_input_option: 'USER_ENTERED', insert_data_option: 'INSERT_ROWS')
+    end
+  end
+
+  def with_plain_text_fallback(values)
+    yield Google::Apis::SheetsV4::ValueRange.new(values: [values])
   rescue Google::Apis::ClientError => e
     raise unless bad_request_error?(e)
 
-    fallback_values = values.map { |value| formula_to_plain_text(value) }
-    fallback_range = Google::Apis::SheetsV4::ValueRange.new(values: [fallback_values])
-    sheets_service.update_spreadsheet_value(google_sheet_id, range, fallback_range, value_input_option: 'USER_ENTERED')
+    yield Google::Apis::SheetsV4::ValueRange.new(values: [values.map { |value| formula_to_plain_text(value) }])
   end
 
   def delete_google_sheet_row(sheets_service, google_sheet_id, row_index)
@@ -175,7 +190,6 @@ class ExportTopicIntoSheetJob < ApplicationJob
     raise ArgumentError, "Header row is missing in export sheet." if header_row.nil?
 
     {
-      all_rows: raw_values,
       header_row: header_row,
       data_rows: raw_values[3..-1]
     }
