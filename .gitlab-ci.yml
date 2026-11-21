@@ -2,7 +2,8 @@ image: alpine:latest
 
 variables:
   DOCKER_DRIVER: overlay2
-  DOCKER_BUILDKIT: 0
+  # BuildKit keeps the cache of all stages of the Dockerfile in the registry (<image>:cache), also of the
+  # build stage with the gems and assets, which the final image does not have.
   AUTO_DEVOPS_BUILD_CACHE: registry
   AUTO_DEPLOY_IMAGE_VERSION: 'v2.47.0'
 
